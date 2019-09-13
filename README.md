@@ -1,2 +1,2 @@
-# 393-Project
-source code repo for 393 project
+# SeatSwap
+source code repo for 393 project: SeatSwap
