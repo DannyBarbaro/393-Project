@@ -7,5 +7,12 @@ The data for this project will be stored in the users local MongoDB instance. To
 
 The project is currently supporting MongoDB Community edition 4.2
 
-Python Dependencies:
+# Dependencies
+
+Python:
   - pip install pymongo
+
+Frontend:
+  - React.js
+  - React router
+  - honestly just do npm install
