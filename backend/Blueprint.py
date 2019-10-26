@@ -1,7 +1,7 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 test_api = Blueprint('test_api', __name__)
 
 @test_api.route("/test")
 def testing():
-    return "YEET"
+    return jsonify({"thing": "YEET"})
