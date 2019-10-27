@@ -2,6 +2,7 @@ import configparser
 from flask import Flask
 from flask_cors import CORS
 from Blueprint import test_api
+import profile_service as profile
 # import blueprint files
 # ex: from Blueprint import test_api
 
@@ -15,6 +16,7 @@ CORS(app)
 
 # register all blue prints
 app.register_blueprint(test_api)
+app.register_blueprint(profile.profile)
 
 if __name__ == '__main__':
     app.run(**config['app'])

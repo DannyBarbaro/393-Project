@@ -10,7 +10,7 @@ The project is currently supporting MongoDB Community edition 4.2
 # Dependencies
 
 Python:
-  - pip install pymongo
+  - pip install pymongo, flask, flask_api, flask_cors
 
 Frontend:
   - React.js
