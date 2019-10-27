@@ -46,7 +46,7 @@ def getGroup():
     else:
         return {'group': None}
 
-@group.route('/groups/join')
+@group.route('/groups/join', methods=['POST'])
 def joinGroup():
     """
     Request: {"id" : <id>, "user" : <obj>}

@@ -53,5 +53,6 @@ def get_all_groups():
 
 def get_groups_with_user(user):
     groups = db.groups
+    #TODO change db to store user ids instead of objects, right now this search doesn't work
     user_groups = groups.find({'members': user})
     return [Model.Group(g).__dict__ for g in user_groups]
