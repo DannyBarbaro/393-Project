@@ -87,3 +87,16 @@ def leave_group():
             return {'user_not_in_group': 'User does not belong to specified group'}, status.HTTP_400_BAD_REQUEST
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
+
+@group.route('/groups/mine')
+def get_user_groups():
+    """
+    Request: {"user" : <obj>}
+
+    Response: {"groups" : <objlist>}
+    """
+    if 'user' not in request.json:
+        return {'no_user': 'User missing from request'}, status.HTTP_400_BAD_REQUEST
+    
+    return {'groups': db.get_groups_with_user(request.json['user'])}
+
