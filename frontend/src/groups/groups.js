@@ -13,12 +13,17 @@ export default class Groups extends React.Component {
     }
 
     componentDidMount() {
+        let toSend = {
+            name: this.state.user.name,
+            email: this.state.user.email,
+            card_num: this.state.user.cardNum
+        }
         let options = {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({user: this.state.user})
+            body: JSON.stringify({user: toSend})
         }
         fetch(apiBaseURL + 'groups/mine', options)
             .then(resp => resp.json())

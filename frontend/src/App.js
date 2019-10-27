@@ -33,13 +33,13 @@ export default function App() {
 
         <Switch>
           <Route path="/profile">
-            <Profile user={{name:"me", email:"mine@google", cardNum:"1"}}/>
+            <Profile user={{name:"Josh", email:"e@mail.com", cardNum:"1"}}/>
           </Route>
           <Route path="/search">
             <Search />
           </Route>
           <Route path="/groups">
-            <Groups user={{name:"me", email:"mine@google", cardNum:"1"}}/>
+            <Groups user={{name:"Josh", email:"e@mail.com", cardNum:"1"}}/>
           </Route>
           <Route path="/">
             <Home />
