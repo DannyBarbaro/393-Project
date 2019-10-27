@@ -40,8 +40,8 @@ export default class Home extends React.Component {
                 <div hidden={!this.state.auth}>
                     <GoogleLogout
                         clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-                        buttonText="Logout">
-                        onLogoutSuccess={this.logout}
+                        buttonText="Logout"
+                        onLogoutSuccess={this.logout}>
                     </GoogleLogout>
                 </div>
             </div>
