@@ -19,3 +19,4 @@ Frontend:
   - React.js
   - React router
   - honestly just do npm install
+  - npm install react-google-login
