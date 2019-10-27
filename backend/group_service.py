@@ -29,7 +29,7 @@ def createGroup():
         return {'group_exists': 'This group has been created already'}, status.HTTP_400_BAD_REQUEST
     
     db.add_group(new_group)
-    return status.HTTP_200_OK
+    return "", status.HTTP_200_OK
 
 @group.route('/groups/<id>')
 def getGroup():
@@ -62,6 +62,6 @@ def joinGroup():
     group = db.get_group(request.json['id'])
     if group:
         db.add_user_to_group(request.json['user'], group)
-        return status.HTTP_200_OK
+        return "", status.HTTP_200_OK
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
