@@ -1,5 +1,6 @@
 import React from "react";
 import EditUserInfo from "./edit-user-info";
+import {Link} from "react-router-dom";
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -31,6 +32,7 @@ export default class Profile extends React.Component {
                     <EditUserInfo user={this.state.user} isNewUser={false}
                                   callback={new_user => this.setState({editing: false, user: new_user})} />
                 }
+                <Link to="/groups">My Groups</Link>
 
             </div>
         );

@@ -66,7 +66,7 @@ def joinGroup():
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
 
-@group.route('/groups/<id>/leave')
+@group.route('/groups/leave')
 def leave_group():
     """
     Request: {"id" : <id>, "user" : <obj>}
@@ -88,7 +88,7 @@ def leave_group():
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
 
-@group.route('/groups/mine')
+@group.route('/groups/mine', methods=['POST'])
 def get_user_groups():
     """
     Request: {"user" : <obj>}

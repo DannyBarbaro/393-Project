@@ -39,7 +39,7 @@ export default function App() {
             <Search />
           </Route>
           <Route path="/groups">
-            <Groups />
+            <Groups user={{name:"me", email:"mine@google", cardNum:"1"}}/>
           </Route>
           <Route path="/">
             <Home />
