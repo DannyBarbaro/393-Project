@@ -9,7 +9,7 @@ import Repository as db
 group = Blueprint('group', __name__)
 
 
-@group.route('/createGroup')
+@group.route('/createGroup', methods=['POST'])
 def createGroup():
     """
     Request: {"group" : <obj>}

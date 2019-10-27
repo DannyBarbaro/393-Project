@@ -9,6 +9,7 @@ export default class Groups extends React.Component {
             groups: []
         }
         this.onLeave = this.onLeave.bind(this);
+        this.onMakeNewGroup = this.onMakeNewGroup.bind(this);
     }
 
     componentDidMount() {
