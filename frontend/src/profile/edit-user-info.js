@@ -1,7 +1,7 @@
 import React from "react";
 import {apiBaseURL} from "../App";
 
-export default class UserInfo extends React.Component {
+export default class EditUserInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -9,6 +9,7 @@ export default class UserInfo extends React.Component {
             name: props.user.name,
             cardNum: props.user.cardNum,
             isNew: props.isNewUser,
+            callback: props.callback
         };
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -33,6 +34,9 @@ export default class UserInfo extends React.Component {
             fetch(apiBaseURL + 'addUser', options)
         } else {
             fetch(apiBaseURL + "updateUser", options);
+        }
+        if (!!this.state.callback) {
+            this.state.callback(toSend);
         }
         e.preventDefault()
     }
