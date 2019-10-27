@@ -43,6 +43,8 @@ class Group(object):
             self.event = db_obj['event']
         if 'visibility' in db_obj:
             self.visibility = db_obj['visibility']
+        if 'owner' in db_obj:
+            self.owner = db_obj['owner']
 
 class UserSchedule(object):
 
