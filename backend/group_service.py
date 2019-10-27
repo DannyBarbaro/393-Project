@@ -25,7 +25,7 @@ def createGroup():
         return {'no_event': 'No event in group request'}, status.HTTP_400_BAD_REQUEST
     
     new_group = Group(request.json['group'])
-    if db.get_group(new_group.owner, new_group.event):
+    if db.get_group_by_owner(new_group.owner, new_group.event):
         return {'group_exists': 'This group has been created already'}, status.HTTP_400_BAD_REQUEST
     
     db.add_group(new_group)
@@ -41,7 +41,7 @@ def getGroup():
     if 'id' not in request.json:
         return {'no_id': 'No group id in request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group(request.json['id'])
+    group = db.get_group_by_id(request.json['id'])
     if group:
         return {'group': group.__dict__}
     else:
@@ -59,7 +59,7 @@ def joinGroup():
     if 'user' not in request.json:
         return {'no_user': 'Joining user missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group(request.json['id'])
+    group = db.get_group_by_id(request.json['id'])
     if group:
         db.add_user_to_group(request.json['user'], group)
         return "", status.HTTP_200_OK
