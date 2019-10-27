@@ -1,5 +1,6 @@
 import React from "react";
 import {apiBaseURL} from "../App";
+import { GoogleLogin, GoogleLogout} from 'react-google-login';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -19,7 +20,7 @@ export default class Home extends React.Component {
     render() {
         return (
             <div>
-                <h1>hOmE</h1>
+                <h1>SeatSwap</h1>
                 <p>{this.state.message}</p>
             </div>
         );
