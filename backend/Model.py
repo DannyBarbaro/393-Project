@@ -1,48 +1,73 @@
 class Block(object):
 
-    def __init__(self, time, seat):
-        self.time = time
-        self.seat = seat
+    def __init__(self, db_obj):
+        if 'time' in db_obj:
+            self.time = db_obj['time']
+        if 'seat' in db_obj:
+            self.seat = db_obj['seat']
 
 class Event(object):
 
-    def __init__(self, id_num, time, team1, team2, location, event_type):
-        self.id = id_num
-        self.start_time = time
-        self.participants = [team1, team2]
-        self.location = location
-        self.event_type = event_type
+    def __init__(self, db_obj):
+        if 'id' in db_obj:
+            self.id = db_obj['id']
+        if 'time' in db_obj:
+            self.start_time = db_obj['time']
+        if 'team1' in db_obj and 'team2' in db_obj:
+            self.participants = [db_obj['team1'], db_obj['team2']]
+        if 'location' in db_obj:
+            self.location = db_obj['location']
+        if 'event_type' in db_obj:
+            self.event_type = db_obj['event_type']
 
 class GroupSchedule(object):
 
-    def __init__(self, id_num, group_no):
-        self.id = id_num
-        self.user_schedules = []
-        self.group_no = group_no
+    def __init__(self, db_obj):
+        if 'id' in db_obj:
+            self.id = db_obj['id_num']
+        if 'user_schedules' in db_obj:
+            self.user_schedules = db_obj['user_schedules']
+        if 'group_num' in db_obj:
+            self.group_num = db_obj['group_num']
 
 class Group(object):
 
-    def __init__(self, id_no, name, members, event, visibility):
-        self.id_no = id_no
-        self.name = name
-        self.members = members
-        self.event = event
-        self.visibility = visibility
+    def __init__(self, db_obj):
+        if 'id' in db_obj:
+            self.id = db_obj['id']
+        if 'name' in db_obj:
+            self.name = db_obj['name']
+        if 'members' in db_obj:
+            self.members = db_obj['members']
+        if 'event' in db_obj:
+            self.event = db_obj['event']
+        if 'visibility' in db_obj:
+            self.visibility = db_obj['visibility']
 
 class UserSchedule(object):
 
-    def __init__(self, id_no, time_blocks, owning_user):
-        self.id_no = id_no
-        self.time_blocks = time_blocks
-        self.owning_user = owning_user
+    def __init__(self, db_obj):
+        if 'id' in db_obj:
+            self.id = db_obj['id']
+        if 'time_blocks' in db_obj:
+            self.time_blocks = db_obj['time_blocks']
+        if 'owner' in db_obj:
+            self.owner = db_obj['owner']
 
 class User(object):
 
-    def __init__(self, id_no, email_addr, favorite_teams, name):
-        self.id_no = id_no
-        self.email_addr = email_addr
-        self.rating_history = []
-        self.favorite_teams = favorite_teams
-        self.group_history = []
-        self.name = name
-        self.active_groups = []
+    def __init__(self, db_obj):
+        if 'id' in db_obj:
+            self.id = db_obj['id']
+        if 'email' in db_obj:
+            self.email = db_obj['email']
+        if 'rating_history' in db_obj:
+            self.rating_history = db_obj['rating_history']
+        if 'favorite_teams' in db_obj:
+            self.favorite_teams = db_obj['favorite_teams']
+        if 'group_history' in db_obj:
+            self.group_history = db_obj['group_history']
+        if 'name' in db_obj:
+            self.name = db_obj['name']
+        if 'active_groups' in db_obj:
+            self.active_groups = db_obj['active_groups']
