@@ -46,6 +46,11 @@ def remove_user_from_group(user, group):
     members_list.remove(user)
     groups.update_one({'id': group['id']}, {'$set': {'members': members_list}})
 
+def get_all_groups():
+    groups = db.groups
+    group_list = groups.find()
+    return [Model.Group(g).__dict__ for g in group_list]
+
 def get_groups_with_user(user):
     groups = db.groups
     user_groups = groups.find({'members': user})
