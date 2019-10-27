@@ -71,3 +71,5 @@ class User(object):
             self.name = db_obj['name']
         if 'active_groups' in db_obj:
             self.active_groups = db_obj['active_groups']
+        if 'card_num' in db_obj:
+            self.active_groups = db_obj['card_num']

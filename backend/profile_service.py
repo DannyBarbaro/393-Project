@@ -16,40 +16,57 @@ def getProfile():
 
     Response: {"user" : <obj>}
     """
-    if 'email' not in request.args:
+    if 'email' not in request.json:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
-    return {'user': db.get_user(request.args['email']).__dict__}
+    return {'user': db.get_user(request.json['email']).__dict__}
 
-@profile.route('/login')
+@profile.route('/login', methods=['POST'])
 def processLogin():
     """
     Request: {"email" : <value>}
 
     Response: {"newUser" : <bool>, "user": <obj>}
     """
-    if 'email' not in request.args:
+    if 'email' not in request.json:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
-    user = db.get_user(request.args['email'])
+    user = db.get_user(request.json['email'])
     if user:
         return {'newUser': False, 'user': user.__dict__}
     else:
         return {'newUser': True, 'user': None}
 
-@profile.route('/addUser')
+@profile.route('/addUser', methods=['POST'])
 def add_user():
     """
     Request: {"user" : <obj>}
 
     Response: empty
     """
-    if 'email' not in request.args:
+    if 'user' not in request.json:
+        return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
+    if 'email' not in request.json['user']:
         return {'invalid_user': 'User must have an email'}, status.HTTP_400_BAD_REQUEST
 
-    new_user = User(request.args['email'])
+    new_user = User(request.json['user'])
     if db.get_user(new_user.email):
         return {'already_exists': 'This user already exists'}, status.HTTP_400_BAD_REQUEST
     
     db.add_user(new_user)
-    return status.HTTP_200_OK
+    return "", status.HTTP_200_OK
+
+@profile.route('/updateUser', methods=['POST'])
+def update_user():
+    """
+    Request: {"user" : <obj>}
+
+    Response: empty
+    """
+    if 'user' not in request.json:
+        return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
+    if 'email' not in request.json['user']:
+        return {'invalid_user': 'User must have an email'}, status.HTTP_400_BAD_REQUEST
+
+    db.update_user(User(request.json['user']))
+    return "", status.HTTP_200_OK
