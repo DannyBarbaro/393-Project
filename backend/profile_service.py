@@ -1,6 +1,6 @@
 import os, sys
-sys.path.append(os.path.join(os.path.dirname(sys.path[0] + 'db_code')))
-import db_code.Repository as db
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
+import Repository as db
 
 from flask import Blueprint, jsonify, request
 from flask_api import status

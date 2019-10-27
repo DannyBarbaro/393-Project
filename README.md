@@ -12,6 +12,9 @@ The project is currently supporting MongoDB Community edition 4.2
 Python:
   - pip install pymongo, flask, flask_api, flask_cors
 
+Testing:
+  - pip install pytest
+
 Frontend:
   - React.js
   - React router

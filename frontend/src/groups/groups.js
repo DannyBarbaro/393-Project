@@ -9,6 +9,7 @@ export default class Groups extends React.Component {
             groups: []
         }
         this.onLeave = this.onLeave.bind(this);
+        this.onMakeNewGroup = this.onMakeNewGroup.bind(this);
     }
 
     componentDidMount() {
@@ -39,6 +40,20 @@ export default class Groups extends React.Component {
                   err => console.log(err))
     }
 
+    onMakeNewGroup(e) {
+        let target = e.target;
+        let options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({group: { name: "new group", members: [this.state.user], owner: this.state.user, event: "Souper Bowl", visibility: "public" }})
+        }
+        fetch(apiBaseURL + 'createGroup', options)
+            .then(() => this.componentDidMount(),
+                  err => console.log(err))
+    }
+
     render() {
         return (
             <div>
@@ -53,6 +68,7 @@ export default class Groups extends React.Component {
                         </ul>
                     </div>
                 }
+                <button name="new-group" onClick={this.onMakeNewGroup}>Create New Group</button>
             </div>
         );
     }

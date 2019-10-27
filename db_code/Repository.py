@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 import os, sys
-sys.path.append(os.path.join(os.path.dirname(sys.path[0] + 'backend')))
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'backend'))
 import Model
 
 client = MongoClient('localhost')

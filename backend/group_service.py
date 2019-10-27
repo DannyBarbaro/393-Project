@@ -1,16 +1,15 @@
 from Model import Group
 from flask_api import status
 from flask import Blueprint, jsonify, request
-import db_code.Repository as db
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(sys.path[0] + 'db_code')))
-
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
+import Repository as db
 
 group = Blueprint('group', __name__)
 
 
-@group.route('/createGroup')
+@group.route('/createGroup', methods=['POST'])
 def createGroup():
     """
     Request: {"group" : <obj>}
