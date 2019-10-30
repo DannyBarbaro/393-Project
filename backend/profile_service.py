@@ -19,7 +19,7 @@ def getProfile():
     if 'email' not in request.json:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
-    return {'user': db.get_user(request.json['email']).__dict__}
+    return {'user': db.get_user_by_email(request.json['email']).__dict__}
 
 @profile.route('/login', methods=['POST'])
 def processLogin():
@@ -31,7 +31,7 @@ def processLogin():
     if 'email' not in request.json:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
-    user = db.get_user(request.json['email'])
+    user = db.get_user_by_email(request.json['email'])
     if user:
         return {'newUser': False, 'user': user.__dict__}
     else:
@@ -50,7 +50,7 @@ def add_user():
         return {'invalid_user': 'User must have an email'}, status.HTTP_400_BAD_REQUEST
 
     new_user = User(request.json['user'])
-    if db.get_user(new_user.email):
+    if db.get_user_by_email(new_user.email):
         return {'already_exists': 'This user already exists'}, status.HTTP_400_BAD_REQUEST
     
     db.add_user(new_user)
