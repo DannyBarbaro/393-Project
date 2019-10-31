@@ -58,5 +58,5 @@ def get_all_groups():
 
 def get_groups_with_user(user_id):
     groups = db.groups
-    user_groups = groups.aggregate({"$match": {"$in": {user_id, "$members"}}})
+    user_groups = groups.aggregate({"$match": {"$in": [user_id, "$members"]}})
     return [Model.Group(g).__dict__ for g in user_groups]
