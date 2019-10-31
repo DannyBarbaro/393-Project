@@ -1,13 +1,16 @@
 import React from "react";
 import {apiBaseURL} from "../App";
+import {Redirect} from "react-router-dom"
 
 export default class Search extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             user: props.user,
-            group: []
+            group: [],
+            toGroups: false
         }
+        this.onJoin = this.onJoin.bind(this);
     }
 
     componentDidMount() {
@@ -23,11 +26,6 @@ export default class Search extends React.Component {
                   err => console.log(err));
     }
 
-    goToGroups() {
-        let path = '/groups';
-        this.props.history.push(path);
-    }
-
     onJoin(e) {
         let target = e.target;
         let options = {
@@ -38,11 +36,14 @@ export default class Search extends React.Component {
             body: JSON.stringify({ user: this.state.user, id: target.name })
         }
         fetch(apiBaseURL + "groups/join", options)
-            .then(() => this.goToGroups(),
+            .then(() => this.setState({toGroups: true}),
                   err => console.log(err))
     }
 
     render() {
+        if (this.state.toGroups) {
+            return <Redirect to="/groups" />
+        }
         return (
             <div>
                 <h1>This is where you can find new groups to join!</h1>
