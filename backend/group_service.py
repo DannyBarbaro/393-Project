@@ -68,19 +68,19 @@ def joinGroup():
 @group.route('/groups/leave')
 def leave_group():
     """
-    Request: {"id" : <id>, "user" : <obj>}
+    Request: {"group_id" : <id>, "user_id" : <id>}
 
     Response: empty
     """
-    if 'id' not in request.json:
+    if 'group_id' not in request.json:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
-    if 'user' not in request.json:
+    if 'user_id' not in request.json:
         return {'no_user': 'Leaving user missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group_by_id(request.json['id'])
+    group = db.get_group_by_id(request.json['group_id'])
     if group:
-        if request.json['user'] in group.members:
-            db.remove_user_from_group(request.json['user'], group)
+        if request.json['user_id'] in group.members:
+            db.remove_user_from_group(request.json['user_id'], group)
             return "", status.HTTP_200_OK
         else:
             return {'user_not_in_group': 'User does not belong to specified group'}, status.HTTP_400_BAD_REQUEST
@@ -94,17 +94,17 @@ def get_all_groups():
 
     Response: {"groups" : <objlist>}
     """
-    return {'groups': db.get_all_groups()}
+    return {'groups': db.get_all_groups()}, status.HTTP_200_OK
 
 @group.route('/groups/mine', methods=['POST'])
 def get_user_groups():
     """
-    Request: {"user" : <obj>}
+    Request: {"user_id" : <id>}
 
     Response: {"groups" : <objlist>}
     """
-    if 'user' not in request.json:
-        return {'no_user': 'User missing from request'}, status.HTTP_400_BAD_REQUEST
+    if 'user_id' not in request.json:
+        return {'no_user': 'User id missing from request'}, status.HTTP_400_BAD_REQUEST
     
-    return {'groups': db.get_groups_with_user(request.json['user'])}
+    return {'groups': db.get_groups_with_user(request.json['user'])}, status.HTTP_200_OK
 
