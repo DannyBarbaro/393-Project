@@ -49,18 +49,18 @@ def getGroup():
 @group.route('/groups/join', methods=['POST'])
 def joinGroup():
     """
-    Request: {"id" : <id>, "user" : <obj>}
+    Request: {"group_id" : <id>, "user_id" : <id>}
 
     Response: empty
     """
-    if 'id' not in request.json:
+    if 'group_id' not in request.json:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
-    if 'user' not in request.json:
-        return {'no_user': 'Joining user missing from request'}, status.HTTP_400_BAD_REQUEST
+    if 'user_id' not in request.json:
+        return {'no_user': 'Joining user id missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group_by_id(request.json['id'])
+    group = db.get_group_by_id(request.json['group_id'])
     if group:
-        db.add_user_to_group(request.json['user'], group)
+        db.add_user_to_group(request.json['user_id'], group)
         return "", status.HTTP_200_OK
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
