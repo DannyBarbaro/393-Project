@@ -13,40 +13,31 @@ export default class Groups extends React.Component {
     }
 
     componentDidMount() {
-        let toSend = {
-            name: this.state.user.name,
-            email: this.state.user.email,
-            card_num: this.state.user.cardNum
-        }
-        let options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: "POST",
-            body: JSON.stringify({user: toSend})
-        }
-        fetch(apiBaseURL + 'groups/mine', options)
+        let url = new URL('groups/mine', apiBaseURL)
+        url.search = new URLSearchParams({user_id: this.state.user.id}).toString();
+        fetch(url)
             .then(resp => resp.json())
-            .then(resp => this.setState({groups: resp.groups}),
-                  err => console.log(err));
+            .then(resp => {
+                if (!!resp.groups) {
+                    this.setState({groups: resp.groups})
+                } else {
+                    this.setState({groups: []});
+                }
+                
+            },
+            err => console.log(err));
     }
 
     onLeave(e) {
         let target = e.target;
-        let options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: "POST",
-            body: JSON.stringify({user: this.state.user, id: target.name})
-        }
-        fetch(apiBaseURL + "groups/leave", options)
+        let url = new URL('groups/leave', apiBaseURL)
+        url.search = new URLSearchParams({userId: this.state.user.id, groupID: target.id}).toString();
+        fetch(url)
             .then(() => this.componentDidMount(),
                   err => console.log(err))
     }
 
     onMakeNewGroup(e) {
-        let target = e.target;
         let options = {
             headers: {
                 'Content-Type': 'application/json'
@@ -54,12 +45,14 @@ export default class Groups extends React.Component {
             method: "POST",
             body: JSON.stringify({group: { name: "new group", members: [this.state.user], owner: this.state.user, event: "Souper Bowl", visibility: "public" }})
         }
-        fetch(apiBaseURL + 'createGroup', options)
+        let url = new URL('createGroup', apiBaseURL)
+        fetch(url, options)
             .then(() => this.componentDidMount(),
                   err => console.log(err))
     }
 
     render() {
+        console.log(this);
         return (
             <div>
                 <h1>This is the groups page!</h1>

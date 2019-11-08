@@ -31,13 +31,16 @@ def create_group():
     return "", status.HTTP_200_OK
 
 @group.route('/groups')
-def get_group(id):
+def get_group():
     """
     Parameters: id = <id>
 
     Response: {"group" : <obj>}
     """
-    group = db.get_group_by_id(id)
+    if 'id' not in request.args:
+        return {'no_user': 'user id missing from request'}, status.HTTP_400_BAD_REQUEST 
+
+    group = db.get_group_by_id(request.args['id'])
     if group:
         return jsonify({'group': GroupView(group)})
     else:
@@ -46,18 +49,18 @@ def get_group(id):
 @group.route('/groups/join', methods=['POST'])
 def join_group():
     """
-    Request: {"group_id" : <id>, "user_id" : <id>}
+    Request: {"groupId" : <id>, "userId" : <id>}
 
     Response: empty
     """
-    if 'group_id' not in request.json:
+    if 'groupId' not in request.json:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
-    if 'user_id' not in request.json:
+    if 'userId' not in request.json:
         return {'no_user': 'Joining user id missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group_by_id(request.json['group_id'])
+    group = db.get_group_by_id(request.json['groupId'])
     if group:
-        db.add_user_to_group(request.json['user_id'], group)
+        db.add_user_to_group(request.json['userId'], group)
         return "", status.HTTP_200_OK
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
@@ -65,19 +68,19 @@ def join_group():
 @group.route('/groups/leave')
 def leave_group():
     """
-    Params: group_id = <id>, user_id = <id>
+    Params: groupId = <id>, userId = <id>
 
     Response: empty
     """
-    if 'group_id' not in request.args:
+    if 'groupId' not in request.args:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
-    if 'user_id' not in request.args:
+    if 'userId' not in request.args:
         return {'no_user': 'Leaving user missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group_by_id(request.args['group_id'])
+    group = db.get_group_by_id(request.args['groupId'])
     if group:
-        if request.args['user_id'] in group.members:
-            db.remove_user_from_group(request.args['user_id'], group)
+        if request.args['userId'] in group.members:
+            db.remove_user_from_group(request.args['userId'], group)
             return "", status.HTTP_200_OK
         else:
             return {'user_not_in_group': 'User does not belong to specified group'}, status.HTTP_400_BAD_REQUEST
@@ -96,12 +99,12 @@ def get_all_groups():
 @group.route('/groups/mine')
 def get_user_groups():
     """
-    Parmas: "user_id" = <id>
+    Params: "userId" = <id>
 
     Response: {"groups" : [<obj>]}
     """
-    if 'user_id' not in request.args:
+    if 'userId' not in request.args:
         return {'no_user': 'User id missing from request'}, status.HTTP_400_BAD_REQUEST
     
-    return jsonify({'groups': [GroupView(g) for g in db.get_groups_with_user(request.args['user'])]}), status.HTTP_200_OK
+    return jsonify({'groups': [GroupView(g) for g in db.get_groups_with_user(request.args['userId'])]}), status.HTTP_200_OK
 

@@ -14,13 +14,7 @@ export default class Search extends React.Component {
     }
 
     componentDidMount() {
-        let options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: "GET"
-        }
-        fetch(apiBaseURL + "groups/list", options)
+        fetch(new URL("groups/list", apiBaseURL))
             .then(resp => resp.json())
             .then(resp => this.setState({groups: resp.groups}),
                   err => console.log(err));
@@ -33,9 +27,9 @@ export default class Search extends React.Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ user: this.state.user, id: target.name })
+            body: JSON.stringify({ userId: this.state.user.id, groupId: target.id })
         }
-        fetch(apiBaseURL + "groups/join", options)
+        fetch(new URL("groups/join", apiBaseURL), options)
             .then(() => this.setState({toGroups: true}),
                   err => console.log(err))
     }

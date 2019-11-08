@@ -13,6 +13,7 @@ export default class EditUserInfo extends React.Component {
         };
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.processCallback = this.processCallback.bind(this);
     }
 
     onChange(e) {
@@ -21,24 +22,27 @@ export default class EditUserInfo extends React.Component {
     }
 
     onSubmit(e) {
-        let toSend = Object.assign({}, this.state);
-        toSend.card_num = toSend.cardNum;
         let options = {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({user: toSend})
+            body: JSON.stringify({user: this.state})
         }
         if (this.state.isNew) {
-            fetch(apiBaseURL + 'addUser', options)
+            var url = new URL('addUser', apiBaseURL);
         } else {
-            fetch(apiBaseURL + "updateUser", options);
+            var url = new URL('updateUser', apiBaseURL);
         }
-        if (!!this.state.callback) {
-            this.state.callback(toSend);
-        }
+        fetch(url, options)
+            .then(this.processCallback());
         e.preventDefault()
+    }
+
+    processCallback() {
+        if (!!this.state.callback) {
+            this.state.callback(this.state);
+        }
     }
 
     render() {

@@ -13,12 +13,7 @@ export default class Home extends React.Component {
     }
 
     componentDidMount() {
-        fetch(apiBaseURL+"test")
-            .then(resp => resp.json())
-            .then(
-                resp => this.setState({message: resp.thing}),
-                err => console.log(err)
-            );
+        
     }
 
     render() {
