@@ -1,16 +1,21 @@
 from Model import Group
-from flask_api import status
-from flask import Blueprint, jsonify, request
-import os
-import sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
+from ViewModel import ViewEncoder, GroupView
+
+from flask_api import status
+from flask import Blueprint, request
+import json
+import os
+import sys
 
 group = Blueprint('group', __name__)
 
+def _to_json(view):
+    return json.dumps(view, cls=ViewEncoder)
 
 @group.route('/createGroup', methods=['POST'])
-def createGroup():
+def create_group():
     """
     Request: {"group" : <obj>}
 
@@ -30,24 +35,21 @@ def createGroup():
     db.add_group(new_group)
     return "", status.HTTP_200_OK
 
-@group.route('/groups/<id>')
-def getGroup():
+@group.route('/groups')
+def get_group(id):
     """
-    Request: {"id" : <id>}
+    Parameters: id = <id>
 
     Response: {"group" : <obj>}
     """
-    if 'id' not in request.json:
-        return {'no_id': 'No group id in request'}, status.HTTP_400_BAD_REQUEST
-
-    group = db.get_group_by_id(request.json['id'])
+    group = db.get_group_by_id(id)
     if group:
-        return {'group': group.__dict__}
+        return _to_json({'group': GroupView(group)})
     else:
-        return {'group': None}
+        return _to_json({'group': None})
 
 @group.route('/groups/join', methods=['POST'])
-def joinGroup():
+def join_group():
     """
     Request: {"group_id" : <id>, "user_id" : <id>}
 
@@ -68,19 +70,19 @@ def joinGroup():
 @group.route('/groups/leave')
 def leave_group():
     """
-    Request: {"group_id" : <id>, "user_id" : <id>}
+    Params: group_id = <id>, user_id = <id>
 
     Response: empty
     """
-    if 'group_id' not in request.json:
+    if 'group_id' not in request.args:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
-    if 'user_id' not in request.json:
+    if 'user_id' not in request.args:
         return {'no_user': 'Leaving user missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group_by_id(request.json['group_id'])
+    group = db.get_group_by_id(request.args['group_id'])
     if group:
-        if request.json['user_id'] in group.members:
-            db.remove_user_from_group(request.json['user_id'], group)
+        if request.args['user_id'] in group.members:
+            db.remove_user_from_group(request.args['user_id'], group)
             return "", status.HTTP_200_OK
         else:
             return {'user_not_in_group': 'User does not belong to specified group'}, status.HTTP_400_BAD_REQUEST
@@ -92,19 +94,19 @@ def get_all_groups():
     """
     Request: empty
 
-    Response: {"groups" : <objlist>}
+    Response: {"groups" : [<obj>]}
     """
-    return {'groups': db.get_all_groups()}, status.HTTP_200_OK
+    return _to_json({'groups': [GroupView(g) for g in db.get_all_groups()]}), status.HTTP_200_OK
 
-@group.route('/groups/mine', methods=['POST'])
+@group.route('/groups/mine')
 def get_user_groups():
     """
-    Request: {"user_id" : <id>}
+    Parmas: "user_id" = <id>
 
-    Response: {"groups" : <objlist>}
+    Response: {"groups" : [<obj>]}
     """
-    if 'user_id' not in request.json:
+    if 'user_id' not in request.args:
         return {'no_user': 'User id missing from request'}, status.HTTP_400_BAD_REQUEST
     
-    return {'groups': db.get_groups_with_user(request.json['user'])}, status.HTTP_200_OK
+    return _to_json({'groups': [GroupView(g) for g in db.get_groups_with_user(request.args['user'])]}), status.HTTP_200_OK
 

@@ -54,9 +54,9 @@ def remove_user_from_group(user_id, group):
 def get_all_groups():
     groups = db.groups
     group_list = groups.find()
-    return [Model.Group(g).__dict__ for g in group_list]
+    return [Model.Group(g) for g in group_list]
 
 def get_groups_with_user(user_id):
     groups = db.groups
     user_groups = groups.aggregate({"$match": {"$in": [user_id, "$members"]}})
-    return [Model.Group(g).__dict__ for g in user_groups]
+    return [Model.Group(g) for g in user_groups]

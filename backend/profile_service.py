@@ -1,41 +1,45 @@
-import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
-
-from flask import Blueprint, jsonify, request
-from flask_api import status
-
 from Model import User
+from ViewModel import ViewEncoder, UserView
+
+from flask import Blueprint, request
+from flask_api import status
+import json
+import os, sys
 
 profile = Blueprint('profile', __name__)
 
+def _to_json(view):
+    return json.dumps(view, cls=ViewEncoder)
+
 @profile.route('/profile')
-def getProfile():
+def get_profile():
     """
-    Request: {"email" : <value>}
+    Params: email = <value>
 
     Response: {"user" : <obj>}
     """
-    if 'email' not in request.json:
+    if 'email' not in request.args:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
-    return {'user': db.get_user_by_email(request.json['email']).__dict__}
+    return _to_json({'user': UserView(db.get_user_by_email(request.args['email']))})
 
-@profile.route('/login', methods=['POST'])
-def processLogin():
+@profile.route('/login')
+def process_login():
     """
-    Request: {"email" : <value>}
+    Params: email = <value>
 
     Response: {"newUser" : <bool>, "user": <obj>}
     """
-    if 'email' not in request.json:
+    if 'email' not in request.args:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
-    user = db.get_user_by_email(request.json['email'])
+    user = db.get_user_by_email(request.args['email'])
     if user:
-        return {'newUser': False, 'user': user.__dict__}
+        return _to_json({'newUser': False, 'user': UserView(user)})
     else:
-        return {'newUser': True, 'user': None}
+        return _to_json({'newUser': True, 'user': None})
 
 @profile.route('/addUser', methods=['POST'])
 def add_user():

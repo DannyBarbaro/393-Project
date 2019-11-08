@@ -1,77 +1,95 @@
-class Block(object):
+class Block:
 
-    def __init__(self, db_obj):
-        if 'time' in db_obj:
-            self.time = db_obj['time']
-        if 'seat' in db_obj:
-            self.seat = db_obj['seat']
+    def __init__(self, source_obj):
+        if 'time' in source_obj:
+            self.time = source_obj['time']
+        if 'seat' in source_obj:
+            self.seat = source_obj['seat']
 
-class Event(object):
+class Event:
 
-    def __init__(self, db_obj):
-        if 'id' in db_obj:
-            self.id = db_obj['id']
-        if 'time' in db_obj:
-            self.start_time = db_obj['time']
-        if 'team1' in db_obj and 'team2' in db_obj:
-            self.participants = [db_obj['team1'], db_obj['team2']]
-        if 'location' in db_obj:
-            self.location = db_obj['location']
-        if 'event_type' in db_obj:
-            self.event_type = db_obj['event_type']
+    def __init__(self, source_obj):
+        if 'id' in source_obj:
+            self.id = source_obj['id']
+        if 'time' in source_obj:
+            self.start_time = source_obj['time']
+        if 'team1' in source_obj and 'team2' in source_obj:
+            self.participants = [source_obj['team1'], source_obj['team2']]
+        if 'location' in source_obj:
+            self.location = source_obj['location']
+        if 'event_type' in source_obj:
+            self.event_type = source_obj['event_type']
+        if 'eventType' in source_obj:
+            self.event_type = source_obj['eventType']
 
-class GroupSchedule(object):
+class GroupSchedule:
 
-    def __init__(self, db_obj):
-        if 'id' in db_obj:
-            self.id = db_obj['id_num']
-        if 'user_schedules' in db_obj:
-            self.user_schedules = db_obj['user_schedules']
-        if 'group_num' in db_obj:
-            self.group_num = db_obj['group_num']
+    def __init__(self, source_obj):
+        if 'id' in source_obj:
+            self.id = source_obj['id_num']
+        if 'user_schedules' in source_obj:
+            self.user_schedules = source_obj['user_schedules']
+        if 'userSchedules' in source_obj:
+            self.user_schedules = source_obj['userSchedules']
+        if 'group_num' in source_obj:
+            self.group_num = source_obj['group_num']
+        if 'groupNum' in source_obj:
+            self.group_num = source_obj['groupNum']
 
-class Group(object):
+class Group:
 
-    def __init__(self, db_obj):
-        if 'id' in db_obj:
-            self.id = db_obj['id']
-        if 'name' in db_obj:
-            self.name = db_obj['name']
-        if 'members' in db_obj:
-            self.members = db_obj['members']
-        if 'event' in db_obj:
-            self.event = db_obj['event']
-        if 'visibility' in db_obj:
-            self.visibility = db_obj['visibility']
-        if 'owner' in db_obj:
-            self.owner = db_obj['owner']
+    def __init__(self, source_obj):
+        if 'id' in source_obj:
+            self.id = source_obj['id']
+        if 'name' in source_obj:
+            self.name = source_obj['name']
+        if 'members' in source_obj:
+            self.members = source_obj['members']
+        if 'event' in source_obj:
+            self.event = source_obj['event']
+        if 'visibility' in source_obj:
+            self.visibility = source_obj['visibility']
+        if 'owner' in source_obj:
+            self.owner = source_obj['owner']
 
-class UserSchedule(object):
+class UserSchedule:
 
-    def __init__(self, db_obj):
-        if 'id' in db_obj:
-            self.id = db_obj['id']
-        if 'time_blocks' in db_obj:
-            self.time_blocks = db_obj['time_blocks']
-        if 'owner' in db_obj:
-            self.owner = db_obj['owner']
+    def __init__(self, source_obj):
+        if 'id' in source_obj:
+            self.id = source_obj['id']
+        if 'time_blocks' in source_obj:
+            self.time_blocks = source_obj['time_blocks']
+        if 'timeBlocks' in source_obj:
+            self.time_blocks = source_obj['timeBlocks']
+        if 'owner' in source_obj:
+            self.owner = source_obj['owner']
 
-class User(object):
+class User:
 
-    def __init__(self, db_obj):
-        if 'id' in db_obj:
-            self.id = db_obj['id']
-        if 'email' in db_obj:
-            self.email = db_obj['email']
-        if 'rating_history' in db_obj:
-            self.rating_history = db_obj['rating_history']
-        if 'favorite_teams' in db_obj:
-            self.favorite_teams = db_obj['favorite_teams']
-        if 'group_history' in db_obj:
-            self.group_history = db_obj['group_history']
-        if 'name' in db_obj:
-            self.name = db_obj['name']
-        if 'active_groups' in db_obj:
-            self.active_groups = db_obj['active_groups']
-        if 'card_num' in db_obj:
-            self.card_num = db_obj['card_num']
+    def __init__(self, source_obj):
+        if 'id' in source_obj:
+            self.id = source_obj['id']
+        if 'email' in source_obj:
+            self.email = source_obj['email']
+        if 'rating_history' in source_obj:
+            self.rating_history = source_obj['rating_history']
+        if 'ratingHistory' in source_obj:
+            self.rating_history = source_obj['ratingHistory']
+        if 'favorite_teams' in source_obj:
+            self.favorite_teams = source_obj['favorite_teams']
+        if 'favoriteTeams' in source_obj:
+            self.favorite_teams = source_obj['favoriteTeams']
+        if 'group_history' in source_obj:
+            self.group_history = source_obj['group_history']
+        if 'groupHistory' in source_obj:
+            self.group_history = source_obj['groupHistory']
+        if 'name' in source_obj:
+            self.name = source_obj['name']
+        if 'active_groups' in source_obj:
+            self.active_groups = source_obj['active_groups']
+        if 'activeGroups' in source_obj:
+            self.active_groups = source_obj['activeGroups']
+        if 'card_num' in source_obj:
+            self.card_num = source_obj['card_num']
+        if 'cardNum' in source_obj:
+            self.card_num = source_obj['cardNum']
