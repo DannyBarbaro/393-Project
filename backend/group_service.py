@@ -1,18 +1,14 @@
 from Model import Group
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
-from ViewModel import ViewEncoder, GroupView
+from ViewModel import jsonify, GroupView
 
 from flask_api import status
 from flask import Blueprint, request
-import json
 import os
 import sys
 
 group = Blueprint('group', __name__)
-
-def _to_json(view):
-    return json.dumps(view, cls=ViewEncoder)
 
 @group.route('/createGroup', methods=['POST'])
 def create_group():
@@ -44,9 +40,9 @@ def get_group(id):
     """
     group = db.get_group_by_id(id)
     if group:
-        return _to_json({'group': GroupView(group)})
+        return jsonify({'group': GroupView(group)})
     else:
-        return _to_json({'group': None})
+        return jsonfiy({'group': None})
 
 @group.route('/groups/join', methods=['POST'])
 def join_group():
@@ -96,7 +92,7 @@ def get_all_groups():
 
     Response: {"groups" : [<obj>]}
     """
-    return _to_json({'groups': [GroupView(g) for g in db.get_all_groups()]}), status.HTTP_200_OK
+    return jsonify({'groups': [GroupView(g) for g in db.get_all_groups()]}), status.HTTP_200_OK
 
 @group.route('/groups/mine')
 def get_user_groups():
@@ -108,5 +104,5 @@ def get_user_groups():
     if 'user_id' not in request.args:
         return {'no_user': 'User id missing from request'}, status.HTTP_400_BAD_REQUEST
     
-    return _to_json({'groups': [GroupView(g) for g in db.get_groups_with_user(request.args['user'])]}), status.HTTP_200_OK
+    return jsonify({'groups': [GroupView(g) for g in db.get_groups_with_user(request.args['user'])]}), status.HTTP_200_OK
 

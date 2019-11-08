@@ -1,5 +1,8 @@
 import json
 
+def jsonify(view):
+    return json.dumps(view, cls=ViewEncoder)
+
 class ViewEncoder(json.JSONEncoder):
     def default(self, view):
         return view.__dict__
