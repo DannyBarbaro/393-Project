@@ -1,3 +1,4 @@
+import os, sys
 from Model import Group
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
@@ -5,8 +6,6 @@ from ViewModel import jsonify, GroupView
 
 from flask_api import status
 from flask import Blueprint, request
-import os
-import sys
 
 group = Blueprint('group', __name__)
 

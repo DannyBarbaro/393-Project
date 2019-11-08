@@ -1,3 +1,4 @@
+import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
 from Model import User
@@ -5,7 +6,6 @@ from ViewModel import jsonify, UserView
 
 from flask import Blueprint, request
 from flask_api import status
-import os, sys
 
 profile = Blueprint('profile', __name__)
 
