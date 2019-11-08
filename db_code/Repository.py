@@ -28,12 +28,12 @@ def update_user(new_user):
 def get_group_by_id(group_id):
     groups = db.groups
     result = groups.find_one({'id': group_id})
-    return Model.Group(result)
+    return Model.Group(result) if result else None
 
 def get_group_by_owner(owner_id, event_id):
     groups = db.groups
     result = groups.find_one({'owner': owner_id, 'event': event_id})
-    return Model.Group(result)
+    return Model.Group(result) if result else None
 
 def add_group(group):
     groups = db.groups

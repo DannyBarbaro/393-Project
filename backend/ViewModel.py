@@ -1,11 +1,17 @@
 import json
+from bson import ObjectId
 
 def jsonify(view):
     return json.dumps(view, cls=ViewEncoder)
 
 class ViewEncoder(json.JSONEncoder):
     def default(self, view):
-        return view.__dict__
+        if hasattr(view, "__dict__"):
+            return view.__dict__
+        elif isinstance(view, ObjectId):
+            return str(view)
+        else:
+            return dict(view)
 
 class BlockView:
 
