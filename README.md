@@ -20,3 +20,5 @@ Frontend:
   - React router
   - honestly just do npm install
   - npm install react-google-login
+  - npm install @material-ui/core
+  - npm install @material-ui/icons
