@@ -29,10 +29,11 @@ export default class EditUserInfo extends React.Component {
             method: "POST",
             body: JSON.stringify({user: this.state})
         }
+        let url;
         if (this.state.isNew) {
-            var url = new URL('addUser', apiBaseURL);
+            url = new URL('addUser', apiBaseURL);
         } else {
-            var url = new URL('updateUser', apiBaseURL);
+            url = new URL('updateUser', apiBaseURL);
         }
         fetch(url, options)
             .then(this.processCallback());
