@@ -1,6 +1,7 @@
 import configparser
 from flask import Flask
 from flask_cors import CORS
+
 import profile_service as profile
 import group_service as groups
 # import blueprint files

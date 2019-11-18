@@ -13,14 +13,13 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      auth: false,
-      token: '',
+      userID: null,
     }
-    this.updateAuth = this.updateAuth.bind(this);
+    this.switchUser = this.switchUser.bind(this);
   }
 
-  updateAuth(newAuth, newToken) {
-    this.setState({auth: newAuth, token: newToken});
+  switchUser(id) {
+    this.setState({userID: id});
   }
 
   render() {
@@ -54,7 +53,7 @@ export default class App extends React.Component {
               <Groups user={{name:"Josh", email:"e@mail.com", cardNum:"1"}}/>
             </Route>
             <Route path="/">
-              <Home updater={this.updateAuth}/>
+              <Home updater={this.switchUser}/>
             </Route>
           </Switch>
       </Router>

@@ -7,13 +7,13 @@ import HomeFooter from './components/homeFooter';
 export default class Home extends React.Component {
     constructor(props) {
         super(props);
-        this.updateAuth = props.updater;
+        this.switchUser = props.updater;
     }
 
     render() {
         return (
             <div>
-                <HomeTopBar updater={this.updateAuth}/>
+                <HomeTopBar updater={this.switchUser}/>
                 <HomePhotoDisplay/>
                 <HomeBenefits/>
                 <HomeFooter/>

@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { Redirect } from 'react-router-dom'
 
 import { apiBaseURL, googleClientID } from '../../App.js'
 
@@ -24,10 +25,13 @@ class HomeTopBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      failed: false
+      failed: false,
+      newUser: false,
+      userId: null,
     }
+    this.updater = props.updater;
     this.onloginFail = this.onloginFail.bind(this);
-    this.updateAuth = props.updater;
+    this.onLoginSuccess = this.onLoginSuccess.bind(this);
   }
 
   onloginFail() {
@@ -36,16 +40,25 @@ class HomeTopBar extends Component {
 
   onLoginSuccess(resp) {
     let url = new URL('login', apiBaseURL);
-    url.search = new URLSearchParams({token: resp.accessToken}).toString();
+    url.search = new URLSearchParams({email: resp.profileObj.email}).toString();
     fetch(url)
-      .then(resp => resp.json())
-      .then(resp => {
-        //do things for logins here
-      });
+    .then(resp => resp.json())
+    .then(resp => {
+      console.log(resp)
+      if (resp.newUser) {
+        this.setState({newUser: true});
+      } else {
+        this.setState({userId: resp.userId});
+        this.updater(resp.userId);
+      }
+    });
   }
 
   render() {
     const { classes } = this.props;
+    if (this.state.newUser) {
+      return <Redirect to='/profile' />
+    }
     return(
       <AppBar position="sticky">
         <Toolbar>
@@ -59,8 +72,8 @@ class HomeTopBar extends Component {
           <GoogleLogin
             clientId={googleClientID}
             buttonText="Login with Google"
-            onSuccess={resp => console.log(resp)}
-            onFailure={resp => console.log(resp)}
+            onSuccess={this.onLoginSuccess}
+            onFailure={this.onloginFail}
             cookiePolicy={'single_host_origin'}
           />
           <Button color="secondary">Sign Up</Button>

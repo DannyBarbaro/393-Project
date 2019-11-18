@@ -26,16 +26,16 @@ def process_login():
     """
     Params: email = <value>
 
-    Response: {"newUser" : <bool>, "user": <obj>}
+    Response: {"newUser" : <bool>, "userId": <obj>}
     """
     if 'email' not in request.args:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
     user = db.get_user_by_email(request.args['email'])
     if user:
-        return jsonify({'newUser': False, 'user': UserView(user)})
+        return jsonify({'newUser': False, 'userId': UserView(user).id})
     else:
-        return jsonify({'newUser': True, 'user': None})
+        return jsonify({'newUser': True, 'userId': None})
 
 @profile.route('/addUser', methods=['POST'])
 def add_user():
