@@ -14,6 +14,10 @@ Python:
 
 Testing:
   - pip install pytest
+  - pip install pytest-flask
+  - pip install pytest-mock
+
+  To run tests from root dir: python3 -m pytest unit_tests/
 
 Frontend:
   - React.js

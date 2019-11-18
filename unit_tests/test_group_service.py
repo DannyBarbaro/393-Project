@@ -9,14 +9,15 @@ import backend.group_service as service
 import pytest
 
 @pytest.fixture
+def app():
+        return create_app()
+
+@pytest.fixture
 def mock_add_group(mocker):
         return mocker.patch("Repository.add_group", return_value=None)
 
 class TestCreateGroup_NewGroup(object):
 
-    @pytest.fixture
-    def app(self):
-        return create_app()
 
     @pytest.fixture
     def mock_get_group(self, mocker):
@@ -112,9 +113,10 @@ class TestCreateGroup_AlreadyExists(object):
         assert response.json['group_exists'] == 'This group has been created already'
         assert response.status_code == 400
 
-
-def test_get_group():
-    pass
+class TestGetGroup_Exists(object):
+    
+    def test_get_group(self):
+        pass
 
 
 def test_join_group():
