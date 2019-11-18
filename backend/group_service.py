@@ -44,7 +44,7 @@ def get_group():
     if group:
         return jsonify({'group': GroupView(group)})
     else:
-        return jsonfiy({'group': None})
+        return jsonify({'group': None})
 
 @group.route('/groups/join', methods=['POST'])
 def join_group():
