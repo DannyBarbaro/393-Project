@@ -288,9 +288,19 @@ class TestLeaveGroup_NoSuchGroup(object):
         assert response.json['group_not_found'] == 'Requested group could not be found'
         assert response.status_code == 400
 
-def test_get_all_groups():
-    pass
+class TestGetAllGroups(object):
+    url = '/groups/list'
 
+    @pytest.fixture
+    def mock_get_all_groups(self, mocker):
+        groups = [Group({'id': 4}), Group({'id': 16})]
+        return mocker.patch("Repository.get_all_groups", return_value=groups)
+
+    def test_success(self, client, mock_get_all_groups):
+        response = client.get(self.url)
+
+        assert b'"groups": [{"id": 4}, {"id": 16}]' in response.data
+        assert response.status_code == 200
 
 def test_get_user_groups():
     pass
