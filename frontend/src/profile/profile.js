@@ -1,8 +1,9 @@
-import React from "react";
-import EditUserInfo from "./edit-user-info";
-import {Link} from "react-router-dom";
+import React, {Component} from 'react';
+import EditUserInfo from './edit-user-info';
+import {Link} from 'react-router-dom';
+import MenuBar from '../global-components/menuBar';
 
-export default class Profile extends React.Component {
+export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,6 +21,7 @@ export default class Profile extends React.Component {
         return (
             <div>
                 <h1>This is the profile page</h1>
+                <MenuBar pageName={'Profile'}/>
                 {!this.state.editing &&
                     <div>
                         <p>Name: {this.state.user.name}</p>
