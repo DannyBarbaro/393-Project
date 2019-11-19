@@ -9,8 +9,10 @@ class Block:
 class Event:
 
     def __init__(self, source_obj):
+        if '_id' in source_obj:
+            self._id = source_obj['_id']
         if 'id' in source_obj:
-            self.id = source_obj['id']
+            self._id = source_obj['id']
         if 'time' in source_obj:
             self.start_time = source_obj['time']
         if 'team1' in source_obj and 'team2' in source_obj:
@@ -25,8 +27,10 @@ class Event:
 class GroupSchedule:
 
     def __init__(self, source_obj):
+        if '_id' in source_obj:
+            self._id = source_obj['id']
         if 'id' in source_obj:
-            self.id = source_obj['id_num']
+            self._id = source_obj['id']
         if 'user_schedules' in source_obj:
             self.user_schedules = source_obj['user_schedules']
         if 'userSchedules' in source_obj:
@@ -39,8 +43,10 @@ class GroupSchedule:
 class Group:
 
     def __init__(self, source_obj):
+        if '_id' in source_obj:
+            self._id = source_obj['_id']
         if 'id' in source_obj:
-            self.id = source_obj['id']
+            self._id = source_obj['id']
         if 'name' in source_obj:
             self.name = source_obj['name']
         if 'members' in source_obj:
@@ -55,8 +61,10 @@ class Group:
 class UserSchedule:
 
     def __init__(self, source_obj):
+        if '_id' in source_obj:
+            self._id = source_obj['_id']
         if 'id' in source_obj:
-            self.id = source_obj['id']
+            self._id = source_obj['id']
         if 'time_blocks' in source_obj:
             self.time_blocks = source_obj['time_blocks']
         if 'timeBlocks' in source_obj:
@@ -67,8 +75,10 @@ class UserSchedule:
 class User:
 
     def __init__(self, source_obj):
+        if '_id' in source_obj:
+            self._id = source_obj['_id']
         if 'id' in source_obj:
-            self.id = source_obj['id']
+            self._id = source_obj['id']
         if 'email' in source_obj:
             self.email = source_obj['email']
         if 'rating_history' in source_obj:

@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'backend'))
@@ -14,7 +15,7 @@ def get_user_by_email(email):
 
 def get_user_by_id(user_id):
     users = db.users
-    result = users.find_one({'id': user_id})
+    result = users.find_one({'_id': ObjectId(user_id)})
     return Model.User(result) if result else None
 
 def add_user(user):

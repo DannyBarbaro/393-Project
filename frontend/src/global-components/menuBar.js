@@ -63,14 +63,17 @@ class MenuBar extends Component {
             onClose={this.handleMenuClose}
             TransitionComponent={Fade}>
               <MenuItem onClick={this.handleMenuClose}
-                containerElement={<Link to="/profile" />}
-                primaryText="Profile"/>
-                {/* leftIcon={
-                  <FontIcon className="material-icons">people</FontIcon>
-                }/> */}
- 
-              <MenuItem onClick={this.handleMenuClose}>Search</MenuItem>
-              <MenuItem onClick={this.handleMenuClose}>My Groups</MenuItem>
+                containerElement={<Link to="/profile" />}>
+                Profile
+              </MenuItem>
+              <MenuItem onClick={this.handleMenuClose}
+                containerElement={<Link to="/profile" />}>
+                Search
+              </MenuItem>
+              <MenuItem onClick={this.handleMenuClose}
+                containerElement={<Link to="/profile" />}>
+                My Groups
+              </MenuItem>
             </Menu>
           </IconButton>
           <Typography variant="h5" className={classes.title}>

@@ -1,6 +1,7 @@
 import configparser
 from flask import Flask
 from flask_cors import CORS
+
 import profile_service as profile
 import group_service as groups
 # import blueprint files
@@ -11,12 +12,17 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 # Set up application serverGET.
-app = Flask(__name__)
-CORS(app)
+def create_app():
+    app = Flask(__name__)
+    CORS(app)
 
-# register all blue prints
-app.register_blueprint(profile.profile)
-app.register_blueprint(groups.group)
+    app.register_blueprint(profile.profile)
+    app.register_blueprint(groups.group)
+
+    return app
+
+
+app = create_app()
 
 if __name__ == '__main__':
     app.run(**config['app'])

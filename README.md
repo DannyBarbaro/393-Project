@@ -10,10 +10,14 @@ The project is currently supporting MongoDB Community edition 4.2
 # Dependencies
 
 Python:
-  - pip install pymongo, flask, flask_api, flask_cors
+  - pip install pymongo flask flask_api flask_cors
 
 Testing:
   - pip install pytest
+  - pip install pytest-flask
+  - pip install pytest-mock
+
+  To run tests from root dir: python3 -m pytest unit_tests/
 
 Frontend:
   - React.js

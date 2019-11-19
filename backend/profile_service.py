@@ -12,37 +12,38 @@ profile = Blueprint('profile', __name__)
 @profile.route('/profile')
 def get_profile():
     """
-    Params: email = <value>
+    Params: userId = <value>
 
     Response: {"user" : <obj>}
     """
-    if 'email' not in request.args:
-        return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
+    if 'userId' not in request.args:
+        return {'invalid_key': 'Can only search for users by ID'}, status.HTTP_400_BAD_REQUEST
 
-    return jsonify({'user': UserView(db.get_user_by_email(request.args['email']))})
+    return jsonify({'user': UserView(db.get_user_by_id(request.args['userId']))})
 
 @profile.route('/login')
 def process_login():
     """
     Params: email = <value>
 
-    Response: {"newUser" : <bool>, "user": <obj>}
+    Response: {"newUser" : <bool>, "userId": <obj>}
     """
     if 'email' not in request.args:
         return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
 
     user = db.get_user_by_email(request.args['email'])
     if user:
-        return jsonify({'newUser': False, 'user': UserView(user)})
+        return jsonify({'newUser': False, 'userId': UserView(user).id})
     else:
-        return jsonify({'newUser': True, 'user': None})
+
+        return jsonify({'newUser': True, 'userId': None})
 
 @profile.route('/addUser', methods=['POST'])
 def add_user():
     """
     Request: {"user" : <obj>}
 
-    Response: empty
+    Response: {userId: <str>}
     """
     if 'user' not in request.json:
         return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
@@ -54,7 +55,8 @@ def add_user():
         return {'already_exists': 'This user already exists'}, status.HTTP_400_BAD_REQUEST
     
     db.add_user(new_user)
-    return "", status.HTTP_200_OK
+    new_user = db.get_user_by_email(new_user.email)
+    return jsonify({'userId': new_user._id})
 
 @profile.route('/updateUser', methods=['POST'])
 def update_user():
@@ -65,8 +67,8 @@ def update_user():
     """
     if 'user' not in request.json:
         return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
-    if 'email' not in request.json['user']:
-        return {'invalid_user': 'User must have an email'}, status.HTTP_400_BAD_REQUEST
+    if 'id' not in request.json['user']:
+        return {'invalid_user': 'User must have an id'}, status.HTTP_400_BAD_REQUEST
 
     db.update_user(User(request.json['user']))
     return "", status.HTTP_200_OK
