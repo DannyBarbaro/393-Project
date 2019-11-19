@@ -8,43 +8,31 @@ import Groups from "./groups/groups";
 import Profile from "./profile/profile";
 import Home from "./home/home";
 import Search from "./search/search";
+import NewUser from "./profile/newUser";
+import UserContext from './UserContext'
 
 export default class App extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
+    this.changeUserId = this.changeUserId.bind(this);
     this.state = {
-      userID: null,
+      userId: null,
+      changeUserId: this.changeUserId,
     }
-    this.switchUser = this.switchUser.bind(this);
   }
 
-  switchUser(id) {
-    this.setState({userID: id});
+  changeUserId(newId) {
+    this.setState({userId: newId})
   }
 
   render() {
     return (
-      <Router>
-          {/* <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/profile">Profile</Link>
-              </li>
-              <li>
-                <Link to="/search">Search</Link>
-              </li>
-              <li>
-                <Link to="/groups">My Groups</Link>
-              </li>
-            </ul>
-          </nav> */}
-  
+      <UserContext.Provider value={this.state}>
+        <Router>
           <Switch>
+            <Route path="/profile/new" component={NewUser} />
             <Route path="/profile">
-              <Profile user={{name:"Josh", email:"e@mail.com", cardNum:"1"}}/>
+              <Profile />
             </Route>
             <Route path="/search">
               <Search />
@@ -53,10 +41,11 @@ export default class App extends React.Component {
               <Groups user={{name:"Josh", email:"e@mail.com", cardNum:"1"}}/>
             </Route>
             <Route path="/">
-              <Home updater={this.switchUser}/>
+              <Home />
             </Route>
           </Switch>
-      </Router>
+        </Router>
+      </UserContext.Provider>
     );
   }
   

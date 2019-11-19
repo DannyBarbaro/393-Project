@@ -1,16 +1,28 @@
 import React from "react";
 import {apiBaseURL} from "../App";
+import UserContext from '../UserContext'
 
-export default class EditUserInfo extends React.Component {
+export default class UserInfoForm extends React.Component {
+    static contextType = UserContext
+
     constructor(props) {
         super(props);
-        this.state = {
-            email: props.user.email,
-            name: props.user.name,
-            cardNum: props.user.cardNum,
-            isNew: props.isNewUser,
-            callback: props.callback
-        };
+        if (props.newUser) {
+            this.state = {
+                email: props.user.email,
+                isNew: true,
+                callback: props.callback,
+            }
+        } else {
+            this.state = {
+                email: props.user.email,
+                name: props.user.name,
+                cardNum: props.user.cardNum,
+                isNew: false,
+                callback: props.callback
+            };
+        }
+
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.processCallback = this.processCallback.bind(this);
@@ -36,7 +48,13 @@ export default class EditUserInfo extends React.Component {
             url = new URL('updateUser', apiBaseURL);
         }
         fetch(url, options)
-            .then(this.processCallback());
+        .then(resp => resp.json())
+        .then(resp => {
+            if (!!resp.userId) {
+                this.context.changeUserId(resp.userId)
+            }
+            this.processCallback()
+        });
         e.preventDefault()
     }
 

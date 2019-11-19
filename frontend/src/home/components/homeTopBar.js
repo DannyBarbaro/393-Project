@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom'
 
 import { apiBaseURL, googleClientID } from '../../App.js'
+import UserContext from '../../UserContext'
 
 const styles = theme => ({
   root: {
@@ -22,6 +23,8 @@ const styles = theme => ({
 });
 
 class HomeTopBar extends Component {
+  static contextType = UserContext
+
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +32,6 @@ class HomeTopBar extends Component {
       newUser: false,
       userId: null,
     }
-    this.updater = props.updater;
     this.onloginFail = this.onloginFail.bind(this);
     this.onLoginSuccess = this.onLoginSuccess.bind(this);
   }
@@ -41,15 +43,15 @@ class HomeTopBar extends Component {
   onLoginSuccess(resp) {
     let url = new URL('login', apiBaseURL);
     url.search = new URLSearchParams({email: resp.profileObj.email}).toString();
+    this.userEmail = resp.profileObj.email;
     fetch(url)
     .then(resp => resp.json())
     .then(resp => {
-      console.log(resp)
       if (resp.newUser) {
         this.setState({newUser: true});
       } else {
         this.setState({userId: resp.userId});
-        this.updater(resp.userId);
+        this.context.changeUserId(resp.userId);
       }
     });
   }
@@ -57,7 +59,10 @@ class HomeTopBar extends Component {
   render() {
     const { classes } = this.props;
     if (this.state.newUser) {
-      return <Redirect to='/profile' />
+      return <Redirect to={{
+        pathname: '/profile/new',
+        state: {email: this.userEmail}
+       }} />
     }
     return(
       <AppBar position="sticky">
@@ -66,7 +71,7 @@ class HomeTopBar extends Component {
             SeatSwap
           </Typography>
           {this.state.failed &&
-          <Typography variant="p" className={classes.fail}>
+          <Typography variant="body1" className={classes.fail}>
             Authentication Failed
           </Typography>}
           <GoogleLogin
