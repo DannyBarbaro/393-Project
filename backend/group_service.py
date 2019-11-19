@@ -68,22 +68,22 @@ def join_group():
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
 
-@group.route('/groups/leave')
+@group.route('/groups/leave', methods=['POST'])
 def leave_group():
     """
     Params: groupId = <id>, userId = <id>
 
     Response: empty
     """
-    if 'groupId' not in request.args:
+    if 'groupId' not in request.json:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
-    if 'userId' not in request.args:
-        return {'no_user': 'Leaving user missing from request'}, status.HTTP_400_BAD_REQUEST
+    if 'userId' not in request.json:
+        return {'no_user_id': 'Leaving user id missing from request'}, status.HTTP_400_BAD_REQUEST
 
-    group = db.get_group_by_id(request.args['groupId'])
+    group = db.get_group_by_id(request.json['groupId'])
     if group:
-        if request.args['userId'] in group.members:
-            db.remove_user_from_group(request.args['userId'], group)
+        if request.json['userId'] in group.members:
+            db.remove_user_from_group(request.json['userId'], group)
             return "", status.HTTP_200_OK
         else:
             return {'user_not_in_group': 'User does not belong to specified group'}, status.HTTP_400_BAD_REQUEST
