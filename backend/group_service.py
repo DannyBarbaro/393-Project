@@ -38,7 +38,7 @@ def get_group():
     Response: {"group" : <obj>}
     """
     if 'id' not in request.args:
-        return {'no_user': 'user id missing from request'}, status.HTTP_400_BAD_REQUEST 
+        return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST 
 
     group = db.get_group_by_id(request.args['id'])
     if group:
@@ -56,12 +56,15 @@ def join_group():
     if 'groupId' not in request.json:
         return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
     if 'userId' not in request.json:
-        return {'no_user': 'Joining user id missing from request'}, status.HTTP_400_BAD_REQUEST
+        return {'no_user_id': 'Joining user id missing from request'}, status.HTTP_400_BAD_REQUEST
 
     group = db.get_group_by_id(request.json['groupId'])
     if group:
-        db.add_user_to_group(request.json['userId'], group)
-        return "", status.HTTP_200_OK
+        if request.json['userId'] not in group.members:
+            db.add_user_to_group(request.json['userId'], group)
+            return "", status.HTTP_200_OK
+        else:
+            return {'already_member': 'User is already a member of this group'}, status.HTTP_400_BAD_REQUEST
     else:
         return {'group_not_found': 'Requested group could not be found'}, status.HTTP_400_BAD_REQUEST
 
