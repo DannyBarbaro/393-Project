@@ -1,15 +1,34 @@
 import React from "react";
-import EditUserInfo from "./edit-user-info";
-import {Link} from "react-router-dom";
+import UserInfoForm from "./userInfoForm";
+import {Link, Redirect} from "react-router-dom";
+import { apiBaseURL } from "../App";
+import UserContext from '../UserContext'
 
 export default class Profile extends React.Component {
+    static contextType = UserContext
+
     constructor(props) {
         super(props);
         this.state = {
             editing: false,
-            user: props.user
+            user: {},
+            invalid: false,
         };
         this.editButton = this.editButton.bind(this);
+    }
+
+    componentDidMount() {
+        let url = new URL('profile', apiBaseURL);
+        url.search = new URLSearchParams({userId: this.context.userId}).toString();
+        fetch(url)
+        .then(resp => resp.json())
+        .then(resp => {
+            if (!!resp) {
+                this.setState({user: resp.user});
+            } else {
+                this.setState({invalid: true});
+            }
+        });
     }
 
     editButton(e) {
@@ -17,6 +36,9 @@ export default class Profile extends React.Component {
     }
 
     render() {
+        if (this.state.invalid) {
+            return <Redirect to='/home' />
+        }
         return (
             <div>
                 <h1>This is the profile page</h1>
@@ -29,11 +51,10 @@ export default class Profile extends React.Component {
                     </div>
                 }
                 {this.state.editing &&
-                    <EditUserInfo user={this.state.user} isNewUser={false}
-                                  callback={new_user => this.setState({editing: false, user: new_user})} />
+                    <UserInfoForm user={this.state.user}
+                        callback={new_user => this.setState({editing: false, user: new_user})} />
                 }
                 <Link to="/groups">My Groups</Link>
-
             </div>
         );
     }
