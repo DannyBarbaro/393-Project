@@ -50,8 +50,8 @@ class HomeTopBar extends Component {
       if (resp.newUser) {
         this.setState({newUser: true});
       } else {
-        this.setState({userId: resp.userId});
         this.context.changeUserId(resp.userId);
+        this.setState({userId: resp.userId});
       }
     });
   }
@@ -64,6 +64,10 @@ class HomeTopBar extends Component {
         state: {email: this.userEmail}
        }} />
     }
+    if (!!this.state.userId) {
+      return <Redirect to='/profile' />
+    }
+
     return(
       <AppBar position="sticky">
         <Toolbar>

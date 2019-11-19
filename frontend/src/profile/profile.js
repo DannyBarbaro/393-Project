@@ -28,7 +28,6 @@ export default class Profile extends React.Component {
             } else {
                 this.setState({invalid: true});
             }
-            console.log(this.state)
         });
     }
 

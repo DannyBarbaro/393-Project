@@ -74,7 +74,7 @@ export default class UserInfoForm extends React.Component {
                 <br />
                 <label>
                     Email Address
-                    <input name="email" onChange={this.onChange} value={this.state.email} />
+                    <input disabled name="email" onChange={this.onChange} value={this.state.email} />
                 </label>
                 <br />
                 <label>
