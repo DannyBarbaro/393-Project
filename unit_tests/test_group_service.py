@@ -299,8 +299,28 @@ class TestGetAllGroups(object):
     def test_success(self, client, mock_get_all_groups):
         response = client.get(self.url)
 
+        mock_get_all_groups.assert_called()
         assert b'"groups": [{"id": 4}, {"id": 16}]' in response.data
         assert response.status_code == 200
 
-def test_get_user_groups():
-    pass
+class TestGetUserGroups(object):
+    url = '/groups/mine?userId=23'
+
+    @pytest.fixture
+    def mock_get_groups_with_user(self, mocker):
+        groups = [Group({'id': 18}), Group({'id': 51})]
+        return mocker.patch("Repository.get_groups_with_user", return_value=groups)
+
+    def test_no_user_id(self, client, mock_get_groups_with_user):
+        url = '/groups/mine?disturbed=areyouready'
+        response = client.get(url)
+
+        mock_get_groups_with_user.assert_not_called()
+        assert response.json['no_user'] == 'User id missing from request'
+        assert response.status_code == 400
+
+    def test_success(self, client, mock_get_groups_with_user):
+        response = client.get(self.url)
+
+        mock_get_groups_with_user.assert_called()
+        assert b'"groups": [{"id": 18}, {"id": 51}]' in response.data
