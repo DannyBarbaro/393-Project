@@ -19,7 +19,11 @@ def get_profile():
     if 'userId' not in request.args:
         return {'invalid_key': 'Can only search for users by ID'}, status.HTTP_400_BAD_REQUEST
 
-    return jsonify({'user': UserView(db.get_user_by_id(request.args['userId']))})
+    user = UserView(db.get_user_by_id(request.args['userId']))
+    if user:
+        return jsonify({'user': user})
+    else:
+        return {'no_such_user': 'Could not find user with provided ID'}, status.HTTP_400_BAD_REQUEST
 
 @profile.route('/login')
 def process_login():
