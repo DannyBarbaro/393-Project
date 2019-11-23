@@ -50,14 +50,12 @@ class Profile extends Component {
             <div>
                 <MenuBar pageName={'Profile'}/>
                 {!this.state.editing &&
-                    <div>
-                    <InfoViewer user={this.state.user}/>
-                    <button onClick={this.editButton}>Edit</button>
-                    </div>
+                    <InfoViewer user={this.state.user} edit={this.editButton}/>
                 }
                 {this.state.editing &&
                     <UserInfoForm
                         user={this.state.user}
+                        canceledCallback={_ => this.setState({editing: false})}
                         callback={new_user => this.setState({editing: false, user: new_user})} />
                 }
             </div>

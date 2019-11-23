@@ -81,7 +81,8 @@ class UserInfoForm extends Component {
                 billingState: props.user.billingState,
                 billingZip: props.user.billingZip,
                 isNew: false,
-                callback: props.callback
+                callback: props.callback,
+                cancel: props.canceledCallback,
             };
         }
 
@@ -259,7 +260,7 @@ class UserInfoForm extends Component {
                 </Box>
                 <Box className={classes.containerBox}>
                     { !this.state.isNew &&
-                        <Button variant="contained" color="secondary" className={classes.generalPadding}>
+                        <Button variant="contained" color="secondary" className={classes.generalPadding}  onClick={this.state.cancel}>
                             Cancel
                         </Button>
                     }
