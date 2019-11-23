@@ -74,5 +74,8 @@ def update_user():
     if 'id' not in request.json['user']:
         return {'invalid_user': 'User must have an id'}, status.HTTP_400_BAD_REQUEST
 
-    db.update_user(User(request.json['user']))
-    return "", status.HTTP_200_OK
+    if db.get_user_by_id(request.json['user']['id']):
+        db.update_user(User(request.json['user']))
+        return "", status.HTTP_200_OK
+    else:
+        return {'user_not_found': 'No user with provided ID was found'}, status.HTTP_400_BAD_REQUEST
