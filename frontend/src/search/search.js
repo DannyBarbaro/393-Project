@@ -1,6 +1,7 @@
 import React from "react";
 import {apiBaseURL} from "../App";
 import {Redirect} from "react-router-dom"
+import MenuBar from '../global-components/menuBar';
 
 export default class Search extends React.Component {
     constructor(props) {
@@ -40,7 +41,7 @@ export default class Search extends React.Component {
         }
         return (
             <div>
-                <h1>This is where you can find new groups to join!</h1>
+                <MenuBar pageName={'Search'}/>
                 {this.state.groups &&
                     <div>
                         <h2>Take a look at these here groups!</h2>

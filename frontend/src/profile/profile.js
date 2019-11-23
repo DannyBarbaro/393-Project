@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { apiBaseURL } from "../App";
 import UserContext from '../UserContext';
-import UserInfoForm from "./userInfoForm";
-
-import {Link, Redirect} from 'react-router-dom';
+import UserInfoForm from './userInfoForm';
+import InfoViewer from './infoViewer';
+import { Redirect } from 'react-router-dom';
 import MenuBar from '../global-components/menuBar';
 
-export default class Profile extends Component {
+const styles = theme => ({
+});
+
+class Profile extends Component {
     static contextType = UserContext
 
     constructor(props) {
@@ -41,23 +45,26 @@ export default class Profile extends Component {
         if (this.state.invalid) {
             return <Redirect to='/home' />
         }
+        //const { classes } = this.props;
         return (
             <div>
                 <MenuBar pageName={'Profile'}/>
                 {!this.state.editing &&
-                    <div>
-                        <p>Name: {this.state.user.name}</p>
-                        <p>Email Address: {this.state.user.email}</p>
-                        <p>Credit Card Number (trust us, it's secure): {this.state.user.cardNum}</p>
-                        <button onClick={this.editButton}>Edit</button>
-                    </div>
+                    <InfoViewer user={this.state.user}/>
+                    // <div>
+                    //     <p>Name: {this.state.user.name}</p>
+                    //     <p>Email Address: {this.state.user.email}</p>
+                    //     <p>Credit Card Number (trust us, it's secure): {this.state.user.cardNum}</p>
+                    //     <button onClick={this.editButton}>Edit</button>
+                    // </div>
                 }
                 {this.state.editing &&
-                    <UserInfoForm user={this.state.user}
+                    <UserInfoForm
+                        user={this.state.user}
                         callback={new_user => this.setState({editing: false, user: new_user})} />
                 }
-                <Link to="/groups">My Groups</Link>
             </div>
         );
     }
 }
+export default withStyles(styles, { withTheme: true })(Profile)

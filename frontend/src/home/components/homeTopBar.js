@@ -4,7 +4,6 @@ import { withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom'
 
 import { apiBaseURL, googleClientID } from '../../App.js'
@@ -80,12 +79,10 @@ class HomeTopBar extends Component {
           </Typography>}
           <GoogleLogin
             clientId={googleClientID}
-            buttonText="Login with Google"
+            buttonText="Login"
             onSuccess={this.onLoginSuccess}
             onFailure={this.onloginFail}
-            cookiePolicy={'single_host_origin'}
-          />
-          <Button color="secondary">Sign Up</Button>
+            cookiePolicy={'single_host_origin'}/>
         </Toolbar>
       </AppBar>
     );

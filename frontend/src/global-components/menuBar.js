@@ -35,6 +35,7 @@ class MenuBar extends Component {
       setAnchorEl: null 
     }
     this.handleMenuClick= this.handleMenuClick.bind(this);
+    this.handleMenuClose= this.handleMenuClose.bind(this);
   }
 
   //functions
@@ -45,7 +46,7 @@ class MenuBar extends Component {
   };
 
   handleMenuClose() {
-    //this.setState({ anchorEl: null })
+    this.setState({ anchorEl: null });
   };
 
   render() {
@@ -55,23 +56,20 @@ class MenuBar extends Component {
       <AppBar position="sticky">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton}>
-            <MenuIcon  onClick={this.handleMenuClick}/>
+            <MenuIcon onClick={this.handleMenuClick}/>
             <Menu
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={this.handleMenuClose}
-            TransitionComponent={Fade}>
-              <MenuItem onClick={this.handleMenuClose}
-                containerElement={<Link to="/profile" />}>
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={this.handleMenuClose}
+              TransitionComponent={Fade}>
+              <MenuItem onClick={this.handleMenuClose} component={Link} to="/profile">
                 Profile
               </MenuItem>
-              <MenuItem onClick={this.handleMenuClose}
-                containerElement={<Link to="/profile" />}>
+              <MenuItem onClick={this.handleMenuClose} component={Link} to="/search">
                 Search
               </MenuItem>
-              <MenuItem onClick={this.handleMenuClose}
-                containerElement={<Link to="/profile" />}>
+              <MenuItem onClick={this.handleMenuClose} component={Link} to="/groups">
                 My Groups
               </MenuItem>
             </Menu>

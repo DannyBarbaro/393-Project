@@ -1,5 +1,6 @@
 import React from "react";
 import {apiBaseURL} from "../App";
+import MenuBar from '../global-components/menuBar';
 
 export default class Groups extends React.Component {
     constructor(props) {
@@ -55,7 +56,7 @@ export default class Groups extends React.Component {
         console.log(this);
         return (
             <div>
-                <h1>This is the groups page!</h1>
+                <MenuBar pageName={'Groups'}/>
                 {!this.state.groups && 
                     <div>
                         <h2>Here are your groups! Huzzah!</h2>
