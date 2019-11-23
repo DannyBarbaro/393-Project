@@ -50,13 +50,10 @@ class Profile extends Component {
             <div>
                 <MenuBar pageName={'Profile'}/>
                 {!this.state.editing &&
+                    <div>
                     <InfoViewer user={this.state.user}/>
-                    // <div>
-                    //     <p>Name: {this.state.user.name}</p>
-                    //     <p>Email Address: {this.state.user.email}</p>
-                    //     <p>Credit Card Number (trust us, it's secure): {this.state.user.cardNum}</p>
-                    //     <button onClick={this.editButton}>Edit</button>
-                    // </div>
+                    <button onClick={this.editButton}>Edit</button>
+                    </div>
                 }
                 {this.state.editing &&
                     <UserInfoForm
