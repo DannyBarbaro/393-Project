@@ -1,12 +1,9 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'backend'))
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 from backend.Model import Group
 from backend.ViewModel import GroupView
 from backend.SomethingCool import create_app
-import db_code.Repository as db
-import backend.group_service as service
 import pytest
 
 @pytest.fixture
