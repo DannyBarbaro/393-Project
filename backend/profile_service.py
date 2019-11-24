@@ -19,9 +19,9 @@ def get_profile():
     if 'userId' not in request.args:
         return {'invalid_key': 'Can only search for users by ID'}, status.HTTP_400_BAD_REQUEST
 
-    user = UserView(db.get_user_by_id(request.args['userId']))
+    user = db.get_user_by_id(request.args['userId'])
     if user:
-        return jsonify({'user': user})
+        return jsonify({'user': UserView(user)})
     else:
         return {'no_such_user': 'Could not find user with provided ID'}, status.HTTP_400_BAD_REQUEST
 
@@ -73,9 +73,13 @@ def update_user():
         return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
     if 'id' not in request.json['user']:
         return {'invalid_user': 'User must have an id'}, status.HTTP_400_BAD_REQUEST
+        
+    if db.get_user_by_id(request.json['user']['id']):
+        db.update_user(User(request.json['user']))
+        return "", status.HTTP_200_OK
+    else:
+        return {'user_not_found': 'No user with provided ID was found'}, status.HTTP_400_BAD_REQUEST
 
-    db.update_user(User(request.json['user']))
-    return "", status.HTTP_200_OK
 
 @profile.route('/users')
 def get_many_usernames():
@@ -89,3 +93,4 @@ def get_many_usernames():
     ids = request.args.getlist('id')
     usernames = [UserView(db.get_user_by_id(x)).name for x in ids]
     return jsonify({'usernames': usernames})
+    
