@@ -91,6 +91,7 @@ def get_many_usernames():
     if 'id' not in request.args:
         return jsonify({'usernames': []})
     ids = request.args.getlist('id')
-    usernames = [UserView(db.get_user_by_id(x)).name for x in ids]
+    users = [db.get_user_by_id(x) for x in ids]
+    usernames = [UserView(user).name for user in users if user is not None]
     return jsonify({'usernames': usernames})
     

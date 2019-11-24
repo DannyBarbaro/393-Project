@@ -235,3 +235,41 @@ class TestUpdateUser_NoSuchUser(object):
         mock_update_user.assert_not_called()
         assert response.json['user_not_found'] == 'No user with provided ID was found'
         assert response.status_code == 400
+
+class TestGetManyUsers:
+
+    users = {
+        '1': {'name': 'Alice'},
+        '2': {'name': 'Bob'},
+        '3': {'name': 'Charlie'}
+    }
+    
+    @pytest.fixture
+    def mock_get_user_by_id(self, mocker):
+        return mocker.patch("Repository.get_user_by_id", side_effect=lambda x: self.users.get(x, None))
+
+    def test_get_all_users(self, client, mock_get_user_by_id):
+        url = '/users?id=1&id=2&id=3'
+        response = client.get(url)
+
+        assert mock_get_user_by_id.call_count == 3
+        assert response.status_code == 200
+        assert b'Alice' in response.data
+        assert b'Bob' in response.data
+        assert b'Charlie' in response.data
+        assert b'usernames' in response.data
+
+    def test_get_no_users(self, client, mock_get_user_by_id):
+        url = '/users?'
+        response = client.get(url)
+
+        mock_get_user_by_id.assert_not_called()
+        assert response.status_code == 200
+        assert b'"usernames": []' in response.data
+
+    def test_nonexistent_users(self, client, mock_get_user_by_id):
+        url = '/users?id=2&id=4'
+        response = client.get(url)
+
+        assert mock_get_user_by_id.call_count == 2
+        assert b'"usernames": ["Bob"]' in response.data
