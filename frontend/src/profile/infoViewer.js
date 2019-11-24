@@ -59,10 +59,10 @@ class InfoViewer extends Component {
                 <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb" alt="Profile-Pic" className={classes.profilePic}/>
                 <div className={classes.picAlignedText}>
                   <Typography variant="h4" className={classes.alignText}>
-                    Words As Filler{this.state.user.name}
+                    {this.state.user.name}
                   </Typography>
                   <Typography variant="h4" className={classes.alignText}>
-                    Filler@email.com{this.state.user.email}
+                    {this.state.user.email}
                   </Typography>
                 </div>
               </FormGroup>
@@ -87,7 +87,9 @@ class InfoViewer extends Component {
                 Billing Address:
               </Typography>
               <Typography variant="h6">{this.state.user.billingAddress1}</Typography>
-              <Typography variant="h6">{this.state.user.billingAddress2}</Typography>
+              { this.state.user.billingAddress2 && this.state.user.billingAddress2 !== '' &&
+                <Typography variant="h6">{this.state.user.billingAddress2}</Typography>
+              }
               <Typography variant="h6">{this.state.user.billingCity + ', ' + this.state.user.billingState + ' ' + this.state.user.billingZip}</Typography>
               <Button variant="contained" color="primary" onClick={this.state.edit}  className={classes.generalPadding}>Edit</Button>
             </Box>

@@ -75,8 +75,8 @@ class UserInfoForm extends Component {
                 cardNum: props.user.cardNum,
                 cardSecurity: props.user.cardSecurity,
                 cardName: props.user.cardName,
-                billingAdress1: props.user.billingAdress1,
-                billingAdress2: props.user.billingAdress2,
+                billingAdress1: props.user.billingAddress1,
+                billingAdress2: props.user.billingAddress2,
                 billingCity: props.user.billingCity,
                 billingState: props.user.billingState,
                 billingZip: props.user.billingZip,
@@ -136,6 +136,7 @@ class UserInfoForm extends Component {
                     <TextField
                         className={classes.sField}
                         label="Username"
+                        name="username"
                         margin="normal"
                         variant="outlined"
                         onChange={this.onChange}
@@ -154,6 +155,8 @@ class UserInfoForm extends Component {
                         label="Bio"
                         margin="normal"
                         variant="outlined"
+                        name="bio"
+                        onChange={this.onChange}
                         value={this.state.bio}/>
                     <br/>
                     <Typography variant="body1" className={classes.generalPadding}>
@@ -202,6 +205,7 @@ class UserInfoForm extends Component {
                         label="Credit Card Number"
                         margin="normal"
                         variant="outlined"
+                        name="cardNum"
                         onChange={this.onChange}
                         value={this.state.cardNum}/>
                     <TextField
@@ -209,6 +213,7 @@ class UserInfoForm extends Component {
                         label="CVV"
                         margin="normal"
                         variant="outlined"
+                        name="cardSecurity"
                         onChange={this.onChange}
                         value={this.state.cardSecurity}/>
                     <br/>
@@ -217,6 +222,7 @@ class UserInfoForm extends Component {
                         label="Name on Card"
                         margin="normal"
                         variant="outlined"
+                        name="cardName"
                         onChange={this.onChange}
                         value={this.state.cardName}/>
                     <br/>
@@ -225,22 +231,25 @@ class UserInfoForm extends Component {
                         label="Billing Adress Line 1"
                         margin="normal"
                         variant="outlined"
+                        name="billingAddress1"
                         onChange={this.onChange}
-                        value={this.state.billingAdress1}/>
+                        value={this.state.billingAddress1}/>
                     <br/>
                     <TextField
                         className={classes.mField}
                         label="Billing Adress Line 2"
                         margin="normal"
                         variant="outlined"
+                        name="billingAddress2"
                         onChange={this.onChange}
-                        value={this.state.billingAdress2}/>
+                        value={this.state.billingAddress2}/>
                     <br/>
                     <TextField
                         className={classes.mField}
                         label="City"
                         margin="normal"
                         variant="outlined"
+                        name="billingCity"
                         onChange={this.onChange}
                         value={this.state.billingCity}/>
                     <TextField
@@ -248,6 +257,7 @@ class UserInfoForm extends Component {
                         label="State"
                         margin="normal"
                         variant="outlined"
+                        name="billingState"
                         onChange={this.onChange}
                         value={this.state.billingState}/>
                     <TextField
@@ -255,6 +265,7 @@ class UserInfoForm extends Component {
                         label="Zip Code"
                         margin="normal"
                         variant="outlined"
+                        name="billingZip"
                         onChange={this.onChange}
                         value={this.state.billingZip}/>
                 </Box>
