@@ -10,7 +10,8 @@ export default class Search extends React.Component {
         super(props);
         this.state = {
             groups: [],
-            toGroups: false
+            toGroups: false,
+            groupId: '',
         }
         this.onJoin = this.onJoin.bind(this);
     }
@@ -32,13 +33,13 @@ export default class Search extends React.Component {
             body: JSON.stringify({ userId: this.context.userId, groupId: target.name })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
-            .then(() => this.setState({toGroups: true}),
+            .then(() => this.setState({toGroups: true, groupId: target.name}),
                   err => console.log(err))
     }
 
     render() {
         if (this.state.toGroups) {
-            return <Redirect to="/groups" />
+            return <Redirect to={"/groups/"+this.state.groupId} />
         }
         return (
             <div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {apiBaseURL} from '../App'
+import {Link} from 'react-router-dom'
 
 export default class ShowGroup extends React.Component {
     constructor(props) {
@@ -48,6 +49,8 @@ export default class ShowGroup extends React.Component {
                         <li key={index}>{name}</li>))}
                 </ul>
                 <p>Group visibility: {this.state.visibility}</p>
+                <br />
+                <Link to='/groups'>Back to Groups</Link>
             </div>
         )
     }

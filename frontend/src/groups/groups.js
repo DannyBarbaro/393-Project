@@ -1,5 +1,5 @@
 import React from "react";
-import {Redirect} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
 import {apiBaseURL} from "../App";
 import UserContext from '../UserContext'
 
@@ -61,7 +61,7 @@ export default class Groups extends React.Component {
                     <div>
                         <ul>
                             {this.state.groups.map((group, index) => (
-                                <li key={index}>{group.name}
+                                <li key={index}><Link to={'/groups/'+group.id}>{group.name}</Link>
                                 <button name={group.id} onClick={this.onLeave}>Leave</button></li>))}
                         </ul>
                     </div>
