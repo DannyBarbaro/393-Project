@@ -24,7 +24,10 @@ def add_user(user):
 
 def update_user(new_user):
     users = db.users
-    users.update_one({'email': new_user.email}, {'$set' : new_user.__dict__})
+    new_id = ObjectId(new_user._id)
+    new_user = new_user.__dict__
+    del new_user['_id']
+    users.update_one({'_id': new_id}, {'$set' : new_user})
     
 def get_group_by_id(group_id):
     groups = db.groups

@@ -34,12 +34,14 @@ export default class UserInfoForm extends React.Component {
     }
 
     onSubmit(e) {
+        let body = Object.assign({}, this.state);
+        body.id = this.context.userId;
         let options = {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({user: this.state})
+            body: JSON.stringify({user: body})
         }
         let url;
         if (this.state.isNew) {
@@ -60,7 +62,7 @@ export default class UserInfoForm extends React.Component {
 
     processCallback() {
         if (!!this.state.callback) {
-            this.state.callback(this.state);
+            this.state.callback();
         }
     }
 

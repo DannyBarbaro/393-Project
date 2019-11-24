@@ -52,7 +52,10 @@ export default class Profile extends React.Component {
                 }
                 {this.state.editing &&
                     <UserInfoForm user={this.state.user}
-                        callback={new_user => this.setState({editing: false, user: new_user})} />
+                        callback={() => {
+                            this.setState({editing: false});
+                            this.componentDidMount();
+                        }} />
                 }
                 <Link to="/groups">My Groups</Link>
             </div>
