@@ -51,12 +51,16 @@ class Group:
             self.name = source_obj['name']
         if 'members' in source_obj:
             self.members = source_obj['members']
-        if 'event' in source_obj:
-            self.event = source_obj['event']
+        if 'event_id' in source_obj:
+            self.event_id = source_obj['event_id']
+        if 'eventId' in source_obj:
+            self.event_id = source_obj['eventId']
         if 'visibility' in source_obj:
             self.visibility = source_obj['visibility']
-        if 'owner' in source_obj:
-            self.owner = source_obj['owner']
+        if 'owner_id' in source_obj:
+            self.owner_id = source_obj['owner_id']
+        if 'ownerId' in source_obj:
+            self.owner_id = source_obj['ownerId']
 
 class UserSchedule:
 

@@ -2,14 +2,17 @@ import React from "react";
 import {apiBaseURL} from "../App";
 import {Redirect} from "react-router-dom"
 import MenuBar from '../global-components/menuBar';
+import UserContext from '../UserContext';
 
 export default class Search extends React.Component {
+    static contextType = UserContext
+
     constructor(props) {
         super(props);
         this.state = {
-            user: props.user,
-            group: [],
-            toGroups: false
+            groups: [],
+            toGroups: false,
+            groupId: '',
         }
         this.onJoin = this.onJoin.bind(this);
     }
@@ -28,16 +31,16 @@ export default class Search extends React.Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ userId: this.state.user.id, groupId: target.id })
+            body: JSON.stringify({ userId: this.context.userId, groupId: target.name })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
-            .then(() => this.setState({toGroups: true}),
+            .then(() => this.setState({toGroups: true, groupId: target.name}),
                   err => console.log(err))
     }
 
     render() {
         if (this.state.toGroups) {
-            return <Redirect to="/groups" />
+            return <Redirect to={"/groups/"+this.state.groupId} />
         }
         return (
             <div>

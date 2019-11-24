@@ -82,7 +82,6 @@ class UserInfoForm extends Component {
                 billingZip: props.user.billingZip,
                 isNew: false,
                 callback: props.callback,
-                cancel: props.canceledCallback,
             };
         }
 
@@ -97,12 +96,14 @@ class UserInfoForm extends Component {
     }
 
     onSubmit(e) {
+        let body = Object.assign({}, this.state);
+        body.id = this.context.userId;
         let options = {
             headers: {
                 'Content-Type': 'application/json',
             },
             method: "POST",
-            body: JSON.stringify({user: this.state})
+            body: JSON.stringify({user: body})
         }
         let url;
         if (this.state.isNew) {
@@ -123,7 +124,7 @@ class UserInfoForm extends Component {
 
     processCallback() {
         if (!!this.state.callback) {
-            this.state.callback(this.state);
+            this.state.callback();
         }
     }
 
@@ -271,7 +272,7 @@ class UserInfoForm extends Component {
                 </Box>
                 <Box className={classes.containerBox}>
                     { !this.state.isNew &&
-                        <Button variant="contained" color="secondary" className={classes.generalPadding}  onClick={this.state.cancel}>
+                        <Button variant="contained" color="secondary" className={classes.generalPadding}  onClick={this.state.callback}>
                             Cancel
                         </Button>
                     }

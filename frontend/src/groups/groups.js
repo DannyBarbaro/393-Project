@@ -1,21 +1,25 @@
 import React from "react";
+import {Redirect, Link} from 'react-router-dom'
 import {apiBaseURL} from "../App";
 import MenuBar from '../global-components/menuBar';
+import UserContext from '../UserContext'
 
 export default class Groups extends React.Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props);
         this.state = {
-            user: props.user,
-            groups: []
+            groups: [],
+            newGroup: false,
+            search: false,
         }
         this.onLeave = this.onLeave.bind(this);
-        this.onMakeNewGroup = this.onMakeNewGroup.bind(this);
     }
 
     componentDidMount() {
         let url = new URL('groups/mine', apiBaseURL)
-        url.search = new URLSearchParams({user_id: this.state.user.id}).toString();
+        url.search = new URLSearchParams({userId: this.context.userId}).toString();
         fetch(url)
             .then(resp => resp.json())
             .then(resp => {
@@ -24,7 +28,6 @@ export default class Groups extends React.Component {
                 } else {
                     this.setState({groups: []});
                 }
-                
             },
             err => console.log(err));
     }
@@ -32,42 +35,41 @@ export default class Groups extends React.Component {
     onLeave(e) {
         let target = e.target;
         let url = new URL('groups/leave', apiBaseURL)
-        url.search = new URLSearchParams({userId: this.state.user.id, groupID: target.id}).toString();
-        fetch(url)
-            .then(() => this.componentDidMount(),
-                  err => console.log(err))
-    }
-
-    onMakeNewGroup(e) {
         let options = {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({group: { name: "new group", members: [this.state.user], owner: this.state.user, event: "Souper Bowl", visibility: "public" }})
+            body: JSON.stringify({userId: this.context.userId, groupId: target.name})
         }
-        let url = new URL('createGroup', apiBaseURL)
         fetch(url, options)
-            .then(() => this.componentDidMount(),
-                  err => console.log(err))
+        .then(() => this.componentDidMount(),
+                err => console.log(err))
     }
 
     render() {
-        console.log(this);
+        if (this.state.newGroup) {
+            return <Redirect to={'/groups/new'} />
+        }
+        if (this.state.search) {
+            return <Redirect to={'/search'} />
+        }
         return (
             <div>
                 <MenuBar pageName={'Groups'}/>
-                {!this.state.groups && 
+                <h1>This is the groups page!</h1>
+                <h2>Here are your groups! Huzzah!</h2>
+                {!!this.state.groups && 
                     <div>
-                        <h2>Here are your groups! Huzzah!</h2>
                         <ul>
                             {this.state.groups.map((group, index) => (
-                                <li key={index}>{group.name}
+                                <li key={index}><Link to={'/groups/'+group.id}>{group.name}</Link>
                                 <button name={group.id} onClick={this.onLeave}>Leave</button></li>))}
                         </ul>
                     </div>
                 }
-                <button name="new-group" onClick={this.onMakeNewGroup}>Create New Group</button>
+                <button name="new-group" onClick={() => this.setState({newGroup: true})}>Create New Group</button>
+                <button name="search" onClick={() => this.setState({search: true})}>Search for a group</button>
             </div>
         );
     }

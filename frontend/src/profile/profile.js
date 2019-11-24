@@ -53,10 +53,12 @@ class Profile extends Component {
                     <InfoViewer user={this.state.user} edit={this.editButton}/>
                 }
                 {this.state.editing &&
-                    <UserInfoForm
-                        user={this.state.user}
-                        canceledCallback={_ => this.setState({editing: false})}
-                        callback={new_user => this.setState({editing: false, user: new_user})} />
+
+                    <UserInfoForm user={this.state.user}
+                        callback={() => {
+                            this.setState({editing: false});
+                            this.componentDidMount();
+                        }} />
                 }
             </div>
         );

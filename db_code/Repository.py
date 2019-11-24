@@ -24,16 +24,19 @@ def add_user(user):
 
 def update_user(new_user):
     users = db.users
-    users.update_one({'email': new_user.email}, {'$set' : new_user.__dict__})
+    new_id = ObjectId(new_user._id)
+    new_user = new_user.__dict__
+    del new_user['_id']
+    users.update_one({'_id': new_id}, {'$set' : new_user})
     
 def get_group_by_id(group_id):
     groups = db.groups
-    result = groups.find_one({'id': group_id})
+    result = groups.find_one({'_id': ObjectId(group_id)})
     return Model.Group(result) if result else None
 
 def get_group_by_owner(owner_id, event_id):
     groups = db.groups
-    result = groups.find_one({'owner': owner_id, 'event': event_id})
+    result = groups.find_one({'owner_id': owner_id, 'event_id': event_id})
     return Model.Group(result) if result else None
 
 def add_group(group):
@@ -44,13 +47,13 @@ def add_user_to_group(user_id, group):
     groups = db.groups
     members_list = group.members
     members_list.append(user_id)
-    groups.update_one({'id': group['id']}, {'$set': {'members': members_list}})
+    groups.update_one({'_id': ObjectId(group._id)}, {'$set': {'members': members_list}})
 
 def remove_user_from_group(user_id, group):
     groups = db.groups
     members_list = group.members
     members_list.remove(user_id)
-    groups.update_one({'id': group['id']}, {'$set': {'members': members_list}})
+    groups.update_one({'_id': ObjectId(group._id)}, {'$set': {'members': members_list}})
 
 def get_all_groups():
     groups = db.groups
@@ -59,5 +62,5 @@ def get_all_groups():
 
 def get_groups_with_user(user_id):
     groups = db.groups
-    user_groups = groups.aggregate({"$match": {"$in": [user_id, "$members"]}})
+    user_groups = groups.aggregate([{"$match": {'members': user_id}}])
     return [Model.Group(g) for g in user_groups]
