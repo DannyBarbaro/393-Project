@@ -99,7 +99,7 @@ class UserInfoForm extends Component {
     onSubmit(e) {
         let options = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             method: "POST",
             body: JSON.stringify({user: this.state})
