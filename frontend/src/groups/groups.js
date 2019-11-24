@@ -11,6 +11,7 @@ export default class Groups extends React.Component {
         this.state = {
             groups: [],
             newGroup: false,
+            search: false,
         }
         this.onLeave = this.onLeave.bind(this);
     }
@@ -26,7 +27,6 @@ export default class Groups extends React.Component {
                 } else {
                     this.setState({groups: []});
                 }
-                
             },
             err => console.log(err));
     }
@@ -50,6 +50,9 @@ export default class Groups extends React.Component {
         if (this.state.newGroup) {
             return <Redirect to={'/groups/new'} />
         }
+        if (this.state.search) {
+            return <Redirect to={'/search'} />
+        }
         return (
             <div>
                 <h1>This is the groups page!</h1>
@@ -64,6 +67,7 @@ export default class Groups extends React.Component {
                     </div>
                 }
                 <button name="new-group" onClick={() => this.setState({newGroup: true})}>Create New Group</button>
+                <button name="search" onClick={() => this.setState({search: true})}>Search for a group</button>
             </div>
         );
     }

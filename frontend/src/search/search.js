@@ -1,13 +1,15 @@
 import React from "react";
 import {apiBaseURL} from "../App";
 import {Redirect} from "react-router-dom"
+import UserContext from '../UserContext'
 
 export default class Search extends React.Component {
+    static contextType = UserContext
+
     constructor(props) {
         super(props);
         this.state = {
-            user: props.user,
-            group: [],
+            groups: [],
             toGroups: false
         }
         this.onJoin = this.onJoin.bind(this);
@@ -27,7 +29,7 @@ export default class Search extends React.Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ userId: this.state.user.id, groupId: target.id })
+            body: JSON.stringify({ userId: this.context.userId, groupId: target.name })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
             .then(() => this.setState({toGroups: true}),

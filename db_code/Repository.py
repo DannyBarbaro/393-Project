@@ -44,7 +44,7 @@ def add_user_to_group(user_id, group):
     groups = db.groups
     members_list = group.members
     members_list.append(user_id)
-    groups.update_one({'id': group['id']}, {'$set': {'members': members_list}})
+    groups.update_one({'_id': ObjectId(group._id)}, {'$set': {'members': members_list}})
 
 def remove_user_from_group(user_id, group):
     groups = db.groups
