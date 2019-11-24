@@ -14,21 +14,22 @@ def create_group():
     """
     Request: {"group" : <obj>}
 
-    Response: empty
+    Response: {"groupId" : <val>}
     """
     if 'group' not in request.json:
         return {'invalid_key': 'Invalid group creation request'}, status.HTTP_400_BAD_REQUEST
-    if 'owner' not in request.json['group']:
+    if 'ownerId' not in request.json['group']:
         return {'no_owner': 'No owner in group request'}, status.HTTP_400_BAD_REQUEST
-    if 'event' not in request.json['group']:
+    if 'eventId' not in request.json['group']:
         return {'no_event': 'No event in group request'}, status.HTTP_400_BAD_REQUEST
     
     new_group = Group(request.json['group'])
-    if db.get_group_by_owner(new_group.owner, new_group.event):
+    if db.get_group_by_owner(new_group.owner_id, new_group.event_id):
         return {'group_exists': 'This group has been created already'}, status.HTTP_400_BAD_REQUEST
     
     db.add_group(new_group)
-    return "", status.HTTP_200_OK
+    group = GroupView(db.get_group_by_owner(new_group.owner_id, new_group.event_id))
+    return jsonify({'groupId': group.id}), status.HTTP_200_OK
 
 @group.route('/groups')
 def get_group():

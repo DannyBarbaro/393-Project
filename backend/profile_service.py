@@ -76,3 +76,16 @@ def update_user():
 
     db.update_user(User(request.json['user']))
     return "", status.HTTP_200_OK
+
+@profile.route('/users')
+def get_many_usernames():
+    """
+    Params: id = <val> & id = <val> & ...
+
+    Response: {"usernames" : [<str>]}
+    """
+    if 'id' not in request.args:
+        return jsonify({'usernames': []})
+    ids = request.args.getlist('id')
+    usernames = [UserView(db.get_user_by_id(x)).name for x in ids]
+    return jsonify({'usernames': usernames})

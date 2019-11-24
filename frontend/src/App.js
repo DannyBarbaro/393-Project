@@ -5,11 +5,13 @@ import {
   Route,
 } from "react-router-dom";
 import Groups from "./groups/groups";
+import NewGroup from './groups/newGroup';
 import Profile from "./profile/profile";
 import Home from "./home/home";
 import Search from "./search/search";
 import NewUser from "./profile/newUser";
 import UserContext from './UserContext'
+import ShowGroup from "./groups/showGroup";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -31,18 +33,12 @@ export default class App extends React.Component {
         <Router>
           <Switch>
             <Route path="/profile/new" component={NewUser} />
-            <Route path="/profile">
-              <Profile />
-            </Route>
-            <Route path="/search">
-              <Search />
-            </Route>
-            <Route path="/groups">
-              <Groups user={{name:"Josh", email:"e@mail.com", cardNum:"1"}}/>
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
+            <Route path="/profile" component={Profile} />
+            <Route path="/search" component={Search} />
+            <Route path="/groups/new" component={NewGroup} />
+            <Route path="/groups/:id" component={ShowGroup} />
+            <Route path="/groups" component={Groups} />
+            <Route path="/" component={Home} />
           </Switch>
         </Router>
       </UserContext.Provider>
