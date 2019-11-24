@@ -107,3 +107,6 @@ class User:
             self.card_num = source_obj['card_num']
         if 'cardNum' in source_obj:
             self.card_num = source_obj['cardNum']
+
+        if self._id is None or self._id == "null":
+            del self._id
