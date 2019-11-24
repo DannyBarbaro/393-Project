@@ -13,13 +13,10 @@ Python:
   - pip install pymongo flask flask_api flask_cors
 
 Testing:
-  - pip install pytest
-  - pip install pytest-flask
-  - pip install pytest-mock
-  - pip install pytest-cov
+  - pip install pytest pytest-flask pytest-mock pytest-cov
 
   To run tests from root dir: python3 -m pytest unit_tests/
-  To run tests with coverage measures: python3 -m pytest --cov=backend unit_tests/
+  To run tests with coverage measures: python3 -m pytest --cov-report term-missing --cov=backend unit_tests
 
 Frontend:
   - React.js

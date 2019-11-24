@@ -8,15 +8,15 @@ import pytest
 
 @pytest.fixture
 def app():
-        return create_app()
+    return create_app()
 
 @pytest.fixture
 def mock_add_group(mocker):
-        return mocker.patch("Repository.add_group", return_value=None)
+    return mocker.patch("Repository.add_group", return_value=None)
 
 @pytest.fixture
 def mock_add_user_to_group(mocker):
-        return mocker.patch("Repository.add_user_to_group", return_value=None)
+    return mocker.patch("Repository.add_user_to_group", return_value=None)
 
 @pytest.fixture
 def mock_get_group_by_id(mocker):
@@ -33,24 +33,31 @@ def mock_remove_user_from_group(mocker):
 class TestCreateGroup_NewGroup(object):
     url = '/createGroup'
 
+    @pytest.fixture
+    def mock_get_group_by_owner(self, mocker):
+        group = GroupView({'_id': '12'})
+        return mocker.patch("Repository.get_group_by_owner", side_effect=[None, group])
+
     def test_success(self, client, mock_get_group_by_owner, mock_add_group):
         data = {
             'group': {
-                'owner': 14,
-                'event': 13,
+                'ownerId': '14',
+                'eventId': '13',
             }
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_owner.assert_called()
         mock_add_group.assert_called()
+        assert mock_get_group_by_owner.call_count == 2
         assert response.status_code == 200
+        assert b'"groupId": "12"' in response.data
 
     def test_no_group_obj(self, client, mock_get_group_by_owner, mock_add_group):
         data = {
             'notgroup': {
-                'owner': 11,
-                'event': 7,
+                'ownerId': 11,
+                'eventId': 7,
             }
         }
         response = client.post(self.url, json=data)
@@ -64,7 +71,7 @@ class TestCreateGroup_NewGroup(object):
         data = {
             'group': {
                 'oner': 'me',
-                'event': 5,
+                'eventId': 5,
             }
         }
         response = client.post(self.url, json=data)
@@ -77,7 +84,7 @@ class TestCreateGroup_NewGroup(object):
     def test_no_event_id(self, client, mock_get_group_by_owner, mock_add_group):
         data = {
             'group': {
-                'owner': 4,
+                'ownerId': 4,
                 'evening': '7pm'
             }
         }
@@ -101,8 +108,8 @@ class TestCreateGroup_AlreadyExists(object):
     def test_already_exists(self, client, mock_get_group_by_owner, mock_add_group):
         data = {
             'group': {
-                'owner': 4,
-                'event': 3,
+                'ownerId': 4,
+                'eventId': 3,
             }
         }
         response = client.post(self.url, json=data)
