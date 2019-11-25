@@ -53,7 +53,7 @@ class HomePhotoDisplay extends Component {
             Welcome to SeatSwap!
           </Typography>
           <Typography variant="h5" className={classes.description}>
-            A band new way to watch the game.
+            A brand new way to watch the game.
           </Typography>
         </Paper>
       </Box>

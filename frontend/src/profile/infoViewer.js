@@ -39,63 +39,60 @@ const styles = theme => ({
   });
 
 class InfoViewer extends Component {
-    static contextType = UserContext
+  static contextType = UserContext
 
-    constructor(props) {
-        super(props);
-        this.state = {
-          user: this.props.user,
-          invalid: false,
-          edit: this.props.edit
-        }
-    }
+  constructor(props) {
+      super(props);
+  }
 
-    render() {
-        const { classes } = this.props;
-        return (
-          <div className={classes.bigBox}>
-            <Box className={classes.containerBox}>
-              <FormGroup row={true} className={classes.generalPadding}>
-                <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb" alt="Profile-Pic" className={classes.profilePic}/>
-                <div className={classes.picAlignedText}>
-                  <Typography variant="h4" className={classes.alignText}>
-                    {this.state.user.name}
-                  </Typography>
-                  <Typography variant="h4" className={classes.alignText}>
-                    {this.state.user.email}
-                  </Typography>
-                </div>
-              </FormGroup>
-              <Typography variant="h5" className={classes.generalPadding}>
-                Bio: {this.state.user.bio}
+  render() {
+    console.log('InfoViewer')
+    console.log(this.props.user)
+    const { classes } = this.props;
+    return (
+      <div className={classes.bigBox}>
+        <Box className={classes.containerBox}>
+          <FormGroup row={true} className={classes.generalPadding}>
+            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb" alt="Profile-Pic" className={classes.profilePic}/>
+            <div className={classes.picAlignedText}>
+              <Typography variant="h4" className={classes.alignText}>
+                {this.props.user.name}
               </Typography>
-              <Typography variant="h5" className={classes.generalPadding}>
-                Favorite Teams:
+              <Typography variant="h4" className={classes.alignText}>
+                {this.props.user.email}
               </Typography>
-              <br/>
+            </div>
+          </FormGroup>
+          <Typography variant="h5" className={classes.generalPadding}>
+            Bio: {this.props.user.bio}
+          </Typography>
+          <Typography variant="h5" className={classes.generalPadding}>
+            Favorite Teams:
+          </Typography>
+          <br/>
 
-              <Typography variant="h4" className={classes.generalPadding}>
-                {'\nPayment Information'}
-              </Typography>
-              <Typography variant="h5" className={classes.generalPadding}>
-                Credit Card Number: {this.state.user.cardNum}
-              </Typography>
-              <Typography variant="h5" className={classes.generalPadding}>
-                Payment Name: {this.state.user.cardName}
-              </Typography>
-              <Typography variant="h5" className={classes.generalPadding}>
-                Billing Address:
-              </Typography>
-              <Typography variant="h6">{this.state.user.billingAddress1}</Typography>
-              { this.state.user.billingAddress2 && this.state.user.billingAddress2 !== '' &&
-                <Typography variant="h6">{this.state.user.billingAddress2}</Typography>
-              }
-              <Typography variant="h6">{this.state.user.billingCity + ', ' + this.state.user.billingState + ' ' + this.state.user.billingZip}</Typography>
-              <Button variant="contained" color="primary" onClick={this.state.edit}  className={classes.generalPadding}>Edit</Button>
-            </Box>
-          </div>
-        );
-    }
+          <Typography variant="h4" className={classes.generalPadding}>
+            {'\nPayment Information'}
+          </Typography>
+          <Typography variant="h5" className={classes.generalPadding}>
+            Credit Card Number: {this.props.user.cardNum}
+          </Typography>
+          <Typography variant="h5" className={classes.generalPadding}>
+            Payment Name: {this.props.user.cardName}
+          </Typography>
+          <Typography variant="h5" className={classes.generalPadding}>
+            Billing Address:
+          </Typography>
+          <Typography variant="h6">{this.props.user.billingAddress1}</Typography>
+          { this.props.user.billingAddress2 && this.props.user.billingAddress2 !== '' &&
+            <Typography variant="h6">{this.props.user.billingAddress2}</Typography>
+          }
+          <Typography variant="h6">{this.props.user.billingCity + ', ' + this.props.user.billingState + ' ' + this.props.user.billingZip}</Typography>
+          <Button variant="contained" color="primary" onClick={this.props.edit}  className={classes.generalPadding}>Edit</Button>
+        </Box>
+      </div>
+    );
+  }
 }
 
 export default withStyles(styles, { withTheme: true })(InfoViewer)

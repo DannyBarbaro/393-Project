@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import UserInfoForm from './userInfoForm';
+import {apiBaseURL} from '../App'
+import UserContext from '../UserContext'
 import { Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/';
 import Typography from '@material-ui/core/Typography';
@@ -18,6 +20,8 @@ const styles = theme => ({
 });
 
 class NewUser extends Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props)
         this.state = {
@@ -26,6 +30,24 @@ class NewUser extends Component {
         if (!!this.props.location) {
             this.userEmail = this.props.location.state.email;
         }
+        this.onSubmit = this.onSubmit.bind(this)
+    }
+
+    onSubmit(newUser) {
+        let url = new URL('addUser', apiBaseURL);
+        let options = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: "POST",
+            body: JSON.stringify({user: newUser})
+        }
+        fetch(url, options)
+        .then(resp => resp.json())
+        .then(resp => {
+            this.context.changeUserId(resp.userId)
+            this.setState({completed: true})
+        });
     }
 
     render() {
@@ -48,8 +70,7 @@ class NewUser extends Component {
                 <Typography variant="h6" className={classes.description}>
                     Please enter your information so we can create your account.
                 </Typography>
-                <UserInfoForm user={{email: this.userEmail}} newUser
-                    callback={() => this.setState({completed: true})}/>
+                <UserInfoForm user={{email: this.userEmail}} newUser callback={this.onSubmit}/>
             </div>
         )
     }
