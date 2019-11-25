@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {apiBaseURL} from '../App';
 import UserContext from '../UserContext'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -64,8 +63,16 @@ class UserInfoForm extends Component {
         if (props.newUser) {
             this.state = {
                 email: props.user.email,
-                isNew: true,
-                callback: props.callback,
+                name: '',
+                bio: '',
+                cardNum: '',
+                cardSecurity: '',
+                cardName: '',
+                billingAddress1: '',
+                billingAddress2: '',
+                billingCity: '',
+                billingState: '',
+                billingZip: '',
             }
         } else {
             this.state = {
@@ -75,19 +82,16 @@ class UserInfoForm extends Component {
                 cardNum: props.user.cardNum,
                 cardSecurity: props.user.cardSecurity,
                 cardName: props.user.cardName,
-                billingAdress1: props.user.billingAddress1,
-                billingAdress2: props.user.billingAddress2,
+                billingAddress1: props.user.billingAddress1,
+                billingAddress2: props.user.billingAddress2,
                 billingCity: props.user.billingCity,
                 billingState: props.user.billingState,
                 billingZip: props.user.billingZip,
-                isNew: false,
-                callback: props.callback,
             };
         }
-
+        this.callback = props.callback
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        this.processCallback = this.processCallback.bind(this);
     }
 
     onChange(e) {
@@ -96,36 +100,7 @@ class UserInfoForm extends Component {
     }
 
     onSubmit(e) {
-        let body = Object.assign({}, this.state);
-        body.id = this.context.userId;
-        let options = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            method: "POST",
-            body: JSON.stringify({user: body})
-        }
-        let url;
-        if (this.state.isNew) {
-            url = new URL('addUser', apiBaseURL);
-        } else {
-            url = new URL('updateUser', apiBaseURL);
-        }
-        fetch(url, options)
-        .then(resp => resp.json())
-        .then(resp => {
-            if (!!resp.userId) {
-                this.context.changeUserId(resp.userId)
-            }
-            this.processCallback()
-        });
-        e.preventDefault()
-    }
-
-    processCallback() {
-        if (!!this.state.callback) {
-            this.state.callback();
-        }
+        this.callback(this.state)
     }
 
     render() {
@@ -137,7 +112,7 @@ class UserInfoForm extends Component {
                     <TextField
                         className={classes.sField}
                         label="Username"
-                        name="username"
+                        name="name"
                         margin="normal"
                         variant="outlined"
                         onChange={this.onChange}

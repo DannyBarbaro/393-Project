@@ -21,6 +21,7 @@ class Profile extends Component {
             invalid: false,
         };
         this.editButton = this.editButton.bind(this);
+        this.updateProfile = this.updateProfile.bind(this);
     }
 
     componentDidMount() {
@@ -41,7 +42,26 @@ class Profile extends Component {
         this.setState({editing: true});
     }
 
+    updateProfile(newProfile) {
+        let url = new URL('updateUser', apiBaseURL);
+        newProfile.id = this.context.userId;
+        let options = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: "POST",
+            body: JSON.stringify({user: newProfile})
+        }
+        fetch(url, options)
+        .then(() => {
+            this.componentDidMount()
+            this.setState({editing: false})
+        })
+    }
+
     render() {
+        console.log('profile')
+        console.log(this.state)
         if (this.state.invalid) {
             return <Redirect to='/home' />
         }
@@ -53,12 +73,7 @@ class Profile extends Component {
                     <InfoViewer user={this.state.user} edit={this.editButton}/>
                 }
                 {this.state.editing &&
-
-                    <UserInfoForm user={this.state.user}
-                        callback={() => {
-                            this.setState({editing: false});
-                            this.componentDidMount();
-                        }} />
+                    <UserInfoForm user={this.state.user} callback={this.updateProfile} />
                 }
             </div>
         );
