@@ -53,6 +53,9 @@ const styles = theme => ({
         width: '100%',
         
     },
+    errorMessage: {
+        color: '#f54235',
+    },
   });
 
 class UserInfoForm extends Component {
@@ -73,6 +76,7 @@ class UserInfoForm extends Component {
                 billingCity: '',
                 billingState: '',
                 billingZip: '',
+                errorMessage: false,
             }
         } else {
             this.state = {
@@ -87,6 +91,7 @@ class UserInfoForm extends Component {
                 billingCity: props.user.billingCity,
                 billingState: props.user.billingState,
                 billingZip: props.user.billingZip,
+                errorMessage: false,
             };
         }
         this.callback = props.callback
@@ -100,7 +105,12 @@ class UserInfoForm extends Component {
     }
 
     onSubmit(e) {
-        this.callback(this.state)
+        console.log(this.checkAll());
+        if(this.checkAll()) {
+            this.setState({errorMessage: true});
+        } else {
+            this.callback(this.state)
+        }
     }
 
     render() {
@@ -116,7 +126,9 @@ class UserInfoForm extends Component {
                         margin="normal"
                         variant="outlined"
                         onChange={this.onChange}
-                        value={this.state.name}/>
+                        value={this.state.name}
+                        error={this.requiredCheck(this.state.name)}
+                        helperText={this.requiredCheck(this.state.name) ? 'Username Required' : ''}/>
                     <TextField
                         disabled
                         className={classes.sField}
@@ -183,7 +195,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="cardNum"
                         onChange={this.onChange}
-                        value={this.state.cardNum}/>
+                        value={this.state.cardNum}
+                        error={this.cardCheck()}
+                        helperText={this.cardCheck() ? 'Please Enter a Valid Card Number' : ''}/>
                     <TextField
                         className={classes.xsField}
                         label="CVV"
@@ -191,7 +205,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="cardSecurity"
                         onChange={this.onChange}
-                        value={this.state.cardSecurity}/>
+                        value={this.state.cardSecurity}
+                        error={this.securityCheck()}
+                        helperText={this.securityCheck() ? 'Invalid CVV' : ''}/>
                     <br/>
                     <TextField
                         className={classes.mField}
@@ -200,7 +216,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="cardName"
                         onChange={this.onChange}
-                        value={this.state.cardName}/>
+                        value={this.state.cardName}
+                        error={this.requiredCheck(this.state.cardName)}
+                        helperText={this.requiredCheck(this.state.cardName) ? 'Card Name Required' : ''}/>
                     <br/>
                     <TextField
                         className={classes.mField}
@@ -209,7 +227,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="billingAddress1"
                         onChange={this.onChange}
-                        value={this.state.billingAddress1}/>
+                        value={this.state.billingAddress1}
+                        error={this.requiredCheck(this.state.billingAddress1)}
+                        helperText={this.requiredCheck(this.state.billingAddress1) ? 'Adress Required' : ''}/>
                     <br/>
                     <TextField
                         className={classes.mField}
@@ -227,7 +247,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="billingCity"
                         onChange={this.onChange}
-                        value={this.state.billingCity}/>
+                        value={this.state.billingCity}
+                        error={this.requiredCheck(this.state.billingCity)}
+                        helperText={this.requiredCheck(this.state.billingCity) ? 'City Required' : ''}/>
                     <TextField
                         className={classes.xsField}
                         label="State"
@@ -235,7 +257,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="billingState"
                         onChange={this.onChange}
-                        value={this.state.billingState}/>
+                        value={this.state.billingState}
+                        error={this.requiredCheck(this.state.billingState)}
+                        helperText={this.requiredCheck(this.state.billingState) ? 'State Required' : ''}/>
                     <TextField
                         className={classes.xsField}
                         label="Zip Code"
@@ -243,9 +267,14 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="billingZip"
                         onChange={this.onChange}
-                        value={this.state.billingZip}/>
+                        value={this.state.billingZip}
+                        error={this.requiredCheck(this.state.billingZip)}
+                        helperText={this.requiredCheck(this.state.billingZip) ? 'Zip Required' : ''}/>
                 </Box>
                 <Box className={classes.containerBox}>
+                    { this.state.errorMessage &&
+                        <Typography variant="h6" className={classes.errorMessage}>Please fill out the required fields</Typography>
+                    }
                     { !this.state.isNew &&
                         <Button variant="contained" color="secondary" className={classes.generalPadding}  onClick={this.state.callback}>
                             Cancel
@@ -257,6 +286,18 @@ class UserInfoForm extends Component {
                 </Box>
             </div>
         );
+    }
+
+
+    requiredCheck(param) {return !param || param.length === 0}
+    cardCheck() {return !this.state.cardNum || this.state.cardNum.length !== 16 || this.state.cardNum.match(/[\d]/g).length !== 16}
+    securityCheck() {return !this.state.cardSecurity || this.state.cardSecurity.length !== 3 || this.state.cardSecurity.match(/[\d]/g).length !== 3}
+    checkAll(){
+        return this.cardCheck() || this.securityCheck() || this.requiredCheck(this.state.name) ||
+            this.requiredCheck(this.state.cardName) || this.requiredCheck(this.state.billingAddress1) ||
+            this.requiredCheck(this.state.billingCity) || this.requiredCheck(this.state.billingState) ||
+            this.requiredCheck(this.state.billingZip)
+
     }
 }
 

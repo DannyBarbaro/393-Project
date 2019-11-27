@@ -17,33 +17,36 @@ const styles = theme => ({
       margin: 'auto',
       padding: 30
   },
-    generalPadding: {
-        margin: 20,
-    },
-    profilePic: {
-        width: 150,
-        height: 150,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        borderRadius: '50%',
-    },
-    picAlignedText: {
-      marginLeft: 50,
+  generalPadding: {
+      margin: 20,
+  },
+  indent:{
+    marginLeft: 50
+  },
+  profilePic: {
+      width: 150,
       height: 150,
-    },
-    alignText: {
-      paddingTop: 30,
-      height: 50,
-      verticalAlign: 'bottom',
-    },
-  });
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      borderRadius: '50%',
+  },
+  picAlignedText: {
+    marginLeft: 50,
+    height: 150,
+  },
+  alignText: {
+    paddingTop: 30,
+    height: 50,
+    verticalAlign: 'bottom',
+  },
+});
 
 class InfoViewer extends Component {
   static contextType = UserContext
 
-  constructor(props) {
-      super(props);
-  }
+  // constructor(props) {
+  //     super(props);
+  // }
 
   render() {
     console.log('InfoViewer')
@@ -83,11 +86,11 @@ class InfoViewer extends Component {
           <Typography variant="h5" className={classes.generalPadding}>
             Billing Address:
           </Typography>
-          <Typography variant="h6">{this.props.user.billingAddress1}</Typography>
+          <Typography variant="h6" className={classes.indent}>{this.props.user.billingAddress1}</Typography>
           { this.props.user.billingAddress2 && this.props.user.billingAddress2 !== '' &&
-            <Typography variant="h6">{this.props.user.billingAddress2}</Typography>
+            <Typography variant="h6" className={classes.indent}>{this.props.user.billingAddress2}</Typography>
           }
-          <Typography variant="h6">{this.props.user.billingCity + ', ' + this.props.user.billingState + ' ' + this.props.user.billingZip}</Typography>
+          <Typography variant="h6" className={classes.indent}>{this.props.user.billingCity + ', ' + this.props.user.billingState + ' ' + this.props.user.billingZip}</Typography>
           <Button variant="contained" color="primary" onClick={this.props.edit}  className={classes.generalPadding}>Edit</Button>
         </Box>
       </div>

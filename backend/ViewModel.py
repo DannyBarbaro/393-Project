@@ -138,6 +138,8 @@ class UserView:
                 self.groupHistory = source_obj['groupHistory']
             if 'name' in source_obj:
                 self.name = source_obj['name']
+            if 'bio' in source_obj:
+                self.bio = source_obj['bio']
             if 'active_groups' in source_obj:
                 self.activeGroups = source_obj['active_groups']
             if 'activeGroups' in source_obj:
@@ -146,3 +148,31 @@ class UserView:
                 self.cardNum = source_obj['card_num']
             if 'cardNum' in source_obj:
                 self.cardNum = source_obj['cardNum']
+            if 'card_security' in source_obj:
+                self.cardSecurity = source_obj['card_security']
+            if 'cardSecurity' in source_obj:
+                self.cardSecurity = source_obj['cardSecurity']
+            if 'card_name' in source_obj:
+                self.cardName = source_obj['card_name']
+            if 'cardName' in source_obj:
+                self.cardName = source_obj['cardName']
+            if 'billing_address_1' in source_obj:
+                self.billingAddress1 = source_obj['billing_address_1']
+            if 'billingAddress1' in source_obj:
+                self.billingAddress1 = source_obj['billingAddress1']
+            if 'billing_address_2' in source_obj:
+                self.billingAddress2 = source_obj['billing_address_2']
+            if 'billingAddress2' in source_obj:
+                self.billingAddress2 = source_obj['billingAddress2']
+            if 'billing_city' in source_obj:
+                self.billingCity = source_obj['billing_city']
+            if 'billingCity' in source_obj:
+                self.billingCity = source_obj['billingCity']
+            if 'billing_state' in source_obj:
+                self.billingState = source_obj['billing_state']
+            if 'billingState' in source_obj:
+                self.billingState = source_obj['billingState']
+            if 'billing_zip' in source_obj:
+                self.billingZip = source_obj['billing_zip']
+            if 'billingZip' in source_obj:
+                self.billingZip = source_obj['billingZip']
