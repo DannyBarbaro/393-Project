@@ -214,14 +214,15 @@ class UserInfoForm extends Component {
                         Choose Your Favorite Teams!
                     </Typography>
                     <br/>
-                    { allTeams.leagues.map(function(league){
-                        return(<div>
+                    { allTeams.leagues.map(function(league, index){
+                        return(<div key={index}>
                             <Typography variant="body1">
                                 {league.name}
                             </Typography>
                             <br/>
-                            { league.teams.map(function(team){
+                            { league.teams.map(function(team, index){
                                 return <Chip
+                                    key={index}
                                     label={team}
                                     className={classes.chip}
                                     avatar={
