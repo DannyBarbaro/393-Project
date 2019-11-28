@@ -188,7 +188,9 @@ class UserInfoForm extends Component {
                         variant="outlined"
                         name="bio"
                         onChange={this.onChange}
-                        value={this.state.bio}/>
+                        value={this.state.bio}
+                        error={this.bioCheck(this.state.name)}
+                        helperText={this.bioCheck(this.state.name) ? 'Slow down there! (280 character limit)' : ''}/>
                     <br/>
                     <Typography variant="body1" className={classes.generalPadding}>
                         { this.state.bio ? this.state.bio.length : 0 }/280
@@ -320,7 +322,7 @@ class UserInfoForm extends Component {
                 </Box>
                 <Box className={classes.containerBox}>
                     { this.state.errorMessage &&
-                        <Typography variant="h6" className={classes.errorMessage}>Please fill out the required fields</Typography>
+                        <Typography variant="h6" className={classes.errorMessage}>Please make sure you filled everything out correctly!</Typography>
                     }
                     { !this.state.isNew &&
                         <Button variant="contained" color="secondary" className={classes.generalPadding}  onClick={this.state.callback}>
@@ -337,10 +339,11 @@ class UserInfoForm extends Component {
 
 
     requiredCheck(param) {return !param || param.length === 0}
+    bioCheck() {return this.state.bio && this.state.bio.length > 280}
     cardCheck() {return !this.state.cardNum || this.state.cardNum.length !== 16 || this.state.cardNum.match(/[\d]/g).length !== 16}
     securityCheck() {return !this.state.cardSecurity || this.state.cardSecurity.length !== 3 || this.state.cardSecurity.match(/[\d]/g).length !== 3}
     checkAll(){
-        return this.cardCheck() || this.securityCheck() || this.requiredCheck(this.state.name) ||
+        return this.bioCheck() || this.cardCheck() || this.securityCheck() || this.requiredCheck(this.state.name) ||
             this.requiredCheck(this.state.cardName) || this.requiredCheck(this.state.billingAddress1) ||
             this.requiredCheck(this.state.billingCity) || this.requiredCheck(this.state.billingState) ||
             this.requiredCheck(this.state.billingZip)
