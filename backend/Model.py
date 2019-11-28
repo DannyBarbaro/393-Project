@@ -137,3 +137,7 @@ class User:
             self.billingZip = source_obj['billing_zip']
         if 'billingZip' in source_obj:
             self.billingZip = source_obj['billingZip']
+        if 'profile_pic' in source_obj:
+            self.profilePic = source_obj['profile_pic']
+        if 'profilePic' in source_obj:
+            self.profilePic = source_obj['profilePic']

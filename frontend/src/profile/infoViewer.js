@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { FormGroup } from '@material-ui/core';
 // import Chip from '@material-ui/core/Chip';
-// import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@material-ui/core/Avatar';
 // import {allTeams} from '../Logos/teams';
 
 const styles = theme => ({
@@ -26,9 +26,6 @@ const styles = theme => ({
   profilePic: {
       width: 150,
       height: 150,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      borderRadius: '50%',
   },
   picAlignedText: {
     marginLeft: 50,
@@ -49,14 +46,12 @@ class InfoViewer extends Component {
   // }
 
   render() {
-    console.log('InfoViewer')
-    console.log(this.props.user)
     const { classes } = this.props;
     return (
       <div className={classes.bigBox}>
         <Box className={classes.containerBox}>
           <FormGroup row={true} className={classes.generalPadding}>
-            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb" alt="Profile-Pic" className={classes.profilePic}/>
+            <Avatar src={this.props.user.profilePic} alt="Profile-Pic" className={classes.profilePic}/>
             <div className={classes.picAlignedText}>
               <Typography variant="h4" className={classes.alignText}>
                 {this.props.user.name}

@@ -55,8 +55,8 @@ class MenuBar extends Component {
     return(
       <AppBar position="sticky">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton}>
-            <MenuIcon onClick={this.handleMenuClick}/>
+          <IconButton edge="start" className={classes.menuButton} onClick={this.handleMenuClick}>
+            <MenuIcon/>
             <Menu
               anchorEl={anchorEl}
               keepMounted

@@ -22,6 +22,10 @@ def add_user(user):
     users = db.users
     users.insert_one(user.__dict__)
 
+def update_user_profile_pic(id, pic):
+    users = db.users
+    users.update_one({'_id': ObjectId(id)}, {'$set' : {'profilePic': pic}})
+
 def update_user(new_user):
     users = db.users
     new_id = ObjectId(new_user._id)

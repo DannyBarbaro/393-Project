@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import UserContext from '../UserContext'
+import { apiBaseURL } from "../App";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -42,16 +43,12 @@ const styles = theme => ({
     profilePic: {
         width: 200,
         height: 200,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        borderRadius: '50%',
     },
     chip: {
         margin: 3,
     },
     teamIcon: {
         width: '100%',
-        
     },
     errorMessage: {
         color: '#f54235',
@@ -68,6 +65,7 @@ class UserInfoForm extends Component {
                 email: props.user.email,
                 name: '',
                 bio: '',
+                profilePic: '',
                 cardNum: '',
                 cardSecurity: '',
                 cardName: '',
@@ -76,6 +74,7 @@ class UserInfoForm extends Component {
                 billingCity: '',
                 billingState: '',
                 billingZip: '',
+                imageError: '',
                 errorMessage: false,
             }
         } else {
@@ -83,6 +82,7 @@ class UserInfoForm extends Component {
                 email: props.user.email,
                 name: props.user.name,
                 bio: props.user.bio,
+                profilePic: props.user.profilePic,
                 cardNum: props.user.cardNum,
                 cardSecurity: props.user.cardSecurity,
                 cardName: props.user.cardName,
@@ -91,12 +91,14 @@ class UserInfoForm extends Component {
                 billingCity: props.user.billingCity,
                 billingState: props.user.billingState,
                 billingZip: props.user.billingZip,
+                imageError: '',
                 errorMessage: false,
             };
         }
         this.callback = props.callback
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.selectFile = this.selectFile.bind(this);
     }
 
     onChange(e) {
@@ -105,11 +107,52 @@ class UserInfoForm extends Component {
     }
 
     onSubmit(e) {
-        console.log(this.checkAll());
         if(this.checkAll()) {
             this.setState({errorMessage: true});
         } else {
             this.callback(this.state)
+        }
+    }
+
+    fileToBase64(file){
+        return new Promise(resolve => {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                resolve(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+      };
+
+    selectFile(event) {
+        var files = event.target.files
+        var file = ''
+        const types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (files.length > 1) {
+            this.setState({imageError: 'Only one file can be uploaded'});
+            return
+        } else {
+            file = files[0]
+        }
+        if (types.every(type => file.type !== type)) {
+            this.setState({imageError: `'${file.type}' is not a supported format`});
+        } else if (file.size > 2000000) {
+            this.setState({imageError: `'${file.type}' is too large (Max 2MB) Please pick a smaller file`});
+        } else {
+            this.fileToBase64(file).then(result => {
+                let url = new URL('profilePic', apiBaseURL);
+                url.search = new URLSearchParams({userId: this.context.userId}).toString();
+                let options = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    method: "POST",
+                    body: JSON.stringify({'profilePic': result})
+                }
+                fetch(url, options)
+                this.setState({profilePic: result});
+            });
+            
         }
     }
 
@@ -152,14 +195,18 @@ class UserInfoForm extends Component {
                     </Typography>
                     <br/>
                     <Button
-                        variant="contained"
-                        component="label"
-                        className={classes.generalPadding}>
-                        Upload Profile Pic
-                        <input type="file" style={{ display: "none" }}/>
+                    variant="contained"
+                    component="label"
+                    className={classes.generalPadding}>
+                    Upload Profile Pic
+                    <input type="file" style={{ display: "none" }} onChange={this.selectFile}/>
                     </Button>
                     <br/>
-                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb" alt="Profile-Pic" className={classes.profilePic}/>
+                    <Typography variant="h6" className={classes.errorMessage}>
+                        {this.state.imageError}
+                    </Typography>
+                    <br/>
+                    <Avatar src={`${this.state.profilePic}`} alt="" className={classes.profilePic}/>
                     <br/>
                     <Typography variant="h6" className={classes.generalPadding}>
                         Choose Your Favorite Teams!

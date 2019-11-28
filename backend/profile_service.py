@@ -4,8 +4,9 @@ import Repository as db
 from Model import User
 from ViewModel import jsonify, UserView
 
-from flask import Blueprint, request
+from flask import Blueprint, request, send_file
 from flask_api import status
+import base64
 
 profile = Blueprint('profile', __name__)
 
@@ -61,6 +62,28 @@ def add_user():
     db.add_user(new_user)
     new_user = db.get_user_by_email(new_user.email)
     return jsonify({'userId': new_user._id})
+
+@profile.route('/profilePic', methods=['GET', 'POST'])
+def get_profile_pic():
+    """
+    Params: userId = <value>
+
+    Response: image or empty
+    """
+    if 'userId' not in request.args:
+        return {'invalid_key': 'Can only search for profile picture by ID'}, status.HTTP_400_BAD_REQUEST
+    user = db.get_user_by_id(request.args['userId'])
+    if user:
+        if request.method == 'GET':
+            if hasattr(user, 'profilePic') :
+                return jsonify({'profilePic': user.profilePic})
+            else:
+                return ''
+        else:
+            db.update_user_profile_pic(request.args['userId'], request.json['profilePic'])
+            return "", status.HTTP_200_OK
+    else:
+        return {'no_such_user': 'Could not find user with provided ID'}, status.HTTP_400_BAD_REQUEST
 
 @profile.route('/updateUser', methods=['POST'])
 def update_user():

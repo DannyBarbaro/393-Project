@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { apiBaseURL } from "../App";
+import { apiBaseURL } from '../App';
 import UserContext from '../UserContext';
 import UserInfoForm from './userInfoForm';
 import InfoViewer from './infoViewer';
@@ -60,8 +60,6 @@ class Profile extends Component {
     }
 
     render() {
-        console.log('profile')
-        console.log(this.state)
         if (this.state.invalid) {
             return <Redirect to='/home' />
         }
