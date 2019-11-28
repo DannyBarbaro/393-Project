@@ -10,9 +10,21 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
-import { Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
+    root:{
+        flexGrow: 1,
+    },
+    rightContainer:{
+        background: '#000000',
+        height: '90vh',
+        minHeight: 500,
+    },
+    outer: {
+        width: '100vw'
+    }
 });
 
 class Groups extends Component {
@@ -66,36 +78,42 @@ class Groups extends Component {
         return (
             <div>
                 <MenuBar pageName={'Groups'}/>
-
-                {!!this.state.groups &&
-                    <div>
-                    <Typography variant="h5">My Groups</Typography>
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Group Name</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.groups.map((group, index) => (
-                            <TableRow key={index}>
-                                <TableCell component="th" scope="row">
-                                    {group.name}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                    </div>
-                    // <div>
-                    //     <ul>
-                    //         {this.state.groups.map((group, index) => (
-                    //             <li key={index}><Link to={'/groups/'+group.id}>{group.name}</Link>
-                    //             <button name={group.id} onClick={this.onLeave}>Leave</button></li>))}
-                    //     </ul>
-                    // </div>
-                }
-                <Button name="new-group" variant="contained" onClick={() => this.setState({newGroup: true})}>Create New Group</Button>
+                <Grid container className={classes.outer}>
+                    <Grid item xs={12} sm={4}>
+                        {!!this.state.groups &&
+                            <div>
+                            <Typography variant="h5">My Groups</Typography>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Group Name</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {this.state.groups.map((group, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell component="th" scope="row">
+                                            {group.name}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </div>
+                            // <div>
+                            //     <ul>
+                            //         {this.state.groups.map((group, index) => (
+                            //             <li key={index}><Link to={'/groups/'+group.id}>{group.name}</Link>
+                            //             <button name={group.id} onClick={this.onLeave}>Leave</button></li>))}
+                            //     </ul>
+                            // </div>
+                    }
+                    <Button name="new-group" variant="contained" onClick={() => this.setState({newGroup: true})}>Create New Group</Button>
+                    </Grid>
+                    <Grid item xs={12} sm={8} className={classes.rightContainer}>
+                        
+                    </Grid>
+                </Grid>
             </div>
         );
     }
