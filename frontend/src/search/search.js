@@ -170,9 +170,9 @@ class Search extends Component {
                                 <TableCell component="th" scope="row">
                                     {group.name}
                                 </TableCell>
-                                <TableCell align="right">{group.eventId}</TableCell>
+                                <TableCell align="right">{group.eventName}</TableCell>
                                 <TableCell align="right">{group.members.length}</TableCell>
-                                <TableCell align="right">{group.ownerId}</TableCell>
+                                <TableCell align="right">{group.ownerName}</TableCell>
                                 <TableCell align="right">
                                     <Fab variant="extended" color="primary" id={group.id} onClick={this.onJoin}>
                                         <Typography id={group.id} onClick={this.onJoin}>Join</Typography>

@@ -98,7 +98,19 @@ def get_all_groups():
 
     Response: {"groups" : [<obj>]}
     """
-    return jsonify({'groups': [GroupView(g) for g in db.get_all_groups()]}), status.HTTP_200_OK
+    groups = []
+    for g in db.get_all_groups():
+        groupModel = GroupView(g)
+        event = None
+        if hasattr(groupModel, 'eventId'):
+            event = db.get_event_by_id(groupModel.eventId)
+        groupModel.__setattr__('eventName', event.event if event != None else 'UNKNOWN EVENT')
+        owner = None
+        if hasattr(groupModel, 'ownerId'):
+            owner = db.get_user_by_id(groupModel.ownerId)
+        groupModel.__setattr__('ownerName', owner.name if owner != None else 'NO OWNER')
+        groups.append(groupModel)
+    return jsonify({'groups': groups}), status.HTTP_200_OK
 
 @group.route('/groups/mine')
 def get_user_groups():

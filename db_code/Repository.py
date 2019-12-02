@@ -68,3 +68,8 @@ def get_groups_with_user(user_id):
     groups = db.groups
     user_groups = groups.aggregate([{"$match": {'members': user_id}}])
     return [Model.Group(g) for g in user_groups]
+
+def get_event_by_id(event_id):
+    events = db.events
+    result = events.find_one({'_id': ObjectId(event_id)})
+    return Model.Event(result) if result else None
