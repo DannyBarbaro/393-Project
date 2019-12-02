@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { apiBaseURL } from '../App';
 import { Redirect } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import { fade, withStyles } from '@material-ui/core/styles';
 import MenuBar from '../global-components/menuBar';
 import UserContext from '../UserContext';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,7 +15,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-
+import Fab from '@material-ui/core/Fab';
 
 const styles = theme => ({
     root: {
@@ -40,17 +40,21 @@ const styles = theme => ({
         width: '100vw',
         background : '#000000',
     },
+    headerRow: {
+        background : '#100000',
+    },
     search: {
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: theme.palette.common.white,
+        backgroundColor: fade(theme.palette.common.white, 0.15),
         '&:hover': {
-            backgroundColor: theme.palette.common.white,
+            backgroundColor: fade(theme.palette.common.white, 0.25),
         },
+        marginRight: theme.spacing(2),
         marginLeft: 0,
         width: '100%',
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
+            marginLeft: theme.spacing(3),
             width: 'auto',
         },
     },
@@ -63,18 +67,15 @@ const styles = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
-        inputRoot: {
+    inputRoot: {
         color: 'inherit',
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 7),
         transition: theme.transitions.create('width'),
         width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            width: 120,
-            '&:focus': {
-                width: 200,
-            },
+        [theme.breakpoints.up('md')]: {
+            width: 200,
         },
     },
 });
@@ -110,17 +111,17 @@ class Search extends Component {
                   err => console.log(err));
     }
 
-    onJoin(e) {
-        let target = e.target;
+    onJoin(event) {
+        let target = event.target;
         let options = {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ userId: this.context.userId, groupId: target.name })
+            body: JSON.stringify({ userId: this.context.userId, groupId: target.id })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
-            .then(() => this.setState({toGroups: true, groupId: target.name}),
+            .then(() => this.setState({toGroups: true, groupId: target.id}),
                   err => console.log(err))
     }
 
@@ -147,46 +148,41 @@ class Search extends Component {
                                 root: classes.inputRoot,
                                 input: classes.inputInput,
                             }}
-                            inputProps={{ 'aria-label': 'search' }}/>
+                            inputProps={{ 'aria-label': 'search' }}
+                            />
                         </div>
                     </Toolbar>
                 </AppBar>
                 <Paper className={classes.root}>
-                    <Table className={classes.table} aria-label="simple table">
+                    <Table stickyHeader className={classes.table} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Dessert (100g serving)</TableCell>
-                                <TableCell align="right">Calories</TableCell>
-                                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                                <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                <TableCell>Group Name</TableCell>
+                                <TableCell align="right">Event</TableCell>
+                                <TableCell align="right">Number of Members</TableCell>
+                                <TableCell align="right">Owner</TableCell>
+                                <TableCell align="right"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {this.state.rows.map(row => (
-                            <TableRow key={row.name}>
+                        {this.state.groups.map((group, index) => (
+                            <TableRow key={index}>
                                 <TableCell component="th" scope="row">
-                                    {row.name}
+                                    {group.name}
                                 </TableCell>
-                                <TableCell align="right">{row.calories}</TableCell>
-                                <TableCell align="right">{row.fat}</TableCell>
-                                <TableCell align="right">{row.carbs}</TableCell>
-                                <TableCell align="right">{row.protein}</TableCell>
+                                <TableCell align="right">{group.eventId}</TableCell>
+                                <TableCell align="right">{group.members.length}</TableCell>
+                                <TableCell align="right">{group.ownerId}</TableCell>
+                                <TableCell align="right">
+                                    <Fab variant="extended" color="primary" id={group.id} onClick={this.onJoin}>
+                                        <Typography id={group.id} onClick={this.onJoin}>Join</Typography>
+                                    </Fab>
+                                </TableCell>
                             </TableRow>
                         ))}
                         </TableBody>
                     </Table>
-                    </Paper>
-                {this.state.groups &&
-                    <div>
-                        <h2>Take a look at these here groups!</h2>
-                        <ul>
-                            {this.state.groups.map((group, index) => (
-                                <li key={index}>{group.name}
-                                    <button name={group.id} onClick={this.onJoin}>Join</button></li>))}
-                        </ul>
-                    </div>
-                }
+                </Paper>
             </div>
         );
     }
