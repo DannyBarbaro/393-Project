@@ -9,6 +9,12 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
+    closeButton: {
+        marginRight: 15,
+    },
+    headerTitle: {
+        flexGrow: 1,
+    },
     title:{
         paddingTop: 10,
         paddingLeft: 15
@@ -28,7 +34,7 @@ class ShowGroup extends Component {
             eventName: '',
             visibility: '',
         }
-        this.groupId = props.match.params.id;
+        this.groupId = this.props.groupId;
     }
 
     componentDidMount() {
@@ -57,15 +63,16 @@ class ShowGroup extends Component {
         const { classes } = this.props;
         return (
             <div>
-                <AppBar position="sticky">
+                <AppBar color="secondary" position="sticky">
                     <Toolbar>
                         <IconButton
                             edge="start"
+                            className={classes.closeButton}
                             component={Link}
                             to='/groups'>
                             <CloseIcon/>
                         </IconButton>
-                        <Typography variant="h5" className={classes.title}>
+                        <Typography variant="h5" className={classes.headerTitle}>
                             Group Information
                         </Typography>
                     </Toolbar>

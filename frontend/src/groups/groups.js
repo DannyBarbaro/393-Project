@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom'
 import { apiBaseURL } from '../App';
 import { withStyles } from '@material-ui/core/styles';
+import ShowGroup from './showGroup';
 import MenuBar from '../global-components/menuBar';
 import UserContext from '../UserContext'
 import Table from '@material-ui/core/Table';
@@ -41,6 +42,7 @@ class Groups extends Component {
             newGroup: false,
             search: false,
         }
+        this.groupId = props.match.params.id;
         this.onLeave = this.onLeave.bind(this);
     }
 
@@ -120,7 +122,9 @@ class Groups extends Component {
                         onClick={() => this.setState({newGroup: true})}>Create New Group</Button>
                     </Grid>
                     <Grid item xs={12} sm={8} className={classes.rightContainer}>
-                        
+                        { this.props.location.pathname.substring(8) !== '' &&
+                            <ShowGroup groupId={this.props.location.pathname.substring(8)}/>
+                        }
                     </Grid>
                 </Grid>
             </div>
