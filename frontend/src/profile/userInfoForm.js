@@ -95,7 +95,8 @@ class UserInfoForm extends Component {
                 errorMessage: false,
             };
         }
-        this.callback = props.callback
+        this.callback = props.callback;
+        this.cancelCallback = props.cancelCallback;
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.selectFile = this.selectFile.bind(this);
@@ -325,7 +326,7 @@ class UserInfoForm extends Component {
                         <Typography variant="h6" className={classes.errorMessage}>Please make sure you filled everything out correctly!</Typography>
                     }
                     { !this.state.isNew &&
-                        <Button variant="contained" color="secondary" className={classes.generalPadding}  onClick={this.state.callback}>
+                        <Button variant="contained" color="secondary" className={classes.generalPadding} onClick={this.cancelCallback}>
                             Cancel
                         </Button>
                     }

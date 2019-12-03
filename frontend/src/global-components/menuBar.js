@@ -24,15 +24,12 @@ const styles = theme => ({
   },
 });
 
-//const [anchorEl, setAnchorEl] = React.useState(null);
-
 class MenuBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       pageName: props.pageName,
-      anchorEl: null,
-      setAnchorEl: null 
+      anchorEl: null
     }
     this.handleMenuClick= this.handleMenuClick.bind(this);
     this.handleMenuClose= this.handleMenuClose.bind(this);
@@ -40,9 +37,7 @@ class MenuBar extends Component {
 
   //functions
   handleMenuClick(e) {
-    this.state.ancherEl
-          ? this.setState({ anchorEl: null })
-          : this.setState({ anchorEl: e.currentTarget });
+    this.setState({ anchorEl: e.currentTarget });
   };
 
   handleMenuClose() {
@@ -51,16 +46,15 @@ class MenuBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { anchorEl } = this.state;
     return(
       <AppBar position="sticky">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} onClick={this.handleMenuClick}>
-            <MenuIcon/>
+          <IconButton edge="start" className={classes.menuButton}>
+            <MenuIcon onClick={this.handleMenuClick}/>
             <Menu
-              anchorEl={anchorEl}
+              anchorEl={this.state.anchorEl}
               keepMounted
-              open={Boolean(anchorEl)}
+              open={!!this.state.anchorEl}
               onClose={this.handleMenuClose}
               TransitionComponent={Fade}>
               <MenuItem onClick={this.handleMenuClose} component={Link} to="/profile">
