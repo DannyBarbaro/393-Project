@@ -1,8 +1,24 @@
-import React from 'react';
-import {apiBaseURL} from '../App'
-import {Link} from 'react-router-dom'
+import React, { Component } from 'react';
+import { apiBaseURL } from '../App';
+import { Link } from 'react-router-dom';
+import { withStyles } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 
-export default class ShowGroup extends React.Component {
+const styles = theme => ({
+    title:{
+        paddingTop: 10,
+        paddingLeft: 15
+    },
+    value:{
+        paddingLeft: 35
+    }
+});
+
+class ShowGroup extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -38,20 +54,37 @@ export default class ShowGroup extends React.Component {
     }
     
     render() {
+        const { classes } = this.props;
         return (
             <div>
-                <h1>All that good group stuff</h1>
-                <p>Group name: {this.state.groupName}</p>
-                <p>Owner Name: {this.state.ownerName}</p>
-                <p>Group Members:</p>
-                <ul>
-                    {this.state.memberNames.map((name, index) => (
-                        <li key={index}>{name}</li>))}
-                </ul>
-                <p>Group visibility: {this.state.visibility}</p>
-                <br />
-                <Link to='/groups'>Back to Groups</Link>
+                <AppBar position="sticky">
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            component={Link}
+                            to='/groups'>
+                            <CloseIcon/>
+                        </IconButton>
+                        <Typography variant="h5" className={classes.title}>
+                            Group Information
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Typography variant="h6" className={classes.title}>Group Name:</Typography>
+                <Typography variant="p" className={classes.value}>{this.state.groupName}</Typography>
+                <Typography variant="h6" className={classes.title}>Owner Name:</Typography>
+                <Typography variant="p" className={classes.value}>{this.state.ownerName}</Typography>
+                <Typography variant="h6" className={classes.title}>Group Members:</Typography>
+                {this.state.memberNames.map((name, index) => (
+                    <Typography variant="p" key={index} className={classes.value}>{name}</Typography>))
+                }
+                <Typography variant="h5" className={classes.title}>Group Visibility:</Typography>
+                <Typography variant="h6" className={classes.value}>{this.state.visibility}</Typography>
+                <br/>
+                {}
             </div>
         )
     }
 }
+
+export default withStyles(styles, { withTheme: true })(ShowGroup)

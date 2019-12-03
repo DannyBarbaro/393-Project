@@ -26,7 +26,6 @@ def create_group():
     new_group = Group(request.json['group'])
     if db.get_group_by_owner(new_group.owner_id, new_group.event_id):
         return {'group_exists': 'This group has been created already'}, status.HTTP_400_BAD_REQUEST
-    
     db.add_group(new_group)
     group = GroupView(db.get_group_by_owner(new_group.owner_id, new_group.event_id))
     return jsonify({'groupId': group.id}), status.HTTP_200_OK

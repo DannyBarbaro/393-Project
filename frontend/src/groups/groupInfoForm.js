@@ -7,47 +7,35 @@ import Box from '@material-ui/core/Box';
 import MenuItem from '@material-ui/core/MenuItem';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const styles = theme => ({
     bigBox: {
-        backgroundColor: '#1c1c1c',
+        backgroundColor: theme.palette.background.default,
     },
     containerBox: {
         width: '66vw',
         minWidth: 500,
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: '#1c1c1c',
         margin: 'auto',
         padding: 30
-    },
-    xsField: {
-        margin: 10,
-        width: 100,
-    },
-    sField: {
-        margin: 10,
-        width: 200,
     },
     mField: {
         margin: 10,
         width: 300,
     },
-    lField: {
-        margin: 10,
-        width: 400,
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 150,
+    },
+    labelPadding: {
+        marginLeft: 10,
+        marginTop: 10,
     },
     generalPadding: {
         margin: 10,
-    },
-    profilePic: {
-        width: 200,
-        height: 200,
-    },
-    chip: {
-        margin: 3,
-    },
-    teamIcon: {
-        width: '100%',
     },
     errorMessage: {
         color: '#f54235',
@@ -64,24 +52,31 @@ class GroupInfoForm extends Component {
             eventName: 'Superb Owl',
             eventId: '5dd9c9aee4b9b13f41d9fa8d', //TODO hardcoded for a single event
             visibility: 'public',
-            groupSize: '',
+            groupSize: 4,
+            errorMessage: false,
         }
         this.onChange = this.onChange.bind(this)
+        this.toggleButton = this.toggleButton.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
 
     onChange(e) {
         let target = e.target;
-        console.log(target)
-        console.log(target.name)
-        console.log(target.value)
         this.setState({[target.name]: target.value});
-        console.log(this.state.visibility)
+    }
+
+    toggleButton(e){
+        let target = e.target
+        this.setState({visibility: target.id});
     }
 
     onSubmit(e) {
         e.preventDefault();
-        this.callback(this.state);
+        if(this.checkAll()) {
+            this.setState({errorMessage: true});
+        } else {
+            this.callback(this.state)
+        }
     }
 
     render() {
@@ -90,7 +85,7 @@ class GroupInfoForm extends Component {
             <div className={classes.bigBox}>
                 <Box className={classes.containerBox}>
                     <TextField
-                        className={classes.sField}
+                        className={classes.mField}
                         label="Group Name"
                         name="name"
                         margin="normal"
@@ -98,11 +93,11 @@ class GroupInfoForm extends Component {
                         onChange={this.onChange}
                         value={this.state.name}
                         error={this.requiredCheck(this.state.name)}
-                        helperText={this.requiredCheck(this.state.name) ? 'Username Required' : ''}/>
+                        helperText={this.requiredCheck(this.state.name) ? 'Group Name Required' : ''}/>
                     <br/>
                     <TextField
                         disabled
-                        className={classes.sField}
+                        className={classes.mField}
                         label="Event Name"
                         name="eventName"
                         margin="normal"
@@ -112,64 +107,60 @@ class GroupInfoForm extends Component {
                         error={this.requiredCheck(this.state.eventName)}
                         helperText={this.requiredCheck(this.state.eventName) ? 'Event is Required' : ''}/>
                     <br/>
-                    <Select
-                        labelId="group-size-select-label"
-                        variant="outlined"
-                        value={this.state.groupSize}
-                        onChange={this.onChange}>
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={6}>6</MenuItem>
-                        <MenuItem value={7}>7</MenuItem>
-                        <MenuItem value={8}>8</MenuItem>
-                    </Select>
+                    <FormControl variant="filled" className={classes.formControl}>
+                        <InputLabel className={classes.labelPadding} id="size-select-label">
+                            Group Size
+                        </InputLabel>
+                        <Select
+                            labelId="size-select-label"
+                            name="groupSize"
+                            value={this.state.groupSize}
+                            className={classes.generalPadding}
+                            onChange={this.onChange}>
+                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={3}>3</MenuItem>
+                            <MenuItem value={4}>4</MenuItem>
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={6}>6</MenuItem>
+                            <MenuItem value={7}>7</MenuItem>
+                            <MenuItem value={8}>8</MenuItem>
+                        </Select>
+                    </FormControl>
                     <br/>
                     <ToggleButtonGroup
+                        className={classes.generalPadding}
                         value={this.state.visibility}
                         name="visibility"
                         exclusive
                         onChange={this.onChange}>
-                        <ToggleButton name="visibility" value={"public"} color="secondary">
-                            <Typography name="visibility" value={"private"} onClick={this.onChange}>Public</Typography>
+                        <ToggleButton name="visibility" value={"public"}>
+                            <Typography id="public" onClick={this.toggleButton}>Public</Typography>
                         </ToggleButton>
-                        <ToggleButton name="visibility" value={"private"} color="secondary">
-                            <Typography name="visibility" value={"private"} onClick={this.onChange}>Private</Typography>
+                        <ToggleButton name="visibility" value={"private"}>
+                            <Typography id="private" onClick={this.toggleButton}>Private</Typography>
                         </ToggleButton>
                     </ToggleButtonGroup>
-                    {/* <input name="visibility" onChange={this.onChange} value={this.state.visibility} /> */}
                     <br/>
-                    <Button variant="contained" color="primary" onClick={this.onSubmit}>Submit</Button>
+                    { this.state.errorMessage &&
+                        <Typography variant="h6" className={classes.errorMessage}>Please make sure you filled everything out correctly!</Typography>
+                    }
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.generalPadding}
+                        onClick={this.onSubmit}>
+                        Submit
+                    </Button>
 
                 </Box>
             </div>
-            // <form onSubmit={this.onSubmit}>
-            //     <label>
-            //         Group Name
-            //         <input name="name" onChange={this.onChange} value={this.state.name} />
-            //     </label>
-            //     <br />
-            //     <label>
-            //         Event Name
-            //         {/*TODO undisable this button*/}
-            //         <input name="eventName" disabled onChange={this.onChange} value={this.state.eventName} />
-            //     </label>
-            //     <br />
-            //     <label>
-            //         Visibility
-            //         <input name="visibility" onChange={this.onChange} value={this.state.visibility} />
-            //     </label>
-            //     <br />
-            //     <input type="submit" value="Submit" />
-            // </form>
         );
     }
 
     requiredCheck(param) {return !param || param.length === 0}
+    checkAll(){
+        return this.requiredCheck(this.state.name) || this.requiredCheck(this.state.eventName)
+    }
 }
 
 export default withStyles(styles, { withTheme: true })(GroupInfoForm)
