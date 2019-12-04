@@ -40,7 +40,6 @@ def process_login():
     if user:
         return jsonify({'newUser': False, 'userId': UserView(user).id})
     else:
-
         return jsonify({'newUser': True, 'userId': None})
 
 @profile.route('/addUser', methods=['POST'])

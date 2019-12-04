@@ -1,5 +1,5 @@
 import os, sys
-from Model import Group
+from Model import Group, UserSchedule
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
 from ViewModel import jsonify, GroupView
@@ -62,6 +62,8 @@ def join_group():
     if group:
         if request.json['userId'] not in group.members:
             db.add_user_to_group(request.json['userId'], group)
+            event = db.get_event(group.event_id)
+            db.create_schedule(UserSchedule({'time_blocks': [None for _ in range(event.period_count)], 'owner': request.json['userId'], 'group_num': request.json['groupId']}))
             return "", status.HTTP_200_OK
         else:
             return jsonify({'errorMessage': 'User is already a member of this group'}), status.HTTP_400_BAD_REQUEST
@@ -84,6 +86,7 @@ def leave_group():
     if group:
         if request.json['userId'] in group.members:
             db.remove_user_from_group(request.json['userId'], group)
+            db.remove_schedule_of_user_in_group(request.json['userId'], request.json['groupId'])
             return "", status.HTTP_200_OK
         else:
             return jsonify({'errorMessage': 'User does not belong to specified group'}), status.HTTP_400_BAD_REQUEST
@@ -103,11 +106,10 @@ def get_all_groups():
         event = None
         if hasattr(groupModel, 'eventId'):
             event = db.get_event_by_id(groupModel.eventId)
-        groupModel.__setattr__('eventName', event.event if event != None else 'UNKNOWN EVENT')
-        owner = None
-        if hasattr(groupModel, 'ownerId'):
-            owner = db.get_user_by_id(groupModel.ownerId)
-        groupModel.__setattr__('ownerName', owner.name if owner != None else 'NO OWNER')
+        groupModel.eventName = event.event_name if event else 'UNKNOWN EVENT'
+
+        owner = db.get_user_by_id(groupModel.ownerId)
+        groupModel.ownerName = owner.name
         groups.append(groupModel)
     return jsonify({'groups': groups}), status.HTTP_200_OK
 
