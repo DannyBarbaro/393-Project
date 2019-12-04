@@ -24,6 +24,10 @@ class ScheduleEditor extends React.Component {
         this.cookies = props.cookies;
         this.state = {
             groupObj: {},
+            first: '',
+            second: '',
+            third: '',
+            fourth: '',
         }
         this.onChange = this.onChange.bind(this);
     }
@@ -39,33 +43,41 @@ class ScheduleEditor extends React.Component {
             fetch(url)
             .then(seats => seats.json())
             .then(seats => {
-                this.setState({groupObj: resp.group, openSeats: seats})
+                this.setState({groupObj: resp.group, openSeats: seats.openSeats})
             })
         });
     }
 
     onChange(e) {
-        let key = e.target.name;
-        console.log(key)
+        let target = e.target;
+        this.setState({[target.name]: target.value});
+
+        const updated = {
+            first: this.state.first,
+            second: this.state.second,
+            third: this.state.third,
+            fourth: this.state.fourth,
+        };
+        this.props.callback(Object.assign(updated, {[target.name]: target.value}))
     }
 
     render() {
-        console.log(this.state)
         const { classes } = this.props;
         if (!this.state.openSeats) {
             return null;
         }
         return (
-            <FormGroup>
+            <FormGroup row>
                 <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="first">
                         First seat
                     </InputLabel>
                     <Select
                         labelId="first"
-                        id={0}
-                        value={''}
+                        name="first"
+                        value={this.state.first}
                         className={classes.generalPadding}
+                        disabled={!this.props.enabled}
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[0].map((seat, index) => {
@@ -77,13 +89,14 @@ class ScheduleEditor extends React.Component {
 
                 <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="second">
-                        First seat
+                        Second seat
                     </InputLabel>
                     <Select
                         labelId="second"
-                        id={1}
-                        value={''}
+                        name="second"
+                        value={this.state.second}
                         className={classes.generalPadding}
+                        disabled={!this.props.enabled}
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[1].map((seat, index) => {
@@ -95,13 +108,14 @@ class ScheduleEditor extends React.Component {
 
                 <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="third">
-                        First seat
+                        Third seat
                     </InputLabel>
                     <Select
                         labelId="third"
-                        id={2}
-                        value={''}
+                        name="third"
+                        value={this.state.third}
                         className={classes.generalPadding}
+                        disabled={!this.props.enabled}
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[2].map((seat, index) => {
@@ -113,13 +127,14 @@ class ScheduleEditor extends React.Component {
                 
                 <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="fourth">
-                        First seat
+                        Fourth seat
                     </InputLabel>
                     <Select
                         labelId="fourth"
-                        id={3}
-                        value={''}
+                        name="fourth"
+                        value={this.state.fourth}
                         className={classes.generalPadding}
+                        disabled={!this.props.enabled}
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[3].map((seat, index) => {

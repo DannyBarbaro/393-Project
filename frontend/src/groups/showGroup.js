@@ -50,6 +50,7 @@ class ShowGroup extends Component {
             eventName: '',
             visibility: '',
             isMember: true,
+            userSchedule: {},
         }
         this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
@@ -81,7 +82,13 @@ class ShowGroup extends Component {
 
             //TODO get name of event
             this.setState({groupName: resp.group.name, visibility: resp.group.visibility})
-        })
+        });
+
+        url = new URL('/profile', apiBaseURL)
+        url.search = new URLSearchParams({userId: this.cookies.get('userId')})
+        fetch(url)
+        .then(resp => resp.json())
+        .then(resp => this.setState({username: resp.user.name}))
     }
 
     onJoin(e) {
@@ -154,8 +161,17 @@ class ShowGroup extends Component {
                         </Paper>
                     </Grid>
                 </Grid>
-
-                <ScheduleEditor groupId={this.groupId} />
+                
+                {
+                    this.state.memberNames.map(member => {
+                        if (member === this.state.username) {
+                            return <ScheduleEditor enabled groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                        } else {
+                            return <ScheduleEditor groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                        }
+                    })
+                }
+                
                                 
             </div>
         )
