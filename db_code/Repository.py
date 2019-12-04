@@ -30,8 +30,9 @@ def update_user_profile_pic(id, pic):
 def update_user(new_user):
     users = db.users
     new_user = new_user.__dict__
+    user_id = new_user['_id']
     del new_user['_id']
-    users.update_one({'_id': new_user._id}, {'$set' : new_user})
+    users.update_one({'_id': user_id}, {'$set' : new_user})
     
 def get_group_by_id(group_id):
     groups = db.groups

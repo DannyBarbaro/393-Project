@@ -54,6 +54,7 @@ class ShowGroup extends Component {
             ownerName: '',
             eventName: '',
             visibility: '',
+            isMember: true,
         }
         this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
@@ -77,6 +78,12 @@ class ShowGroup extends Component {
             fetch(url)
             .then(resp => resp.json())
             .then(resp => this.setState({ownerName: resp.usernames[0]}))
+
+            url = new URL('/groups/mine', apiBaseURL)
+            url.search = new URLSearchParams({userId: this.cookies.get('userId')}).toString()
+            fetch(url)
+            .then(resp => resp.json())
+            .then(resp => this.setState({isMember: resp.groups.map(x => x.id).includes(this.groupId)}))
 
             //TODO get name of event
             this.setState({groupName: resp.group.name, visibility: resp.group.visibility})
@@ -173,8 +180,7 @@ class ShowGroup extends Component {
     }
     
     notAMember() {
-        // TODO: make this check that I am not currently in this group
-        return true;
+        return !this.state.isMember;
     }
 }
 
