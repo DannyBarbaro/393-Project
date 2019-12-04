@@ -110,3 +110,8 @@ def get_all_future_events():
     now = datetime.utcnow()
     future_events = events.aggregate([{"$match": {'time': {'$gt': now}}}])
     return [Model.Event(e) for e in future_events]
+
+def get_event_by_id(event_id):
+    events = db.events
+    result = events.find_one({'_id': ObjectId(event_id)})
+    return Model.Event(result) if result else None

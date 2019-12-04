@@ -23,10 +23,12 @@ const styles = theme => ({
     generalPadding: {
         margin: 15
     },
-    rightContainer:{
-        background: '#000000',
-        height: '90vh',
+    rightContainerFilled:{
+        height: '92vh',
         minHeight: 500,
+        borderLeft: '4px solid #000000',
+    },
+    rightContainerEmpty:{
     },
     outer: {
         width: '100vw'
@@ -123,11 +125,11 @@ class Groups extends Component {
                         className={classes.generalPadding}
                         onClick={() => this.setState({newGroup: true})}>Create New Group</Button>
                     </Grid>
-                    <Grid item xs={12} sm={8} className={classes.rightContainer}>
-                        { this.props.location.pathname.substring(8) !== '' &&
+                    { this.props.location.pathname.substring(8) !== '' &&
+                        <Grid item xs={12} sm={8} className={classes.rightContainerFilled}>
                             <ShowGroup groupId={this.props.location.pathname.substring(8)}/>
-                        }
-                    </Grid>
+                        </Grid>
+                    }
                 </Grid>
             </div>
         );
