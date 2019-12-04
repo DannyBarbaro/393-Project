@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from datetime import datetime
 
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'backend'))
@@ -68,3 +69,44 @@ def get_groups_with_user(user_id):
     groups = db.groups
     user_groups = groups.aggregate([{"$match": {'members': user_id}}])
     return [Model.Group(g) for g in user_groups]
+
+def get_schedules_for_group(group_id):
+    schedules = db.schedules
+    group_schedules = schedules.find({'group_num': group_id})
+    return [Model.UserSchedule(s) for s in group_schedules]
+
+def add_schedule(schedule):
+    schedules = db.schedules
+    schedules.insert_one(schedule.__dict__)
+
+def get_schedule_of_user_in_group(user_id, group_id):
+    schedules = db.schedules
+    schedule = schedules.find_one({'owner': user_id, 'group_num': group_id})
+    return Model.UserSchedule(schedule)
+
+def update_schedule_of_user_in_group(user_id, group_id, time_blocks):
+    schedules = db.schedules
+    schedules.update_one({'owner': user_id, 'group_num': group_id}, {'$set': {'time_blocks': time_blocks}})
+
+def remove_schedule_of_user_in_group(user_id, group_id):
+    schedules = db.schedules
+    schedules.delete_many({'owner': user_id, 'group_num': group_id})
+
+def get_event(event_id):
+    events = db.events
+    event = events.find_one({'_id': ObjectId(event_id)})
+    return Model.Event(event)
+
+def add_event(event):
+    events = db.events
+    events.insert_one(event.__dict__)
+
+def get_all_events():
+    events = db.events
+    return events.find()
+
+def get_all_future_events():
+    events = db.events
+    now = datetime.utcnow()
+    future_events = events.aggregate([{"$match": {'time': {'$gt': now}}}])
+    return [Model.Event(e) for e in future_events]

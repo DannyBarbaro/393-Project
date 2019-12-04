@@ -23,22 +23,27 @@ class Event:
             self.event_type = source_obj['event_type']
         if 'eventType' in source_obj:
             self.event_type = source_obj['eventType']
+        if 'seats' in source_obj:
+            self.seats = source_obj['seats']
+        if 'period_count' in source_obj:
+            self.period_count = source_obj['period_count']
+        
 
-class GroupSchedule:
+# class GroupSchedule:
 
-    def __init__(self, source_obj):
-        if '_id' in source_obj:
-            self._id = source_obj['id']
-        if 'id' in source_obj:
-            self._id = source_obj['id']
-        if 'user_schedules' in source_obj:
-            self.user_schedules = source_obj['user_schedules']
-        if 'userSchedules' in source_obj:
-            self.user_schedules = source_obj['userSchedules']
-        if 'group_num' in source_obj:
-            self.group_num = source_obj['group_num']
-        if 'groupNum' in source_obj:
-            self.group_num = source_obj['groupNum']
+#     def __init__(self, source_obj):
+#         if '_id' in source_obj:
+#             self._id = source_obj['id']
+#         if 'id' in source_obj:
+#             self._id = source_obj['id']
+#         if 'user_schedules' in source_obj:
+#             self.user_schedules = source_obj['user_schedules']
+#         if 'userSchedules' in source_obj:
+#             self.user_schedules = source_obj['userSchedules']
+        # if 'group_num' in source_obj:
+        #     self.group_num = source_obj['group_num']
+        # if 'groupNum' in source_obj:
+        #     self.group_num = source_obj['groupNum']
 
 class Group:
 
@@ -65,9 +70,11 @@ class Group:
             self.owner_id = source_obj['owner_id']
         if 'ownerId' in source_obj:
             self.owner_id = source_obj['ownerId']
-
+        if 'seats' in source_obj:
+            self.seats = source_obj['seats']
+            
 class UserSchedule:
-
+    
     def __init__(self, source_obj):
         if '_id' in source_obj:
             self._id = source_obj['_id']
@@ -79,6 +86,10 @@ class UserSchedule:
             self.time_blocks = source_obj['timeBlocks']
         if 'owner' in source_obj:
             self.owner = source_obj['owner']
+        if 'group_num' in source_obj:
+            self.group_num = source_obj['group_num']
+        if 'groupNum' in source_obj:
+            self.group_num = source_obj['groupNum']
 
 class User:
 

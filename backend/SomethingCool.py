@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 import profile_service as profile
 import group_service as groups
+import schedule_service as schedules
 # import blueprint files
 # ex: from Blueprint import test_api
 
@@ -18,6 +19,7 @@ def create_app():
 
     app.register_blueprint(profile.profile)
     app.register_blueprint(groups.group)
+    app.register_blueprint(schedules.schedule)
 
     return app
 
