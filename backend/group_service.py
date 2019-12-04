@@ -106,11 +106,10 @@ def get_all_groups():
         event = None
         if hasattr(groupModel, 'eventId'):
             event = db.get_event_by_id(groupModel.eventId)
-        groupModel.__setattr__('eventName', event.event if event != None else 'UNKNOWN EVENT')
-        owner = None
-        if hasattr(groupModel, 'ownerId'):
-            owner = db.get_user_by_id(groupModel.ownerId)
-        groupModel.__setattr__('ownerName', owner.name if owner != None else 'NO OWNER')
+        groupModel.eventName = event.event_name if event else 'UNKNOWN EVENT'
+
+        owner = db.get_user_by_id(groupModel.ownerId)
+        groupModel.ownerName = owner.name
         groups.append(groupModel)
     return jsonify({'groups': groups}), status.HTTP_200_OK
 

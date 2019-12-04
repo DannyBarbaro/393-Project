@@ -17,14 +17,14 @@ def get_schedules_for_group():
     Response: {"schedules": [[<seat>]]}
     """
     if 'groupId' not in request.args:
-        return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
 
     group = db.get_group_by_id(request.args['groupId'])
     if group:
-        schedules = db.get_schedules_for_group(group.id)
+        schedules = [ViewModel.UserScheduleView(x) for x in db.get_schedules_for_group(group.id)]
         return jsonify({'schedules': schedules})
     else:
-        return {'group_not_found': "Requested group could not be found"}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': "Requested group could not be found"}), status.HTTP_400_BAD_REQUEST
 
 @schedule.route('/updateSchedule', methods=['POST'])
 def update_schedule():
@@ -34,13 +34,14 @@ def update_schedule():
     Response: empty
     """
     if 'groupId' not in request.json:
-        return {'no_group_id': 'Group id missing from request'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
     if 'userId' not in request.json:
-        return {'no_user_id': 'User id missing from request'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'User id missing from request'}), status.HTTP_400_BAD_REQUEST
     if 'seats' not in request.json:
-        return {'no_seats': 'Schedule data missing from request'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Schedule data missing from request'}), status.HTTP_400_BAD_REQUEST
     
     if db.get_schedules_of_user_in_group(request.json['userId'], request.json['groupId']):
         db.update_schedule_of_user_in_group(request.json['userId'], request.json['groupId'], request.json['seats'])
+        return '', status.HTTP_200_OK
     else:
-        return {'no_schedule_found': 'No schedule found for given user in given group'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'No schedule found for given user in given group'}), status.HTTP_400_BAD_REQUEST
