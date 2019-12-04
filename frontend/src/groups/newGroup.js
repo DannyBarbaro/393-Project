@@ -3,12 +3,12 @@ import { Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/';
 import GroupInfoForm from './groupInfoForm';
 import { apiBaseURL } from '../App';
-import UserContext from '../UserContext';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import {withCookies} from 'react-cookie';
 
 const styles = theme => ({
     description: {
@@ -23,8 +23,6 @@ const styles = theme => ({
     },
 });
 class NewGroup extends Component {
-    static contextType = UserContext;
-
     constructor(props) {
         super(props);
         this.state = {
@@ -32,13 +30,14 @@ class NewGroup extends Component {
             canceled: false,
             groupId: null,
         }
+        this.cookies = this.props.cookies;
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     onSubmit(newGroup) {
         let url = new URL('createGroup', apiBaseURL);
-        newGroup.ownerId = this.context.userId;
-        newGroup.members = [this.context.userId];
+        newGroup.ownerId = this.cookies.get('userId');
+        newGroup.members = [this.cookies.get('userId')];
         let options = {
             headers: {
                 'Content-Type': 'application/json'
@@ -83,4 +82,4 @@ class NewGroup extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(NewGroup)
+export default withCookies(withStyles(styles, { withTheme: true })(NewGroup))

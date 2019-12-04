@@ -2,11 +2,9 @@ import React from "react";
 import {apiBaseURL} from "../App";
 import {Redirect} from "react-router-dom"
 import MenuBar from '../global-components/menuBar';
-import UserContext from '../UserContext';
+import {withCookies} from 'react-cookie';
 
-export default class Search extends React.Component {
-    static contextType = UserContext
-
+class Search extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,6 +12,7 @@ export default class Search extends React.Component {
             toGroups: false,
             groupId: '',
         }
+        this.cookies = props.cookies;
         this.onJoin = this.onJoin.bind(this);
     }
 
@@ -31,7 +30,7 @@ export default class Search extends React.Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ userId: this.context.userId, groupId: target.name })
+            body: JSON.stringify({ userId: this.cookies.get('userId'), groupId: target.name })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
             .then(() => this.setState({toGroups: true, groupId: target.name}),
@@ -59,3 +58,4 @@ export default class Search extends React.Component {
         );
     }
 }
+export default withCookies(Search)

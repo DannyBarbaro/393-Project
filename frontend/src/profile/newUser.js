@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import UserInfoForm from './userInfoForm';
 import {apiBaseURL} from '../App'
-import UserContext from '../UserContext'
 import { Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import {withCookies} from 'react-cookie';
 
 const styles = theme => ({
     title: {
@@ -20,8 +20,6 @@ const styles = theme => ({
 });
 
 class NewUser extends Component {
-    static contextType = UserContext;
-
     constructor(props) {
         super(props)
         this.state = {
@@ -30,6 +28,7 @@ class NewUser extends Component {
         if (!!this.props.location) {
             this.userEmail = this.props.location.state.email;
         }
+        this.cookies = this.props.cookies;
         this.onSubmit = this.onSubmit.bind(this)
     }
 
@@ -45,7 +44,7 @@ class NewUser extends Component {
         fetch(url, options)
         .then(resp => resp.json())
         .then(resp => {
-            this.context.changeUserId(resp.userId)
+            this.cookies.set('userId', resp.userId, {path: '/'})
             this.setState({completed: true})
         });
     }
@@ -76,4 +75,4 @@ class NewUser extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(NewUser)
+export default withCookies(withStyles(styles, { withTheme: true })(NewUser))
