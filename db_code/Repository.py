@@ -64,6 +64,10 @@ def remove_user_from_group(user_id, group):
     members_list.remove(ObjectId(user_id))
     groups.update_one({'_id': group._id}, {'$set': {'members': members_list}})
 
+def set_group_seats(group_id, seats):
+    groups = db.groups
+    groups.update_one({'_id': ObjectId(group_id)}, {'$set': {'seats': seats}})
+
 def get_all_groups():
     groups = db.groups
     group_list = groups.find()
@@ -125,7 +129,7 @@ def get_all_events():
 def get_all_future_events():
     events = db.events
     now = datetime.utcnow()
-    future_events = events.aggregate([{"$match": {'time': {'$gt': now}}}])
+    future_events = events.aggregate([{"$match": {'start_time': {'$gt': now}}}])
     return [Model.Event(e) for e in future_events]
 
 def get_event_by_id(event_id):
