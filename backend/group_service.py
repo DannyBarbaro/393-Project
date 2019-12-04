@@ -61,7 +61,7 @@ def join_group():
 
     group = db.get_group_by_id(request.json['groupId'])
     if group:
-        if request.json['userId'] not in group.members:
+        if ObjectId(request.json['userId']) not in group.members:
             db.add_user_to_group(request.json['userId'], group)
             event = db.get_event(group.event_id)
             db.create_schedule(UserSchedule({'time_blocks': [None for _ in range(event.period_count)], 'owner': request.json['userId'], 'group_num': request.json['groupId']}))
@@ -85,7 +85,7 @@ def leave_group():
 
     group = db.get_group_by_id(request.json['groupId'])
     if group:
-        if request.json['userId'] in group.members:
+        if ObjectId(request.json['userId']) in group.members:
             db.remove_user_from_group(request.json['userId'], group)
             db.remove_schedule_of_user_in_group(request.json['userId'], request.json['groupId'])
             return "", status.HTTP_200_OK
