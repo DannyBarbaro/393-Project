@@ -25,3 +25,4 @@ Frontend:
   - npm install react-google-login
   - npm install @material-ui/core
   - npm install @material-ui/icons
+  - npm install react-cookie
