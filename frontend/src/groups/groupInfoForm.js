@@ -30,6 +30,10 @@ const styles = theme => ({
         margin: theme.spacing(1),
         minWidth: 150,
     },
+    formControlLong: {
+        margin: theme.spacing(1),
+        minWidth: 300,
+    },
     labelPadding: {
         marginLeft: 10,
         marginTop: 10,
@@ -79,6 +83,10 @@ class GroupInfoForm extends Component {
         }
     }
 
+    componentDidMount() {
+        
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -95,17 +103,21 @@ class GroupInfoForm extends Component {
                         error={this.requiredCheck(this.state.name)}
                         helperText={this.requiredCheck(this.state.name) ? 'Group Name Required' : ''}/>
                     <br/>
-                    <TextField
-                        disabled
-                        className={classes.mField}
-                        label="Event Name"
-                        name="eventName"
-                        margin="normal"
-                        variant="outlined"
-                        onChange={this.onChange}
-                        value={this.state.eventName}
-                        error={this.requiredCheck(this.state.eventName)}
-                        helperText={this.requiredCheck(this.state.eventName) ? 'Event is Required' : ''}/>
+                    <FormControl variant="filled" className={classes.formControlLong}>
+                        <InputLabel className={classes.labelPadding} id="event-select-label">
+                            Event
+                        </InputLabel>
+                        <Select
+                            labelId="event-select-label"
+                            name="eventName"
+                            value={this.state.eventName}
+                            className={classes.generalPadding}
+                            onChange={this.onChange}>
+                            {/* { this.state.events.map((event, index) => (
+                                <MenuItem key={index} value={event.id}>{event.name}</MenuItem>
+                            ))} */}
+                        </Select>
+                    </FormControl>
                     <br/>
                     <FormControl variant="filled" className={classes.formControl}>
                         <InputLabel className={classes.labelPadding} id="size-select-label">

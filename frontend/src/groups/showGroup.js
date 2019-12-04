@@ -167,10 +167,7 @@ class ShowGroup extends Component {
                             className={classes.bottomButton}
                             onClick={this.openMessages}>Open Messages</Button>
                     </Grid>
-                </Grid>
-
-                <ScheduleEditor />
-                                
+                </Grid>                                
             </div>
         )
     }
