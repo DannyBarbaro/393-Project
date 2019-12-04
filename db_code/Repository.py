@@ -47,6 +47,10 @@ def add_group(group):
     groups = db.groups
     groups.insert_one(group.__dict__)
 
+def remove_group(group_id):
+    groups = db.groups
+    groups.delete_many({'_id': ObjectId(group_id)})
+
 def add_user_to_group(user_id, group):
     groups = db.groups
     members_list = group.members
