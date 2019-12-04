@@ -69,7 +69,7 @@ class Groups extends Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({userId: this.context.userId, groupId: target.name})
+            body: JSON.stringify({userId: this.context.userId, groupId: target.id})
         }
         fetch(url, options)
         .then(() => this.componentDidMount(),
@@ -105,8 +105,8 @@ class Groups extends Component {
                                             </Button>
                                         </TableCell>
                                         <TableCell align="right">
-                                            <Fab variant="extended" color="secondary" name={group.id} onClick={this.onLeave}>
-                                                <Typography name={group.id} onClick={this.onLeave}>Leave</Typography>
+                                            <Fab variant="extended" color="secondary" id={group.id} onClick={this.onLeave}>
+                                                <Typography id={group.id} onClick={this.onLeave}>Leave</Typography>
                                             </Fab>
                                         </TableCell>
                                     </TableRow>
