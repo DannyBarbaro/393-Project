@@ -108,5 +108,5 @@ def get_all_events():
 def get_all_future_events():
     events = db.events
     now = datetime.utcnow()
-    future_events = events.aggregate([{"$match": {'time': {'$gt': now}}}])
+    future_events = events.aggregate([{"$match": {'start_time': {'$gt': now}}}])
     return [Model.Event(e) for e in future_events]
