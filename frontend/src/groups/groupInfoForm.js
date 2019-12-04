@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { apiBaseURL } from '../App';
+import { withCookies } from 'react-cookie';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -27,8 +29,11 @@ const styles = theme => ({
         width: 300,
     },
     formControl: {
-        margin: theme.spacing(1),
         minWidth: 150,
+    },
+    formControlLong: {
+        minWidth: 300,
+        maxWidth: '100%',
     },
     labelPadding: {
         marginLeft: 10,
@@ -48,13 +53,17 @@ class GroupInfoForm extends Component {
         super(props);
         this.callback = props.submit;
         this.state = {
+            events: [],
+            seats: [],
             name: '',
-            eventName: 'Superb Owl',
-            eventId: '5dd9c9aee4b9b13f41d9fa8d', //TODO hardcoded for a single event
+            eventName: '',
+            eventId: '',
             visibility: 'public',
             groupSize: 4,
             errorMessage: false,
         }
+        
+        this.cookies = this.props.cookies;
         this.onChange = this.onChange.bind(this)
         this.toggleButton = this.toggleButton.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -62,6 +71,11 @@ class GroupInfoForm extends Component {
 
     onChange(e) {
         let target = e.target;
+        if(target.name === 'eventName') {
+            let id = this.state.events.find((event) => event.event_name === target.value)._id
+            this.setState({eventId: id});
+            this.setState({seats: []});
+        }
         this.setState({[target.name]: target.value});
     }
 
@@ -77,6 +91,21 @@ class GroupInfoForm extends Component {
         } else {
             this.callback(this.state)
         }
+    }
+
+    componentDidMount() {
+        let url = new URL('futureEvents', apiBaseURL)
+        url.search = new URLSearchParams({userId: this.cookies.get('userId')}).toString();
+        fetch(url)
+            .then(resp => resp.json())
+            .then(resp => {
+                this.setState({events: resp.events})
+                if(this.state.events.length !== 0) {
+                    this.setState({eventName: resp.events[0].event_name})
+                    this.setState({eventId: resp.events[0]._id})
+                }
+            },
+                err => console.log(err));
     }
 
     render() {
@@ -95,17 +124,21 @@ class GroupInfoForm extends Component {
                         error={this.requiredCheck(this.state.name)}
                         helperText={this.requiredCheck(this.state.name) ? 'Group Name Required' : ''}/>
                     <br/>
-                    <TextField
-                        disabled
-                        className={classes.mField}
-                        label="Event Name"
-                        name="eventName"
-                        margin="normal"
-                        variant="outlined"
-                        onChange={this.onChange}
-                        value={this.state.eventName}
-                        error={this.requiredCheck(this.state.eventName)}
-                        helperText={this.requiredCheck(this.state.eventName) ? 'Event is Required' : ''}/>
+                    <FormControl variant="filled" className={classes.formControlLong}>
+                        <InputLabel className={classes.labelPadding} id="event-select-label">
+                            Event
+                        </InputLabel>
+                        <Select
+                            labelId="event-select-label"
+                            name="eventName"
+                            value={this.state.eventName}
+                            className={classes.generalPadding}
+                            onChange={this.onChange}>
+                            { this.state.events.map((event, index) => (
+                                <MenuItem key={index} value={event.event_name}>{event.event_name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <br/>
                     <FormControl variant="filled" className={classes.formControl}>
                         <InputLabel className={classes.labelPadding} id="size-select-label">
@@ -127,6 +160,24 @@ class GroupInfoForm extends Component {
                         </Select>
                     </FormControl>
                     <br/>
+                    <FormControl variant="filled" className={classes.formControlLong}>
+                        <InputLabel className={classes.labelPadding} id="seats-select-label">
+                            Seats
+                        </InputLabel>
+                        <Select
+                            labelId="seats-select-label"
+                            multiple
+                            name="selectedSeats"
+                            value={this.state.seats}
+                            className={classes.generalPadding}
+                            onChange={this.onChange}>
+                            { !!this.state.events.find(e => e.event_name === this.state.eventName) &&
+                                this.state.events.find(e => e.event_name === this.state.eventName).seats.map((seat, index) => 
+                                    <MenuItem key={index} value={seat}>{seat}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                    <br/>
                     <ToggleButtonGroup
                         className={classes.generalPadding}
                         value={this.state.visibility}
@@ -142,7 +193,7 @@ class GroupInfoForm extends Component {
                     </ToggleButtonGroup>
                     <br/>
                     { this.state.errorMessage &&
-                        <Typography variant="h6" className={classes.errorMessage}>Please make sure you filled everything out correctly!</Typography>
+                        <Typography variant="h6" className={classes.errorMessage}>Please make sure everything is filled in and that the number of seats matches the group size</Typography>
                     }
                     <Button
                         variant="contained"
@@ -159,8 +210,8 @@ class GroupInfoForm extends Component {
 
     requiredCheck(param) {return !param || param.length === 0}
     checkAll(){
-        return this.requiredCheck(this.state.name) || this.requiredCheck(this.state.eventName)
+        return this.requiredCheck(this.state.name) || this.requiredCheck(this.state.eventName) || this.state.groupSize !== this.state.seats.length
     }
 }
 
-export default withStyles(styles, { withTheme: true })(GroupInfoForm)
+export default withCookies(withStyles(styles, { withTheme: true })(GroupInfoForm))

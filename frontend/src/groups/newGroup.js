@@ -38,6 +38,7 @@ class NewGroup extends Component {
         let url = new URL('createGroup', apiBaseURL);
         newGroup.ownerId = this.cookies.get('userId');
         newGroup.members = [this.cookies.get('userId')];
+        delete newGroup.events;
         let options = {
             headers: {
                 'Content-Type': 'application/json'
