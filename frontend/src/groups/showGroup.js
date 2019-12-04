@@ -33,6 +33,8 @@ const styles = theme => ({
         width: '100%'
     },
     groupPaper: {
+        marginLeft: 5,
+        marginRight: 5,
         minHeight: 120,
         justifyContent: 'center'
     },
@@ -107,7 +109,7 @@ class ShowGroup extends Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <Grid container spacing={3}>
+                <Grid container spacing={0}>
                     <Grid item xs={12} md={3}>
                         <Paper className={classes.groupPaper}>
                             <Typography variant="h6" className={classes.title}>Group Name:</Typography>
