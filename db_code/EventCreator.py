@@ -14,7 +14,7 @@ def make_seats(secL, secH, rowL, rowH, seatL, seatH, secI=1, rowI=1, seatI=1):
                 seats.append(f"sec{sec}row{row}seat{seat}")
     return seats
 
-sb_seats = make_seats(100, 400, 1, 25, 1, 30, secI=20)
+sb_seats = make_seats(100, 401, 1, 5, 1, 8, secI=100)
 pres_seats = make_seats(1, 2, 1, 30, 1, 6)
 yesterday_seats = make_seats(1, 2, 1, 2, 1, 2)
 
