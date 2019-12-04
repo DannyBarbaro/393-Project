@@ -49,6 +49,10 @@ class Group:
             self._id = source_obj['id']
         if 'name' in source_obj:
             self.name = source_obj['name']
+        if 'group_size' in source_obj:
+            self.group_size = source_obj['group_size']
+        if 'groupSize' in source_obj:
+            self.group_size = source_obj['groupSize']
         if 'members' in source_obj:
             self.members = source_obj['members']
         if 'event_id' in source_obj:

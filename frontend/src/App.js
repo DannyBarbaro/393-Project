@@ -11,7 +11,6 @@ import Home from "./home/home";
 import Search from "./search/search";
 import NewUser from "./profile/newUser";
 import UserContext from './UserContext'
-import ShowGroup from "./groups/showGroup";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -36,8 +35,8 @@ export default class App extends React.Component {
             <Route path="/profile" component={Profile} />
             <Route path="/search" component={Search} />
             <Route path="/groups/new" component={NewGroup} />
-            <Route path="/groups/:id" component={ShowGroup} />
             <Route path="/groups" component={Groups} />
+            <Route path="/groups/:groupid" component={Groups} />
             <Route path="/" component={Home} />
           </Switch>
         </Router>
