@@ -65,9 +65,9 @@ class InfoViewer extends Component {
           <Typography variant="h5" className={classes.bio}>
             Bio: {this.props.user.bio}
           </Typography>
-          <Typography variant="h5" className={classes.generalPadding}>
+          {/* <Typography variant="h5" className={classes.generalPadding}>
             Favorite Teams:
-          </Typography>
+          </Typography> */}
           <br/>
 
           <Typography variant="h4" className={classes.generalPadding}>
