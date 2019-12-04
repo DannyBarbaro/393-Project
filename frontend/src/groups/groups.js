@@ -45,6 +45,7 @@ class Groups extends Component {
         }
         this.cookies = this.props.cookies;
         this.onLeave = this.onLeave.bind(this);
+        this.onDisband = this.onDisband.bind(this);
     }
 
     componentDidMount() {
@@ -77,6 +78,21 @@ class Groups extends Component {
                 err => console.log(err))
     }
 
+    onDisband(e) {
+        let target = e.target;
+        let url = new URL('groups/nukem', apiBaseURL)
+        let options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "DELETE",
+            body: JSON.stringify({ownerId: this.cookies.get('userId'), groupId: target.id})
+        }
+        fetch(url, options)
+        .then(() => this.componentDidMount(),
+                err => console.log(err))
+    }
+
     render() {
         if (!this.cookies.get('userId')) {
             return <Redirect to='/' />
@@ -102,19 +118,27 @@ class Groups extends Component {
                                 </TableHead>
                                 <TableBody>
                                     {this.state.groups.map((group, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell component="th" scope="row">
-                                            <Button component={ Link } to={'/groups/'+group.id} variant="contained" color="primary">
-                                                {group.name}
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Fab variant="extended" color="secondary" id={group.id} onClick={this.onLeave}>
-                                                <Typography id={group.id} onClick={this.onLeave}>Leave</Typography>
-                                            </Fab>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                        <TableRow key={index}>
+                                            <TableCell component="th" scope="row">
+                                                <Button component={ Link } to={'/groups/'+group.id} variant="contained" color="primary">
+                                                    {group.name}
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                { group.ownerId !== this.cookies.get('userId') &&
+                                                    <Fab variant="extended" color="secondary" id={group.id} onClick={this.onLeave}>
+                                                        <Typography id={group.id}>Leave</Typography>
+                                                    </Fab>
+                                                }
+                                                { group.ownerId === this.cookies.get('userId') &&
+                                                    <Fab variant="extended" color="secondary" id={group.id} onClick={this.onDisband} component={Link}
+                                                    to='/groups'>
+                                                        <Typography id={group.id}>Disband</Typography>
+                                                    </Fab>
+                                                }
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                             </div>

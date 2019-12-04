@@ -167,7 +167,7 @@ class GroupInfoForm extends Component {
                         <Select
                             labelId="seats-select-label"
                             multiple
-                            name="selectedSeats"
+                            name="seats"
                             value={this.state.seats}
                             className={classes.generalPadding}
                             onChange={this.onChange}>

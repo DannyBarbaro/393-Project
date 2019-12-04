@@ -110,6 +110,7 @@ def delete_group():
     if group:
         if group.owner_id == ObjectId(request.json['ownerId']):
             db.remove_group(request.json['groupId'])
+            return "", status.HTTP_200_OK
         else:
             return jsonify({'errorMessage': 'Given owner is not the owner of the given group'}), status.HTTP_400_BAD_REQUEST
 
