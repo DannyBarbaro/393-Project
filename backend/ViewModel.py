@@ -46,26 +46,36 @@ class EventView:
                 self.eventType = source_obj['event_type']
             if 'eventType' in source_obj:
                 self.eventType = source_obj['eventType']
+            if 'seats' in source_obj:
+                self.seats = source_obj['seats']
+            if 'period_count' in source_obj:
+                self.periodCount = source_obj['period_count']
+            if 'periodCount' in source_obj:
+                self.periodCount = source_obj['periodCount']
+            if 'event_name' in source_obj:
+                self.eventName = source_obj['event_name']
+            if 'eventName' in source_obj:
+                self.eventName = source_obj['eventName']
 
-class GroupScheduleView:
+# class GroupScheduleView:
 
-    def __init__(self, source_obj):
-        if source_obj:
-            if hasattr(source_obj, "__dict__"):
-                source_obj = source_obj.__dict__
+#     def __init__(self, source_obj):
+#         if source_obj:
+#             if hasattr(source_obj, "__dict__"):
+#                 source_obj = source_obj.__dict__
 
-            if '_id' in source_obj:
-                self.id = source_obj['_id']
-            if 'id' in source_obj:
-                self.id = source_obj['id']
-            if 'user_schedules' in source_obj:
-                self.userSchedules = source_obj['user_schedules']
-            if 'userSchedules' in source_obj:
-                self.userSchedules = source_obj['userSchedules']
-            if 'group_num' in source_obj:
-                self.groupNum = source_obj['group_num']
-            if 'groupNum' in source_obj:
-                self.groupNum = source_obj['groupNum']
+#             if '_id' in source_obj:
+#                 self.id = source_obj['_id']
+#             if 'id' in source_obj:
+#                 self.id = source_obj['id']
+#             if 'user_schedules' in source_obj:
+#                 self.userSchedules = source_obj['user_schedules']
+#             if 'userSchedules' in source_obj:
+#                 self.userSchedules = source_obj['userSchedules']
+#             if 'group_num' in source_obj:
+#                 self.groupNum = source_obj['group_num']
+#             if 'groupNum' in source_obj:
+#                 self.groupNum = source_obj['groupNum']
 
 class GroupView:
 
@@ -96,6 +106,8 @@ class GroupView:
                 self.ownerId = source_obj['owner_id']
             if 'ownerId' in source_obj:
                 self.ownerId = source_obj['ownerId']
+            if 'seats' in source_obj:
+                self.seats = source_obj['seats']
 
 class UserScheduleView:
 
@@ -114,6 +126,10 @@ class UserScheduleView:
                 self.timeBlocks = source_obj['timeBlocks']
             if 'owner' in source_obj:
                 self.owner = source_obj['owner']
+            if 'group_num' in source_obj:
+                self.groupNum = source_obj['group_num']
+            if 'groupNum' in source_obj:
+                self.groupNum = source_obj['groupNum']
 
 class UserView:
 

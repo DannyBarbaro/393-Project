@@ -168,6 +168,8 @@ class ShowGroup extends Component {
                             onClick={this.openMessages}>Open Messages</Button>
                     </Grid>
                 </Grid>
+
+                <ScheduleEditor />
                                 
             </div>
         )
