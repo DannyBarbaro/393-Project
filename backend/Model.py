@@ -27,6 +27,8 @@ class Event:
             self.seats = source_obj['seats']
         if 'period_count' in source_obj:
             self.period_count = source_obj['period_count']
+        if 'name' in source_obj:
+            self.name = source_obj['name']
         
 
 # class GroupSchedule:
