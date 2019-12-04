@@ -21,8 +21,33 @@ def get_schedules_for_group():
 
     group = db.get_group_by_id(request.args['groupId'])
     if group:
-        schedules = [ViewModel.UserScheduleView(x) for x in db.get_schedules_for_group(group.id)]
+        schedules = [ViewModel.UserScheduleView(x) for x in db.get_schedules_for_group(group._id)]
         return jsonify({'schedules': schedules})
+    else:
+        return jsonify({'errorMessage': "Requested group could not be found"}), status.HTTP_400_BAD_REQUEST
+
+@schedule.route('/openSeats', methods=['GET'])
+def get_open_seats_for_group():
+    """
+    Parameters: groupId = <id>
+
+    Response: {"openSeats": [[<seat>]]}
+    """
+    if 'groupId' not in request.args:
+        return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
+
+    group = db.get_group_by_id(request.args['groupId'])
+    if group:
+        schedules = [Model.UserSchedule(x) for x in db.get_schedules_for_group(group._id)]
+        #TODO I'm hardcoding 4 quarters
+        #initialize all seats to be open in all quarters
+        open_seats = [[seat for seat in group.seats] for _ in range(4)]
+        for schedule in schedules:
+            for avail_quarter, scheduled in zip(open_seats, schedule):
+                if scheduled in avail_quarter:
+                    avail_quarter.remove(scheduled)
+        return jsonify({'openSeats': open_seats}), state.HTTP_200_OK
+
     else:
         return jsonify({'errorMessage': "Requested group could not be found"}), status.HTTP_400_BAD_REQUEST
 

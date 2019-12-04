@@ -155,7 +155,7 @@ class ShowGroup extends Component {
                     </Grid>
                 </Grid>
 
-                <ScheduleEditor />
+                <ScheduleEditor groupId={this.groupId} />
                                 
             </div>
         )
