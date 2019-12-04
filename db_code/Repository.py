@@ -48,6 +48,10 @@ def add_group(group):
     groups = db.groups
     groups.insert_one(group.__dict__)
 
+def remove_group(group_id):
+    groups = db.groups
+    groups.delete_many({'_id': ObjectId(group_id)})
+
 def add_user_to_group(user_id, group):
     groups = db.groups
     members_list = group.members
@@ -63,6 +67,19 @@ def remove_user_from_group(user_id, group):
 def get_all_groups():
     groups = db.groups
     group_list = groups.find()
+    return [Model.Group(g) for g in group_list]
+
+def get_joinable_groups(user_id):
+    groups = db.groups
+    group_list = groups.aggregate([
+        {'$match': 
+            {'$and': [
+                {'group_size': {'$gt': {'$size': 'members'}}}, 
+                {'visibility': True},
+                {'members': {'$ne': ObjectId(user_id)}}
+            ]}
+        }
+    ])
     return [Model.Group(g) for g in group_list]
 
 def get_groups_with_user(user_id):
