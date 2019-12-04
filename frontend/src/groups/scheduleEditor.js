@@ -7,11 +7,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 150,
+        maxWidth: '25%'
     },
     generalPadding: {
         margin: 10,
@@ -24,10 +26,10 @@ class ScheduleEditor extends React.Component {
         this.cookies = props.cookies;
         this.state = {
             groupObj: {},
-            first: '',
-            second: '',
-            third: '',
-            fourth: '',
+            first: props.blocks[0],
+            second: props.blocks[1],
+            third: props.blocks[2],
+            fourth: props.blocks[3],
         }
         this.onChange = this.onChange.bind(this);
     }
@@ -39,7 +41,7 @@ class ScheduleEditor extends React.Component {
         .then(resp => resp.json())
         .then(resp => {
             url = new URL('/openSeats', apiBaseURL)
-            url.search = new URLSearchParams({groupId: this.props.groupId});
+            url.search = new URLSearchParams({groupId: this.props.groupId, userId: this.cookies.get('userId')});
             fetch(url)
             .then(seats => seats.json())
             .then(seats => {
@@ -62,13 +64,14 @@ class ScheduleEditor extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         const { classes } = this.props;
         if (!this.state.openSeats) {
             return null;
         }
         return (
             <FormGroup row>
-                <FormControl variant="filled" className={classes.formControl}>
+                {!!this.props.enabled && <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="first">
                         First seat
                     </InputLabel>
@@ -85,9 +88,13 @@ class ScheduleEditor extends React.Component {
                             })
                         }
                     </Select>
-                </FormControl>
+                </FormControl>}
+                {!this.props.enabled && <TextField className={classes.formControl}
+                    label="first"
+                    disabled
+                    value={this.state.first}/>}
 
-                <FormControl variant="filled" className={classes.formControl}>
+                {!!this.props.enabled && <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="second">
                         Second seat
                     </InputLabel>
@@ -104,9 +111,13 @@ class ScheduleEditor extends React.Component {
                             })
                         }
                     </Select>
-                </FormControl>
+                </FormControl>}
+                {!this.props.enabled && <TextField className={classes.formControl}
+                    label="second"
+                    disabled
+                    value={this.state.second}/>}
 
-                <FormControl variant="filled" className={classes.formControl}>
+                {!!this.props.enabled && <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="third">
                         Third seat
                     </InputLabel>
@@ -123,9 +134,13 @@ class ScheduleEditor extends React.Component {
                             })
                         }
                     </Select>
-                </FormControl>
+                </FormControl>}
+                {!this.props.enabled && <TextField className={classes.formControl}
+                    label="third"
+                    disabled
+                    value={this.state.third}/>}
                 
-                <FormControl variant="filled" className={classes.formControl}>
+                {!!this.props.enabled && <FormControl variant="filled" className={classes.formControl}>
                     <InputLabel className={classes.labelPadding} id="fourth">
                         Fourth seat
                     </InputLabel>
@@ -142,7 +157,11 @@ class ScheduleEditor extends React.Component {
                             })
                         }
                     </Select>
-                </FormControl>
+                </FormControl>}
+                {!this.props.enabled && <TextField className={classes.formControl}
+                    label="fourth"
+                    disabled
+                    value={this.state.fourth}/>}
             </FormGroup>
         );
     }

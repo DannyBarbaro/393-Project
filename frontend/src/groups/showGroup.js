@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import ScheduleEditor from './scheduleEditor'
 
 const styles = theme => ({
     closeButton: {
@@ -56,11 +57,13 @@ class ShowGroup extends Component {
             visibility: '',
             isMember: true,
             userSchedule: {},
+            allSchedules: [],
         }
         this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
         this.onJoin = this.onJoin.bind(this);
         this.openMessages = this.openMessages.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -95,6 +98,12 @@ class ShowGroup extends Component {
         fetch(url)
         .then(resp => resp.json())
         .then(resp => this.setState({username: resp.user.name}))
+
+        url = new URL('/groupSchedules', apiBaseURL)
+        url.search = new URLSearchParams({groupId: this.groupId})
+        fetch(url)
+        .then(resp => resp.json())
+        .then(resp => this.setState({allSchedules: resp.schedules}))
     }
 
     onJoin(e) {
@@ -113,6 +122,23 @@ class ShowGroup extends Component {
 
     openMessages(e) {
         console.log("HAHAHA You wish")
+    }
+    
+    onSubmit() {
+        let url = new URL('/updateSchedule', apiBaseURL)
+        const {first, second, third, fourth} = this.state.userSchedule;
+        let options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({
+                groupId: this.groupId,
+                userId: this.cookies.get('userId'),
+                seats: [first, second, third, fourth]
+            })
+        }
+        fetch(url, options);
     }
     
     render() {
@@ -165,7 +191,6 @@ class ShowGroup extends Component {
                                 </Paper>
                             </Grid>
                         </Grid>
-                        <Scheduler></Scheduler>
                     </Grid>
                     
                     <Grid item xs={12} md={3}>
@@ -179,21 +204,24 @@ class ShowGroup extends Component {
                             variant="contained"
                             color="primary"
                             className={classes.bottomButton}
-                            onClick={this.openMessages}>Open Messages</Button>
+                            onClick={this.onSubmit}>Save Schedule Changes</Button>
+                        {/* <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.bottomButton}
+                            onClick={this.openMessages}>Open Messages</Button> */}
                     </Grid>
-                </Grid>
+                </Grid>    
                 
                 {
-                    this.state.memberNames.map(member => {
-                        if (member === this.state.username) {
-                            return <ScheduleEditor enabled groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                    this.state.allSchedules.map(schedule => {
+                        if (schedule.owner === this.cookies.get('userId')) {
+                            return <ScheduleEditor enabled blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
                         } else {
-                            return <ScheduleEditor groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                            return <ScheduleEditor blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
                         }
                     })
-                }
-                
-                                
+                }       
             </div>
         )
     }

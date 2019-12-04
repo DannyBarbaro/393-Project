@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
 from ViewModel import jsonify
 import Model
+import ViewModel
 
 from flask_api import status
 from flask import Blueprint, request
@@ -30,12 +31,14 @@ def get_schedules_for_group():
 @schedule.route('/openSeats', methods=['GET'])
 def get_open_seats_for_group():
     """
-    Parameters: groupId = <id>
+    Parameters: groupId = <id>, userId = <id>
 
     Response: {"openSeats": [[<seat>]]}
     """
     if 'groupId' not in request.args:
         return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
+    if 'userId' not in request.args:
+        return jsonify({'errorMessage': 'User id missing from request'}), status.HTTP_400_BAD_REQUEST
 
     group = db.get_group_by_id(request.args['groupId'])
     if group:
@@ -47,6 +50,9 @@ def get_open_seats_for_group():
             for avail_quarter, scheduled in zip(open_seats, schedule.time_blocks):
                 if scheduled in avail_quarter:
                     avail_quarter.remove(scheduled)
+
+        user_sched = db.get_schedule_of_user_in_group(request.args['userId'], request.args['groupId'])
+        open_seats = [['', selected] + ls for ls, selected in zip(open_seats, user_sched.time_blocks)]
         return jsonify({'openSeats': open_seats}), status.HTTP_200_OK
 
     else:
@@ -66,7 +72,7 @@ def update_schedule():
     if 'seats' not in request.json:
         return jsonify({'errorMessage': 'Schedule data missing from request'}), status.HTTP_400_BAD_REQUEST
     
-    if db.get_schedules_of_user_in_group(request.json['userId'], request.json['groupId']):
+    if db.get_schedule_of_user_in_group(request.json['userId'], request.json['groupId']):
         db.update_schedule_of_user_in_group(request.json['userId'], request.json['groupId'], request.json['seats'])
         return '', status.HTTP_200_OK
     else:
