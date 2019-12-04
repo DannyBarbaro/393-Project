@@ -121,7 +121,7 @@ class ShowGroup extends Component {
                         <Paper className={classes.groupPaper}>
                             <Typography variant="h6" className={classes.title}>Group Visibility:</Typography>
                                 <Typography variant="body1" className={classes.value}>{this.state.visibility === 'private' ? 'Private' : 'Public'}</Typography>
-                                {this.state.visibility === 'private' && this.notAMember() &&
+                                {this.notAMember() &&
                                     <Button
                                         size ="small"
                                         variant="contained"

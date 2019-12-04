@@ -15,7 +15,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Fab from '@material-ui/core/Fab';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     root: {
@@ -50,11 +50,11 @@ const styles = theme => ({
         '&:hover': {
             backgroundColor: fade(theme.palette.common.white, 0.25),
         },
-        marginRight: theme.spacing(2),
+        marginRight: 0,
         marginLeft: 0,
         width: '100%',
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(3),
+            marginLeft: theme.spacing(1),
             width: 'auto',
         },
     },
@@ -75,7 +75,7 @@ const styles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: 200,
+            width: 400,
         },
     },
 });
@@ -87,28 +87,30 @@ class Search extends Component {
         super(props);
         this.state = {
             groups: [],
+            searchedGroups: [],
             toGroups: false,
             groupId: '',
-            columns: [],
-            data: [],
-            rows: [
-                {name: 'Frozen yoghurt', calories: 159, fat: 6.0, carbs: 24, protein: 4.0},
-                {name: 'Ice cream sandwich', calories: 237, fat: 9.0, carbs: 37, protein: 4.3},
-                {name: 'Eclair', calories: 262, fat: 16.0, carbs: 24, protein: 6.0},
-                {name: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3},
-                {name: 'Gingerbread', calories: 356, fat: 16.0, carbs: 49, protein: 3.9},
-            ]
+            searchString: '',
         }
         this.onJoin = this.onJoin.bind(this);
-    }
-
-    
+        this.onChange = this.onChange.bind(this);
+        this.enterPressed = this.enterPressed.bind(this);
+        this.searchTable = this.searchTable.bind(this);
+    }  
 
     componentDidMount() {
         fetch(new URL("groups/list", apiBaseURL))
             .then(resp => resp.json())
-            .then(resp => this.setState({groups: resp.groups}),
+            .then(resp => {
+                this.setState({groups: resp.groups})
+                this.setState({searchedGroups: resp.groups})
+            },
                   err => console.log(err));
+    }
+
+    onChange(e) {
+        let target = e.target;
+        this.setState({[target.name]: target.value});
     }
 
     onJoin(event) {
@@ -144,13 +146,17 @@ class Search extends Component {
                             </div>
                             <InputBase
                             placeholder="Search…"
+                            name="searchString"
+                            value={this.state.searchString}
+                            onChange={this.onChange}
+                            onKeyDown={this.enterPressed}
                             classes={{
                                 root: classes.inputRoot,
                                 input: classes.inputInput,
                             }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            />
+                            inputProps={{ 'aria-label': 'search' }}/>
                         </div>
+                        <Button variant="contained" color="primary" onClick={this.searchTable}>Search</Button>
                     </Toolbar>
                 </AppBar>
                 <Paper className={classes.root}>
@@ -164,19 +170,19 @@ class Search extends Component {
                                 <TableCell align="right"></TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                        {this.state.groups.map((group, index) => (
+                        <TableBody size="small">
+                        {this.state.searchedGroups.map((group, index) => (
                             <TableRow key={index}>
                                 <TableCell component="th" scope="row">
                                     {group.name}
                                 </TableCell>
                                 <TableCell align="right">{group.eventName}</TableCell>
-                                <TableCell align="right">{group.members.length}</TableCell>
+                                <TableCell align="right">{group.members.length + ' / ' + group.group_size}</TableCell>
                                 <TableCell align="right">{group.ownerName}</TableCell>
                                 <TableCell align="right">
-                                    <Fab variant="extended" color="primary" id={group.id} onClick={this.onJoin}>
+                                    <Button variant="contained" color="primary" id={group.id} onClick={this.onJoin}>
                                         <Typography id={group.id} onClick={this.onJoin}>Join</Typography>
-                                    </Fab>
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -185,6 +191,22 @@ class Search extends Component {
                 </Paper>
             </div>
         );
+    }
+
+    enterPressed(event) {
+        var code = event.keyCode || event.which;
+        if(code === 13) { this.searchTable() } 
+    }
+
+    searchTable() {
+        let lowercased = this.state.searchString.toLowerCase()
+        this.setState({searchedGroups : 
+            this.state.groups.filter(group => {
+                return group.name.toLowerCase().includes(lowercased) ||
+                    group.eventName.toLowerCase().includes(lowercased) ||
+                    group.ownerName.toLowerCase().includes(lowercased)
+            })
+        });
     }
 }
 
