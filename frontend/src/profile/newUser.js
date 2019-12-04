@@ -52,7 +52,7 @@ class NewUser extends Component {
     render() {
         const { classes } = this.props
         if (this.state.invalid) {
-            return <Redirect to='/home' />
+            return <Redirect to='/' />
         }
         if (this.state.completed) {
             return <Redirect to='/profile' />

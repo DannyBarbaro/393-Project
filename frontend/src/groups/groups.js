@@ -76,6 +76,9 @@ class Groups extends Component {
     }
 
     render() {
+        if (!this.cookies.get('userId')) {
+            return <Redirect to='/' />
+        }
         if (this.state.newGroup) {
             return <Redirect to={'/groups/new'} />
         }

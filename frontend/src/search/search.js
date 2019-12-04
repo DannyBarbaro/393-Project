@@ -38,6 +38,9 @@ class Search extends React.Component {
     }
 
     render() {
+        if (!this.cookies.get('userId')) {
+            return <Redirect to='/' />
+        }
         if (this.state.toGroups) {
             return <Redirect to={"/groups/"+this.state.groupId} />
         }

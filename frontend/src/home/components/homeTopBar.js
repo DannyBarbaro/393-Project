@@ -29,8 +29,6 @@ class HomeTopBar extends Component {
       newUser: false,
       userId: null,
     }
-    console.log("top bar")
-    console.log(props)
     this.cookies = props.cookies;
     this.onloginFail = this.onloginFail.bind(this);
     this.onLoginSuccess = this.onLoginSuccess.bind(this);

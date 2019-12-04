@@ -51,6 +51,9 @@ class NewGroup extends Component {
     }
 
     render() {
+        if (!this.cookies.get('userId')) {
+            return <Redirect to='/' />
+        }
         const { classes } = this.props
         if (this.state.finished) {
             return <Redirect to={'/groups/' + this.state.groupId} />

@@ -59,8 +59,8 @@ class Profile extends Component {
     }
 
     render() {
-        if (this.state.invalid) {
-            return <Redirect to='/home' />
+        if (this.state.invalid || !this.cookies.get('userId')) {
+            return <Redirect to='/' />
         }
         //const { classes } = this.props;
         return (
