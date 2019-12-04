@@ -19,6 +19,10 @@ const styles = theme => ({
   generalPadding: {
       margin: 20,
   },
+  bio: {
+      margin: 20,
+      wordWrap: 'break-word',
+  },
   indent:{
     marginLeft: 50
   },
@@ -58,7 +62,7 @@ class InfoViewer extends Component {
               </Typography>
             </div>
           </FormGroup>
-          <Typography variant="h5" className={classes.generalPadding}>
+          <Typography variant="h5" className={classes.bio}>
             Bio: {this.props.user.bio}
           </Typography>
           <Typography variant="h5" className={classes.generalPadding}>
