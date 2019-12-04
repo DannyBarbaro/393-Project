@@ -5,9 +5,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { Redirect } from 'react-router-dom'
+import {withCookies} from 'react-cookie'
 
 import { apiBaseURL, googleClientID } from '../../App.js'
-import UserContext from '../../UserContext'
 
 const styles = theme => ({
   root: {
@@ -22,8 +22,6 @@ const styles = theme => ({
 });
 
 class HomeTopBar extends Component {
-  static contextType = UserContext
-
   constructor(props) {
     super(props);
     this.state = {
@@ -31,6 +29,7 @@ class HomeTopBar extends Component {
       newUser: false,
       userId: null,
     }
+    this.cookies = props.cookies;
     this.onloginFail = this.onloginFail.bind(this);
     this.onLoginSuccess = this.onLoginSuccess.bind(this);
   }
@@ -49,7 +48,7 @@ class HomeTopBar extends Component {
       if (resp.newUser) {
         this.setState({newUser: true});
       } else {
-        this.context.changeUserId(resp.userId);
+        this.cookies.set('userId', resp.userId, {path: '/'});
         this.setState({userId: resp.userId});
       }
     });
@@ -89,4 +88,4 @@ class HomeTopBar extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(HomeTopBar)
+export default withCookies(withStyles(styles, { withTheme: true })(HomeTopBar))

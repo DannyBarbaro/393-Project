@@ -6,12 +6,15 @@ import './index.css';
 import App from './App';
 import theme from './theme';
 import * as serviceWorker from './serviceWorker';
+import {CookiesProvider} from 'react-cookie';
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <App />
-  </ThemeProvider>,
+  <CookiesProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
+  </CookiesProvider>,
   document.getElementById('root')
 );
 

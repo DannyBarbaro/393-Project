@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import UserContext from '../UserContext'
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -39,8 +38,6 @@ const styles = theme => ({
 });
 
 class InfoViewer extends Component {
-  static contextType = UserContext
-
   // constructor(props) {
   //     super(props);
   // }

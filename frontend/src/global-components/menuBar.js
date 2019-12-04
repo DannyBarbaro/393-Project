@@ -11,6 +11,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import {withCookies} from 'react-cookie';
 
 const styles = theme => ({
   root: {
@@ -29,10 +30,13 @@ class MenuBar extends Component {
     super(props);
     this.state = {
       pageName: props.pageName,
-      anchorEl: null
+      anchorEl: null,
+      logout: false,
     }
+    this.cookies = props.cookies;
     this.handleMenuClick= this.handleMenuClick.bind(this);
     this.handleMenuClose= this.handleMenuClose.bind(this);
+    this.onLogout = this.onLogout.bind(this)
   }
 
   //functions
@@ -43,6 +47,10 @@ class MenuBar extends Component {
   handleMenuClose() {
     this.setState({ anchorEl: null });
   };
+
+  onLogout() {
+    this.cookies.remove('userId', {path: '/'})
+  }
 
   render() {
     const { classes } = this.props;
@@ -71,11 +79,11 @@ class MenuBar extends Component {
           <Typography variant="h5" className={classes.title}>
             {this.state.pageName}
           </Typography>
-          <Button>Logout</Button>
+          <Button onClick={this.onLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(MenuBar)
+export default withCookies(withStyles(styles, { withTheme: true })(MenuBar))

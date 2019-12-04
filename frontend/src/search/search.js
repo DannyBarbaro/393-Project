@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { apiBaseURL } from '../App';
 import { Redirect } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
 import { fade, withStyles } from '@material-ui/core/styles';
 import MenuBar from '../global-components/menuBar';
-import UserContext from '../UserContext';
 import AppBar from '@material-ui/core/AppBar';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -81,8 +81,6 @@ const styles = theme => ({
 });
 
 class Search extends Component {
-    static contextType = UserContext
-
     constructor(props) {
         super(props);
         this.state = {
@@ -92,6 +90,7 @@ class Search extends Component {
             groupId: '',
             searchString: '',
         }
+        this.cookies = props.cookies;
         this.onJoin = this.onJoin.bind(this);
         this.onChange = this.onChange.bind(this);
         this.enterPressed = this.enterPressed.bind(this);
@@ -120,7 +119,7 @@ class Search extends Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ userId: this.context.userId, groupId: target.id })
+            body: JSON.stringify({ userId: this.cookies.get('userId'), groupId: target.id })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
             .then(() => this.setState({toGroups: true, groupId: target.id}),
@@ -128,6 +127,9 @@ class Search extends Component {
     }
 
     render() {
+        if (!this.cookies.get('userId')) {
+            return <Redirect to='/' />
+        }
         if (this.state.toGroups) {
             return <Redirect to={"/groups/"+this.state.groupId} />
         }
@@ -210,4 +212,4 @@ class Search extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Search)
+export default withCookies(withStyles(styles, { withTheme: true })(Search))
