@@ -64,7 +64,7 @@ def join_group():
         if ObjectId(request.json['userId']) not in group.members:
             db.add_user_to_group(request.json['userId'], group)
             event = db.get_event(group.event_id)
-            db.add_schedule(UserSchedule({'time_blocks': [None for _ in range(event.period_count)], 'owner': request.json['userId'], 'group_num': request.json['groupId']}))
+            db.add_schedule(UserSchedule({'time_blocks': [None for _ in range(event.period_count)], 'owner': ObjectId(request.json['userId']), 'group_num': ObjectId(request.json['groupId'])}))
             return "", status.HTTP_200_OK
         else:
             return jsonify({'errorMessage': 'User is already a member of this group'}), status.HTTP_400_BAD_REQUEST
