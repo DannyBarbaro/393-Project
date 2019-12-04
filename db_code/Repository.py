@@ -65,6 +65,19 @@ def get_all_groups():
     group_list = groups.find()
     return [Model.Group(g) for g in group_list]
 
+def get_joinable_groups(user_id):
+    groups = db.groups
+    group_list = groups.aggregate([
+        {'$match': 
+            {'$and': [
+                {'group_size': {'$gt': {'$size': 'members'}}}, 
+                {'visibility': True},
+                {'members': {'$ne': ObjectId(user_id)}}
+            ]}
+        }
+    ])
+    return [Model.Group(g) for g in group_list]
+
 def get_groups_with_user(user_id):
     groups = db.groups
     user_groups = groups.aggregate([{"$match": {'members': user_id}}])
