@@ -19,7 +19,7 @@ class Scheduler extends Component {
         if (!this.cookies.get('userId')) {
             return <Redirect to='/' />
         }
-        const { classes } = this.props
+        //const { classes } = this.props
         return (
             <div>
                 <Typography variant="h3">Please Dear God Save Me</Typography>
