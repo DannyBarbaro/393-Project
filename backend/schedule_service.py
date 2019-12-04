@@ -1,5 +1,5 @@
 import os, sys
-from Model import Schedule
+from Model import UserSchedule
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'db_code'))
 import Repository as db
 from ViewModel import jsonify

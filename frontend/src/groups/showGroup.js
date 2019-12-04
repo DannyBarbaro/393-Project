@@ -11,6 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import {withCookies} from 'react-cookie';
+import ScheduleEditor from './scheduleEditor';
 
 const styles = theme => ({
     closeButton: {
@@ -144,6 +145,8 @@ class ShowGroup extends Component {
                         </Paper>
                     </Grid>
                 </Grid>
+
+                <ScheduleEditor />
                                 
             </div>
         )
