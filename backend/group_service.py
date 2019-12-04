@@ -94,7 +94,7 @@ def leave_group():
     else:
         return jsonify({'errorMessage': 'Requested group could not be found'}), status.HTTP_400_BAD_REQUEST
 
-@group.route('/groups/nuke', methods=['DELETE'])
+@group.route('/groups/nukem', methods=['DELETE'])
 def delete_group():
     """
     Request: {'groupId': <id>, 'ownerId': <id>}
