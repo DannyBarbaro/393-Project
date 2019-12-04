@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom'
 import { apiBaseURL } from '../App';
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
+import {withCookies} from 'react-cookie';
 import ShowGroup from './showGroup';
 import MenuBar from '../global-components/menuBar';
-import UserContext from '../UserContext'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,10 +23,12 @@ const styles = theme => ({
     generalPadding: {
         margin: 15
     },
-    rightContainer:{
-        background: '#000000',
-        height: '90vh',
+    rightContainerFilled:{
+        height: '92vh',
         minHeight: 500,
+        borderLeft: '4px solid #000000',
+    },
+    rightContainerEmpty:{
     },
     outer: {
         width: '100vw'
@@ -33,8 +36,6 @@ const styles = theme => ({
 });
 
 class Groups extends Component {
-    static contextType = UserContext;
-
     constructor(props) {
         super(props);
         this.state = {
@@ -42,13 +43,13 @@ class Groups extends Component {
             newGroup: false,
             search: false,
         }
-        this.groupId = props.match.params.id;
+        this.cookies = this.props.cookies;
         this.onLeave = this.onLeave.bind(this);
     }
 
     componentDidMount() {
         let url = new URL('groups/mine', apiBaseURL)
-        url.search = new URLSearchParams({userId: this.context.userId}).toString();
+        url.search = new URLSearchParams({userId: this.cookies.get('userId')}).toString();
         fetch(url)
             .then(resp => resp.json())
             .then(resp => {
@@ -69,7 +70,7 @@ class Groups extends Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({userId: this.context.userId, groupId: target.name})
+            body: JSON.stringify({userId: this.cookies.get('userId'), groupId: target.id})
         }
         fetch(url, options)
         .then(() => this.componentDidMount(),
@@ -77,6 +78,9 @@ class Groups extends Component {
     }
 
     render() {
+        if (!this.cookies.get('userId')) {
+            return <Redirect to='/' />
+        }
         if (this.state.newGroup) {
             return <Redirect to={'/groups/new'} />
         }
@@ -105,8 +109,8 @@ class Groups extends Component {
                                             </Button>
                                         </TableCell>
                                         <TableCell align="right">
-                                            <Fab variant="extended" color="secondary" name={group.id} onClick={this.onLeave}>
-                                                <Typography name={group.id} onClick={this.onLeave}>Leave</Typography>
+                                            <Fab variant="extended" color="secondary" id={group.id} onClick={this.onLeave}>
+                                                <Typography id={group.id} onClick={this.onLeave}>Leave</Typography>
                                             </Fab>
                                         </TableCell>
                                     </TableRow>
@@ -121,15 +125,15 @@ class Groups extends Component {
                         className={classes.generalPadding}
                         onClick={() => this.setState({newGroup: true})}>Create New Group</Button>
                     </Grid>
-                    <Grid item xs={12} sm={8} className={classes.rightContainer}>
-                        { this.props.location.pathname.substring(8) !== '' &&
+                    { this.props.location.pathname.substring(8) !== '' &&
+                        <Grid item xs={12} sm={8} className={classes.rightContainerFilled}>
                             <ShowGroup groupId={this.props.location.pathname.substring(8)}/>
-                        }
-                    </Grid>
+                        </Grid>
+                    }
                 </Grid>
             </div>
         );
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Groups)
+export default withCookies(withRouter(withStyles(styles, { withTheme: true })(Groups)))

@@ -18,13 +18,13 @@ def get_profile():
     Response: {"user" : <obj>}
     """
     if 'userId' not in request.args:
-        return {'invalid_key': 'Can only search for users by ID'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Can only search for users by ID'}), status.HTTP_400_BAD_REQUEST
 
     user = db.get_user_by_id(request.args['userId'])
     if user:
         return jsonify({'user': UserView(user)})
     else:
-        return {'no_such_user': 'Could not find user with provided ID'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Could not find user with provided ID'}), status.HTTP_400_BAD_REQUEST
 
 @profile.route('/login')
 def process_login():
@@ -34,13 +34,12 @@ def process_login():
     Response: {"newUser" : <bool>, "userId": <obj>}
     """
     if 'email' not in request.args:
-        return {'invalid_key': 'Can only search for users by email'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Can only search for users by email'}), status.HTTP_400_BAD_REQUEST
 
     user = db.get_user_by_email(request.args['email'])
     if user:
         return jsonify({'newUser': False, 'userId': UserView(user).id})
     else:
-
         return jsonify({'newUser': True, 'userId': None})
 
 @profile.route('/addUser', methods=['POST'])
@@ -51,13 +50,13 @@ def add_user():
     Response: {userId: <str>}
     """
     if 'user' not in request.json:
-        return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'No user given'}), status.HTTP_400_BAD_REQUEST
     if 'email' not in request.json['user']:
-        return {'invalid_user': 'User must have an email'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'User must have an email'}), status.HTTP_400_BAD_REQUEST
 
     new_user = User(request.json['user'])
     if db.get_user_by_email(new_user.email):
-        return {'already_exists': 'This user already exists'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'This user already exists'}), status.HTTP_400_BAD_REQUEST
     
     db.add_user(new_user)
     new_user = db.get_user_by_email(new_user.email)
@@ -71,7 +70,8 @@ def get_profile_pic():
     Response: image or empty
     """
     if 'userId' not in request.args:
-        return {'invalid_key': 'Can only search for profile picture by ID'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Can only search for profile picture by ID'}), status.HTTP_400_BAD_REQUEST
+    
     user = db.get_user_by_id(request.args['userId'])
     if user:
         if request.method == 'GET':
@@ -83,7 +83,7 @@ def get_profile_pic():
             db.update_user_profile_pic(request.args['userId'], request.json['profilePic'])
             return "", status.HTTP_200_OK
     else:
-        return {'no_such_user': 'Could not find user with provided ID'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'Could not find user with provided ID'}), status.HTTP_400_BAD_REQUEST
 
 @profile.route('/updateUser', methods=['POST'])
 def update_user():
@@ -93,15 +93,15 @@ def update_user():
     Response: empty
     """
     if 'user' not in request.json:
-        return {'invalid_user': 'No user given'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'No user given'}), status.HTTP_400_BAD_REQUEST
     if 'id' not in request.json['user']:
-        return {'invalid_user': 'User must have an id'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'User must have an id'}), status.HTTP_400_BAD_REQUEST
         
     if db.get_user_by_id(request.json['user']['id']):
         db.update_user(User(request.json['user']))
         return "", status.HTTP_200_OK
     else:
-        return {'user_not_found': 'No user with provided ID was found'}, status.HTTP_400_BAD_REQUEST
+        return jsonify({'errorMessage': 'No user with provided ID was found'}), status.HTTP_400_BAD_REQUEST
 
 
 @profile.route('/users')

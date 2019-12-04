@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import UserContext from '../UserContext'
 import { apiBaseURL } from "../App";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -9,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import {allTeams} from '../Logos/teams';
+import {withCookies} from 'react-cookie';
 
 const styles = theme => ({
     bigBox: {
@@ -56,8 +56,6 @@ const styles = theme => ({
   });
 
 class UserInfoForm extends Component {
-    static contextType = UserContext
-
     constructor(props) {
         super(props);
         if (props.newUser) {
@@ -95,6 +93,7 @@ class UserInfoForm extends Component {
                 errorMessage: false,
             };
         }
+        this.cookies = props.cookies;
         this.callback = props.callback;
         this.cancelCallback = props.cancelCallback;
         this.onChange = this.onChange.bind(this);
@@ -142,7 +141,7 @@ class UserInfoForm extends Component {
         } else {
             this.fileToBase64(file).then(result => {
                 let url = new URL('profilePic', apiBaseURL);
-                url.search = new URLSearchParams({userId: this.context.userId}).toString();
+                url.search = new URLSearchParams({userId: this.cookies.get('userId')}).toString();
                 let options = {
                     headers: {
                         'Content-Type': 'application/json',
@@ -353,4 +352,4 @@ class UserInfoForm extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(UserInfoForm)
+export default withCookies(withStyles(styles, { withTheme: true })(UserInfoForm))

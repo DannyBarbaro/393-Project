@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import {withCookies} from 'react-cookie';
+import ScheduleEditor from './scheduleEditor';
 
 const styles = theme => ({
     closeButton: {
@@ -46,6 +48,7 @@ class ShowGroup extends Component {
             eventName: '',
             visibility: '',
         }
+        this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
         this.onJoin = this.onJoin.bind(this);
     }
@@ -79,7 +82,7 @@ class ShowGroup extends Component {
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body: JSON.stringify({ userId: this.context.userId, groupId: target.name })
+            body: JSON.stringify({ userId: this.cookies.get('userId'), groupId: target.name })
         }
         fetch(new URL("groups/join", apiBaseURL), options)
             .then(() => this.setState({toGroups: true, groupId: target.name}),
@@ -121,7 +124,7 @@ class ShowGroup extends Component {
                         <Paper className={classes.groupPaper}>
                             <Typography variant="h6" className={classes.title}>Group Visibility:</Typography>
                                 <Typography variant="body1" className={classes.value}>{this.state.visibility === 'private' ? 'Private' : 'Public'}</Typography>
-                                {this.state.visibility === 'private' && this.notAMember() &&
+                                {this.notAMember() &&
                                     <Button
                                         size ="small"
                                         variant="contained"
@@ -142,6 +145,8 @@ class ShowGroup extends Component {
                         </Paper>
                     </Grid>
                 </Grid>
+
+                <ScheduleEditor />
                                 
             </div>
         )
@@ -153,4 +158,4 @@ class ShowGroup extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(ShowGroup)
+export default withCookies(withStyles(styles, { withTheme: true })(ShowGroup))

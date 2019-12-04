@@ -1,3 +1,5 @@
+from bson import ObjectId
+
 class Block:
 
     def __init__(self, source_obj):
@@ -10,9 +12,9 @@ class Event:
 
     def __init__(self, source_obj):
         if '_id' in source_obj:
-            self._id = source_obj['_id']
+            self._id = ObjectId(source_obj['_id'])
         if 'id' in source_obj:
-            self._id = source_obj['id']
+            self._id = ObjectId(source_obj['id'])
         if 'time' in source_obj:
             self.start_time = source_obj['time']
         if 'team1' in source_obj and 'team2' in source_obj:
@@ -27,8 +29,12 @@ class Event:
             self.seats = source_obj['seats']
         if 'period_count' in source_obj:
             self.period_count = source_obj['period_count']
-        if 'name' in source_obj:
-            self.name = source_obj['name']
+        if 'periodCount' in source_obj:
+            self.period_count = source_obj['periodCount']
+        if 'event_name' in source_obj:
+            self.event_name = source_obj['event_name']
+        if 'eventName' in source_obj:
+            self.event_name = source_obj['eventName']
         
 
 # class GroupSchedule:
@@ -51,9 +57,9 @@ class Group:
 
     def __init__(self, source_obj):
         if '_id' in source_obj:
-            self._id = source_obj['_id']
+            self._id = ObjectId(source_obj['_id'])
         if 'id' in source_obj:
-            self._id = source_obj['id']
+            self._id = ObjectId(source_obj['id'])
         if 'name' in source_obj:
             self.name = source_obj['name']
         if 'group_size' in source_obj:
@@ -61,17 +67,17 @@ class Group:
         if 'groupSize' in source_obj:
             self.group_size = source_obj['groupSize']
         if 'members' in source_obj:
-            self.members = source_obj['members']
+            self.members = [ObjectId(x) for x in source_obj['members']]
         if 'event_id' in source_obj:
-            self.event_id = source_obj['event_id']
+            self.event_id = ObjectId(source_obj['event_id'])
         if 'eventId' in source_obj:
-            self.event_id = source_obj['eventId']
+            self.event_id = ObjectId(source_obj['eventId'])
         if 'visibility' in source_obj:
             self.visibility = source_obj['visibility']
         if 'owner_id' in source_obj:
-            self.owner_id = source_obj['owner_id']
+            self.owner_id = ObjectId(source_obj['owner_id'])
         if 'ownerId' in source_obj:
-            self.owner_id = source_obj['ownerId']
+            self.owner_id = ObjectId(source_obj['ownerId'])
         if 'seats' in source_obj:
             self.seats = source_obj['seats']
             
@@ -79,27 +85,27 @@ class UserSchedule:
     
     def __init__(self, source_obj):
         if '_id' in source_obj:
-            self._id = source_obj['_id']
+            self._id = ObjectId(source_obj['_id'])
         if 'id' in source_obj:
-            self._id = source_obj['id']
+            self._id = ObjectId(source_obj['id'])
         if 'time_blocks' in source_obj:
             self.time_blocks = source_obj['time_blocks']
         if 'timeBlocks' in source_obj:
             self.time_blocks = source_obj['timeBlocks']
         if 'owner' in source_obj:
-            self.owner = source_obj['owner']
+            self.owner = ObjectId(source_obj['owner'])
         if 'group_num' in source_obj:
-            self.group_num = source_obj['group_num']
+            self.group_num = ObjectId(source_obj['group_num'])
         if 'groupNum' in source_obj:
-            self.group_num = source_obj['groupNum']
+            self.group_num = ObjectId(source_obj['groupNum'])
 
 class User:
 
     def __init__(self, source_obj):
         if '_id' in source_obj:
-            self._id = source_obj['_id']
+            self._id = ObjectId(source_obj['_id'])
         if 'id' in source_obj:
-            self._id = source_obj['id']
+            self._id = ObjectId(source_obj['id'])
         if 'email' in source_obj:
             self.email = source_obj['email']
         if 'rating_history' in source_obj:
@@ -111,17 +117,17 @@ class User:
         if 'favoriteTeams' in source_obj:
             self.favorite_teams = source_obj['favoriteTeams']
         if 'group_history' in source_obj:
-            self.group_history = source_obj['group_history']
+            self.group_history = [ObjectId(x) for x in source_obj['group_history']]
         if 'groupHistory' in source_obj:
-            self.group_history = source_obj['groupHistory']
+            self.group_history = [ObjectId(x) for x in source_obj['groupHistory']]
         if 'name' in source_obj:
             self.name = source_obj['name']
         if 'bio' in source_obj:
             self.bio = source_obj['bio']
         if 'active_groups' in source_obj:
-            self.active_groups = source_obj['active_groups']
+            self.active_groups = [ObjectId(x) for x in source_obj['active_groups']]
         if 'activeGroups' in source_obj:
-            self.active_groups = source_obj['activeGroups']
+            self.active_groups = [ObjectId(x) for x in source_obj['activeGroups']]
         if 'card_num' in source_obj:
             self.card_num = source_obj['card_num']
         if 'cardNum' in source_obj:

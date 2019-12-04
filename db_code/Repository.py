@@ -29,10 +29,9 @@ def update_user_profile_pic(id, pic):
 
 def update_user(new_user):
     users = db.users
-    new_id = ObjectId(new_user._id)
     new_user = new_user.__dict__
     del new_user['_id']
-    users.update_one({'_id': ObjectId(new_id)}, {'$set' : new_user})
+    users.update_one({'_id': new_user._id}, {'$set' : new_user})
     
 def get_group_by_id(group_id):
     groups = db.groups
@@ -51,14 +50,14 @@ def add_group(group):
 def add_user_to_group(user_id, group):
     groups = db.groups
     members_list = group.members
-    members_list.append(user_id)
-    groups.update_one({'_id': ObjectId(group._id)}, {'$set': {'members': members_list}})
+    members_list.append(ObjectId(user_id))
+    groups.update_one({'_id': group._id}, {'$set': {'members': members_list}})
 
 def remove_user_from_group(user_id, group):
     groups = db.groups
     members_list = group.members
-    members_list.remove(user_id)
-    groups.update_one({'_id': ObjectId(group._id)}, {'$set': {'members': members_list}})
+    members_list.remove(ObjectId(user_id))
+    groups.update_one({'_id': group._id}, {'$set': {'members': members_list}})
 
 def get_all_groups():
     groups = db.groups
@@ -80,7 +79,7 @@ def get_joinable_groups(user_id):
 
 def get_groups_with_user(user_id):
     groups = db.groups
-    user_groups = groups.aggregate([{"$match": {'members': user_id}}])
+    user_groups = groups.aggregate([{"$match": {'members': ObjectId(user_id)}}])
     return [Model.Group(g) for g in user_groups]
 
 def get_schedules_for_group(group_id):
@@ -95,11 +94,11 @@ def add_schedule(schedule):
 def get_schedule_of_user_in_group(user_id, group_id):
     schedules = db.schedules
     schedule = schedules.find_one({'owner': ObjectId(user_id), 'group_num': ObjectId(group_id)})
-    return Model.UserSchedule(schedule)
+    return Model.UserSchedule(schedule) if schedule else None
 
 def update_schedule_of_user_in_group(user_id, group_id, time_blocks):
     schedules = db.schedules
-    schedules.update_one({'owner': user_id, 'group_num': group_id}, {'$set': {'time_blocks': time_blocks}})
+    schedules.update_one({'owner': ObjectId(user_id), 'group_num': ObjectId(group_id)}, {'$set': {'time_blocks': time_blocks}})
 
 def remove_schedule_of_user_in_group(user_id, group_id):
     schedules = db.schedules
@@ -108,7 +107,7 @@ def remove_schedule_of_user_in_group(user_id, group_id):
 def get_event(event_id):
     events = db.events
     event = events.find_one({'_id': ObjectId(event_id)})
-    return Model.Event(event)
+    return Model.Event(event) if event else None
 
 def add_event(event):
     events = db.events
@@ -116,10 +115,15 @@ def add_event(event):
 
 def get_all_events():
     events = db.events
-    return events.find()
+    return [Model.Event(e) for e in events.find()]
 
 def get_all_future_events():
     events = db.events
     now = datetime.utcnow()
-    future_events = events.aggregate([{"$match": {'start_time': {'$gt': now}}}])
+    future_events = events.aggregate([{"$match": {'time': {'$gt': now}}}])
     return [Model.Event(e) for e in future_events]
+
+def get_event_by_id(event_id):
+    events = db.events
+    result = events.find_one({'_id': ObjectId(event_id)})
+    return Model.Event(result) if result else None
