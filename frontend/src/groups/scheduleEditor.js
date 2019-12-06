@@ -11,9 +11,9 @@ import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
     formControl: {
-        marginLeft: 5,
-        minWidth: 173,
-        maxWidth: '25%'
+        marginRight: 5,
+        minWidth: 170,
+        maxWidth: 170
     },
     generalPadding: {
         margin: 10,
@@ -26,10 +26,10 @@ class ScheduleEditor extends React.Component {
         this.cookies = props.cookies;
         this.state = {
             groupObj: {},
-            first: props.blocks[0],
-            second: props.blocks[1],
-            third: props.blocks[2],
-            fourth: props.blocks[3],
+            first: !props.blocks[0] ? "" : props.blocks[0],
+            second: !props.blocks[1] ? "" : props.blocks[1],
+            third: !props.blocks[2] ? "" : props.blocks[2],
+            fourth: !props.blocks[3] ? "" : props.blocks[3],
         }
         this.onChange = this.onChange.bind(this);
     }
@@ -64,7 +64,6 @@ class ScheduleEditor extends React.Component {
     }
 
     render() {
-        console.log(this.state)
         const { classes } = this.props;
         if (!this.state.openSeats) {
             return null;
@@ -84,7 +83,7 @@ class ScheduleEditor extends React.Component {
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[0].map((seat, index) => {
-                                return <MenuItem value={seat}>{seat}</MenuItem>
+                                return <MenuItem key={index} value={seat}>{seat}</MenuItem>
                             })
                         }
                     </Select>
@@ -107,7 +106,7 @@ class ScheduleEditor extends React.Component {
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[1].map((seat, index) => {
-                                return <MenuItem value={seat}>{seat}</MenuItem>
+                                return <MenuItem key={index} value={seat}>{seat}</MenuItem>
                             })
                         }
                     </Select>
@@ -130,7 +129,7 @@ class ScheduleEditor extends React.Component {
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[2].map((seat, index) => {
-                                return <MenuItem value={seat}>{seat}</MenuItem>
+                                return <MenuItem key={index} value={seat}>{seat}</MenuItem>
                             })
                         }
                     </Select>
@@ -153,7 +152,7 @@ class ScheduleEditor extends React.Component {
                         onChange={this.onChange}>
                         {
                             this.state.openSeats[3].map((seat, index) => {
-                                return <MenuItem value={seat}>{seat}</MenuItem>
+                                return <MenuItem key={index} value={seat}>{seat}</MenuItem>
                             })
                         }
                     </Select>

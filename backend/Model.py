@@ -80,6 +80,8 @@ class Group:
             self.owner_id = ObjectId(source_obj['ownerId'])
         if 'seats' in source_obj:
             self.seats = source_obj['seats']
+        if 'approvals' in source_obj:
+            self.approvals = source_obj['approvals']
             
 class UserSchedule:
     

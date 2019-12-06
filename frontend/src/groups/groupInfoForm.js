@@ -61,6 +61,7 @@ class GroupInfoForm extends Component {
             visibility: 'public',
             groupSize: 4,
             errorMessage: false,
+            approvals: [],
         }
         
         this.cookies = this.props.cookies;

@@ -5,6 +5,7 @@ import { withCookies } from 'react-cookie';
 import { withStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -20,7 +21,10 @@ const styles = theme => ({
     headerTitle: {
         flexGrow: 1,
     },
-    
+    generalPadding: {
+        paddingTop: 20,
+        paddingLeft: 20
+    },
     title: {
         paddingTop: '10%',
         textAlign: 'center',
@@ -39,6 +43,7 @@ const styles = theme => ({
         justifyContent: 'center'
     },
     bottomButton: {
+        textAlign: 'center',
         position: 'absolute',
         bottom: 15,
         right: 15,
@@ -54,15 +59,20 @@ class ShowGroup extends Component {
             ownerName: '',
             eventName: '',
             visibility: '',
+            groupSize: 0,
             isMember: true,
             userSchedule: {},
             allSchedules: [],
+            approvals: [],
         }
         this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
         this.onJoin = this.onJoin.bind(this);
         this.openMessages = this.openMessages.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.showVoting = this.showVoting.bind(this);
+        this.onVeto = this.onVeto.bind(this);
+        this.onApprove = this.onApprove.bind(this);
     }
 
     componentDidMount() {
@@ -89,7 +99,7 @@ class ShowGroup extends Component {
             .then(resp => this.setState({isMember: resp.groups.map(x => x.id).includes(this.groupId)}))
 
             //TODO get name of event
-            this.setState({groupName: resp.group.name, visibility: resp.group.visibility})
+            this.setState({groupName: resp.group.name, visibility: resp.group.visibility, groupSize: resp.group.group_size, approvals: resp.group.approvals})
         });
 
         url = new URL('/profile', apiBaseURL)
@@ -125,7 +135,51 @@ class ShowGroup extends Component {
     
     onSubmit() {
         let url = new URL('/updateSchedule', apiBaseURL)
-        const {first, second, third, fourth} = this.state.userSchedule;
+        if (Object.keys(this.state.userSchedule).length !== 0) {
+            const {first, second, third, fourth} = this.state.userSchedule;
+            let options = {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({
+                    groupId: this.groupId,
+                    userId: this.cookies.get('userId'),
+                    seats: [first, second, third, fourth]
+                })
+            }
+            fetch(url, options).then(resp => 
+                window.location.reload()
+            )
+        }
+    }
+
+    onVeto() {
+        let url = new URL('/groups/approvals', apiBaseURL)
+        let options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "DELETE",
+            body: JSON.stringify({
+                groupId: this.groupId,
+            })
+        }
+        fetch(url, options)
+
+        let tempSched = this.state.allSchedules
+        tempSched.forEach(schedule => {
+            if (schedule.id === this.cookies.get('userId')) {
+                schedule.timeBlocks = [null, null, null, null];
+            }
+        })
+        this.setState({userSchedule: [null, null, null, null], allSchedules: tempSched})
+        this.onSubmit()
+    }
+
+    onApprove() {
+        console.log(this.state.approvals)
+        let url = new URL('/groups/approve', apiBaseURL)
         let options = {
             headers: {
                 'Content-Type': 'application/json'
@@ -134,10 +188,11 @@ class ShowGroup extends Component {
             body: JSON.stringify({
                 groupId: this.groupId,
                 userId: this.cookies.get('userId'),
-                seats: [first, second, third, fourth]
             })
         }
-        fetch(url, options);
+        fetch(url, options).then(resp =>
+            window.location.reload()
+        )
     }
     
     render() {
@@ -190,11 +245,15 @@ class ShowGroup extends Component {
                                 </Paper>
                             </Grid>
                             {
-                                this.state.allSchedules.map(schedule => {
+                                this.state.allSchedules.map((schedule, index) => {
                                     if (schedule.owner === this.cookies.get('userId')) {
-                                        return <ScheduleEditor enabled blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                                        return(
+                                            <div key={index} >
+                                                <Typography variant="body1" className={classes.generalPadding}>My Schedule</Typography>
+                                                <ScheduleEditor enabled={!this.showVoting()} blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                                            </div>)
                                     } else {
-                                        return <ScheduleEditor blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                                        return <ScheduleEditor key={index} blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
                                     }
                                 })
                             }   
@@ -208,16 +267,29 @@ class ShowGroup extends Component {
                                 <Typography variant="body1" key={index} className={classes.value}>{name}</Typography>))
                             }
                         </Paper>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.bottomButton}
-                            onClick={this.onSubmit}>Save Schedule Changes</Button>
-                        {/* <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.bottomButton}
-                            onClick={this.openMessages}>Open Messages</Button> */}
+                        { !this.state.approvals.includes(this.cookies.get('userId')) &&
+                            <div>
+                                { this.showVoting() &&
+                                    <div className={classes.bottomButton}>
+                                        <Typography variant="body1">Vote On Schedule</Typography>
+                                        <ButtonGroup variant="contained">
+                                            <Button color="primary" onClick={this.onApprove}>Approve</Button>
+                                            <Button color="secondary" onClick={this.onVeto}>Veto</Button>
+                                        </ButtonGroup>
+                                    </div>
+                                }
+                                { !this.showVoting() &&
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.bottomButton}
+                                        onClick={this.onSubmit}>
+                                        Save Schedule Changes
+                                    </Button>
+                                }
+                            </div>
+                        }
+                        
                     </Grid>
                 </Grid>    
                     
@@ -225,9 +297,18 @@ class ShowGroup extends Component {
         )
     }
     
+    showVoting() {
+        return this.state.memberNames.length === this.state.groupSize && 
+            this.state.allSchedules.every(schedule => {
+                return schedule.timeBlocks.every(value => !!value)
+            })
+    }
+
     notAMember() {
         return !this.state.isMember;
     }
+
+    
 }
 
 export default withCookies(withStyles(styles, { withTheme: true })(ShowGroup))
