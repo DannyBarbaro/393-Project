@@ -63,7 +63,7 @@ class ShowGroup extends Component {
             isMember: true,
             userSchedule: {},
             allSchedules: [],
-            
+            approvals: [],
         }
         this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
@@ -99,7 +99,7 @@ class ShowGroup extends Component {
             .then(resp => this.setState({isMember: resp.groups.map(x => x.id).includes(this.groupId)}))
 
             //TODO get name of event
-            this.setState({groupName: resp.group.name, visibility: resp.group.visibility, groupSize: resp.group.group_size})
+            this.setState({groupName: resp.group.name, visibility: resp.group.visibility, groupSize: resp.group.group_size, approvals: resp.group.approvals})
         });
 
         url = new URL('/profile', apiBaseURL)
@@ -155,6 +155,18 @@ class ShowGroup extends Component {
     }
 
     onVeto() {
+        let url = new URL('/groups/approvals', apiBaseURL)
+        let options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "DELETE",
+            body: JSON.stringify({
+                groupId: this.groupId,
+            })
+        }
+        fetch(url, options)
+
         let tempSched = this.state.allSchedules
         tempSched.forEach(schedule => {
             if (schedule.id === this.cookies.get('userId')) {
@@ -166,7 +178,21 @@ class ShowGroup extends Component {
     }
 
     onApprove() {
-        console.log("approve")
+        console.log(this.state.approvals)
+        let url = new URL('/groups/approve', apiBaseURL)
+        let options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({
+                groupId: this.groupId,
+                userId: this.cookies.get('userId'),
+            })
+        }
+        fetch(url, options).then(resp =>
+            window.location.reload()
+        )
     }
     
     render() {
@@ -241,24 +267,29 @@ class ShowGroup extends Component {
                                 <Typography variant="body1" key={index} className={classes.value}>{name}</Typography>))
                             }
                         </Paper>
-                        { this.showVoting() &&
-                            <div className={classes.bottomButton}>
-                                <Typography variant="body1">Vote On Schedule</Typography>
-                                <ButtonGroup variant="contained">
-                                    <Button color="primary" onClick={this.onApprove}>Approve</Button>
-                                    <Button color="secondary" onClick={this.onVeto}>Veto</Button>
-                                </ButtonGroup>
+                        { !this.state.approvals.includes(this.cookies.get('userId')) &&
+                            <div>
+                                { this.showVoting() &&
+                                    <div className={classes.bottomButton}>
+                                        <Typography variant="body1">Vote On Schedule</Typography>
+                                        <ButtonGroup variant="contained">
+                                            <Button color="primary" onClick={this.onApprove}>Approve</Button>
+                                            <Button color="secondary" onClick={this.onVeto}>Veto</Button>
+                                        </ButtonGroup>
+                                    </div>
+                                }
+                                { !this.showVoting() &&
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.bottomButton}
+                                        onClick={this.onSubmit}>
+                                        Save Schedule Changes
+                                    </Button>
+                                }
                             </div>
                         }
-                        { !this.showVoting() &&
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.bottomButton}
-                                onClick={this.onSubmit}>
-                                Save Schedule Changes
-                            </Button>
-                        }
+                        
                     </Grid>
                 </Grid>    
                     

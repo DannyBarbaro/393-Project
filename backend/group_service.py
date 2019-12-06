@@ -150,3 +150,31 @@ def get_user_groups():
     
     return jsonify({'groups': [GroupView(g) for g in db.get_groups_with_user(request.args['userId'])]}), status.HTTP_200_OK
 
+@group.route('/groups/approve', methods=['POST'])
+def add_schedule_approval():
+    """
+    Params: {"groupId" = <id>, "userId" = <id>}
+
+    Response: ""
+    """
+    if 'groupId' not in request.json:
+        return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
+    if 'userId' not in request.json:
+        return jsonify({'errorMessage': 'User id missing from request'}), status.HTTP_400_BAD_REQUEST
+    
+    db.add_approval_for_group(request.json['userId'], request.json['groupId'])
+    return "", status.HTTP_200_OK
+
+@group.route('/groups/approvals', methods=['DELETE'])
+def clear_approvals():
+    """
+    Params: "gorupId" = <id>
+
+    Response: ""
+    """
+    if 'groupId' not in request.json:
+        return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
+    
+    db.remove_approvals_for_group(request.json['groupId'])
+    return "", status.HTTP_200_OK
+

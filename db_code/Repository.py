@@ -91,6 +91,14 @@ def get_groups_with_user(user_id):
     user_groups = groups.aggregate([{"$match": {'members': ObjectId(user_id)}}])
     return [Model.Group(g) for g in user_groups]
 
+def add_approval_for_group(user_id, group_id):
+    groups = db.groups
+    groups.update_one({'_id': ObjectId(group_id)}, {'$push': {'approvals': ObjectId(user_id)}})
+
+def remove_approvals_for_group(group_id):
+    groups = db.groups
+    groups.update_one({'_id': ObjectId(group_id)}, {'$set': {'approvals': []}})
+
 def get_schedules_for_group(group_id):
     schedules = db.schedules
     group_schedules = schedules.find({'group_num': ObjectId(group_id)})
