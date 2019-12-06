@@ -6,7 +6,6 @@ from backend.backend import create_app
 from backend.ViewModel import UserView
 from backend.Model import User
 
-
 @pytest.fixture
 def app():
     return create_app()
