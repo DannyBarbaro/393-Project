@@ -63,7 +63,7 @@ def join_group():
     if group:
         if ObjectId(request.json['userId']) not in group.members:
             db.add_user_to_group(request.json['userId'], group)
-            event = db.get_event(group.event_id)
+            event = db.get_event_by_id(group.event_id)
             db.add_schedule(UserSchedule({'time_blocks': [None for _ in range(event.period_count)], 'owner': ObjectId(request.json['userId']), 'group_num': ObjectId(request.json['groupId'])}))
             return "", status.HTTP_200_OK
         else:

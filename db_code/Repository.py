@@ -113,11 +113,6 @@ def remove_schedule_of_user_in_group(user_id, group_id):
     schedules = db.schedules
     schedules.delete_many({'owner': ObjectId(user_id), 'group_num': ObjectId(group_id)})
 
-def get_event(event_id):
-    events = db.events
-    event = events.find_one({'_id': ObjectId(event_id)})
-    return Model.Event(event) if event else None
-
 def add_event(event):
     events = db.events
     events.insert_one(event.__dict__)
