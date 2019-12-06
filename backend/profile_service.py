@@ -63,9 +63,11 @@ def add_user():
     return jsonify({'userId': new_user._id})
 
 @profile.route('/profilePic', methods=['GET', 'POST'])
-def get_profile_pic():
+def profile_pic():
     """
     Params: userId = <value>
+
+    Request: {'profilePic': <blob>} [POST only]
 
     Response: image or empty
     """
