@@ -29,7 +29,7 @@ def create_group():
         return jsonify({'errorMessage': 'This group has been created already'}), status.HTTP_400_BAD_REQUEST
     db.add_group(new_group)
     group = GroupView(db.get_group_by_owner(new_group.owner_id, new_group.event_id))
-    event = db.get_event(request.json['group']['eventId'])
+    event = db.get_event_by_id(request.json['group']['eventId'])
     db.add_schedule(UserSchedule({'time_blocks': [None for _ in range(event.period_count)], 'owner': ObjectId(request.json['group']['ownerId']), 'group_num': ObjectId(group.id)}))
     return jsonify({'groupId': group.id}), status.HTTP_200_OK
 
@@ -115,6 +115,8 @@ def delete_group():
             return "", status.HTTP_200_OK
         else:
             return jsonify({'errorMessage': 'Given owner is not the owner of the given group'}), status.HTTP_400_BAD_REQUEST
+    else:
+        return jsonify({'errorMessage': 'Given group could not be found'}), status.HTTP_400_BAD_REQUEST
 
 @group.route('/groups/list')
 def get_all_groups():

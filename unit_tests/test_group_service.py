@@ -1,9 +1,9 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'backend'))
-from backend.Model import Group
+from backend.Model import Group, Event, User
 from backend.ViewModel import GroupView
-from backend.SomethingCool import create_app
+from backend.backend import create_app
 import pytest
 
 @pytest.fixture
@@ -30,19 +30,47 @@ def mock_get_group_by_owner(mocker):
 def mock_remove_user_from_group(mocker):
     return mocker.patch("Repository.remove_user_from_group", return_value=None)
 
-class TestCreateGroup_NewGroup(object):
+@pytest.fixture
+def mock_get_event_by_id(mocker):
+    return mocker.patch("Repository.get_event_by_id", return_value=None)
+
+@pytest.fixture
+def mock_add_schedule(mocker):
+    return mocker.patch("Repository.add_schedule", return_value=None)
+
+@pytest.fixture
+def mock_remove_schedule_of_user_in_group(mocker):
+    return mocker.patch("Repository.remove_schedule_of_user_in_group", return_value=None)
+
+@pytest.fixture
+def mock_remove_group(mocker):
+    return mocker.patch("Repository.remove_group", return_value=None)
+
+@pytest.fixture
+def mock_get_all_groups(mocker):
+    return mocker.patch("Repository.get_all_groups", return_value=None)
+
+def mock_get_user_by_id(mocker):
+    return mocker.patch("Repository.get_user_by_id", return_value=None)
+
+class TestCreateGroup_NewGroup:
     url = '/createGroup'
 
     @pytest.fixture
     def mock_get_group_by_owner(self, mocker):
-        group = GroupView({'_id': '12'})
+        group = GroupView({'_id': "121212121212121212121212"})
         return mocker.patch("Repository.get_group_by_owner", side_effect=[None, group])
 
-    def test_success(self, client, mock_get_group_by_owner, mock_add_group):
+    @pytest.fixture
+    def mock_get_event_by_id(self, mocker):
+        event = Event({'period_count': 3})
+        return mocker.patch("Repository.get_event_by_id", return_value=event)
+
+    def test_success(self, client, mock_get_group_by_owner, mock_add_group, mock_get_event_by_id, mock_add_schedule):
         data = {
             'group': {
-                'ownerId': '14',
-                'eventId': '13',
+                'ownerId': 'dddddddddddddddddddddddd',
+                'eventId': 'cccccccccccccccccccccccc',
             }
         }
         response = client.post(self.url, json=data)
@@ -50,8 +78,10 @@ class TestCreateGroup_NewGroup(object):
         mock_get_group_by_owner.assert_called()
         mock_add_group.assert_called()
         assert mock_get_group_by_owner.call_count == 2
+        mock_get_event_by_id.assert_called()
+        mock_add_schedule.assert_called()
         assert response.status_code == 200
-        assert b'"groupId": "12"' in response.data
+        assert b'"groupId": "121212121212121212121212"' in response.data
 
     def test_no_group_obj(self, client, mock_get_group_by_owner, mock_add_group):
         data = {
@@ -64,7 +94,7 @@ class TestCreateGroup_NewGroup(object):
 
         mock_get_group_by_owner.assert_not_called()
         mock_add_group.assert_not_called()
-        assert response.json['invalid_key'] == 'Invalid group creation request'
+        assert b'"errorMessage": "Invalid group creation request"' in response.data
         assert response.status_code == 400
 
     def test_no_owner_id(self, client, mock_get_group_by_owner, mock_add_group):
@@ -78,7 +108,7 @@ class TestCreateGroup_NewGroup(object):
 
         mock_get_group_by_owner.assert_not_called()
         mock_add_group.assert_not_called()
-        assert response.json['no_owner'] == 'No owner in group request'
+        assert b'"errorMessage": "No owner in group request"' in response.data
         assert response.status_code == 400
 
     def test_no_event_id(self, client, mock_get_group_by_owner, mock_add_group):
@@ -92,11 +122,10 @@ class TestCreateGroup_NewGroup(object):
 
         mock_get_group_by_owner.assert_not_called()
         mock_add_group.assert_not_called()
-        assert response.json['no_event'] == 'No event in group request'
+        assert b'"errorMessage": "No event in group request"' in response.data
         assert response.status_code == 400
 
-
-class TestCreateGroup_AlreadyExists(object):
+class TestCreateGroup_AlreadyExists:
     url = '/createGroup'
 
     @pytest.fixture
@@ -108,18 +137,18 @@ class TestCreateGroup_AlreadyExists(object):
     def test_already_exists(self, client, mock_get_group_by_owner, mock_add_group):
         data = {
             'group': {
-                'ownerId': 4,
-                'eventId': 3,
+                'ownerId': 'aaaaaaaaaaaaaaaaaaaaaaaa',
+                'eventId': 'bbbbbbbbbbbbbbbbbbbbbbbb',
             }
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_owner.assert_called()
         mock_add_group.assert_not_called()
-        assert response.json['group_exists'] == 'This group has been created already'
+        assert b'"errorMessage": "This group has been created already"' in response.data
         assert response.status_code == 400
 
-class TestGetGroup_GroupExists(object):
+class TestGetGroup_GroupExists:
     url = '/groups?id=8'
     
     @pytest.fixture
@@ -132,7 +161,7 @@ class TestGetGroup_GroupExists(object):
         response = client.get(url)
 
         mock_get_group_by_id.assert_not_called()
-        assert response.json['no_group_id'] == "Group id missing from request"
+        assert b'"errorMessage": "Group id missing from request"' in response.data
         assert response.status_code == 400
 
     def test_success(self, client, mock_get_group_by_id):
@@ -142,7 +171,7 @@ class TestGetGroup_GroupExists(object):
         assert b'"group": {"id": 8}' in response.data
         assert response.status_code == 200
 
-class TestGetGroup_NoSuchGroup(object):
+class TestGetGroup_NoSuchGroup:
     url = '/groups?id=8'
 
     def test_no_such_group(self, client, mock_get_group_by_id):
@@ -152,15 +181,20 @@ class TestGetGroup_NoSuchGroup(object):
         assert b'"group": null' in response.data
         assert response.status_code == 200
 
-class TestJoinGroup_GroupExists(object):
+class TestJoinGroup_GroupExists:
     url = '/groups/join'
 
     @pytest.fixture
     def mock_get_group_by_id(self, mocker):
-        group = Group({'id': 5, 'members': [7, 10]})
+        group = Group({'id': "efefefefefefefefefefefef", 'eventId': "ffffffffffffffffffffffff", 'members': ["888888888888888888888888", "101010101010101010101010"]})
         return mocker.patch("Repository.get_group_by_id", return_value=group)
 
-    def test_no_group_id(self, client, mock_get_group_by_id, mock_add_user_to_group):
+    @pytest.fixture
+    def mock_get_event_by_id(self, mocker):
+        event = Event({'period_count': 6})
+        return mocker.patch("Repository.get_event_by_id", return_value=event)
+
+    def test_no_group_id(self, client, mock_get_group_by_id, mock_add_user_to_group, mock_get_event_by_id, mock_add_schedule):
         data = {
             'groop': 5,
             'userId': 1,
@@ -169,45 +203,53 @@ class TestJoinGroup_GroupExists(object):
 
         mock_get_group_by_id.assert_not_called()
         mock_add_user_to_group.assert_not_called()
-        assert response.json['no_group_id'] == 'Group id missing from request'
+        mock_get_event_by_id.assert_not_called()
+        mock_add_schedule.assert_not_called()
+        assert b'"errorMessage": "Group id missing from request"' in response.data
         assert response.status_code == 400
 
-    def test_no_user_id(self, client, mock_get_group_by_id, mock_add_user_to_group):
+    def test_no_user_id(self, client, mock_get_group_by_id, mock_add_user_to_group, mock_get_event_by_id, mock_add_schedule):
         data = {
-            'groupId': 5,
-            'firstNumber': 1,
+            'groupId': "efefefefefefefefefefefef",
+            'firstNumber': "aaaaaaaaaaaaaaaaaaaaaaaa",
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_id.assert_not_called()
         mock_add_user_to_group.assert_not_called()
-        assert response.json['no_user_id'] == 'Joining user id missing from request'
+        mock_get_event_by_id.assert_not_called()
+        mock_add_schedule.assert_not_called()
+        assert b'"errorMessage": "Joining user id missing from request"' in response.data
         assert response.status_code == 400
 
-    def test_success(self, client, mock_get_group_by_id, mock_add_user_to_group):
+    def test_success(self, client, mock_get_group_by_id, mock_add_user_to_group, mock_get_event_by_id, mock_add_schedule):
         data = {
-            'groupId': 5,
-            'userId': 1,
+            'groupId': "efefefefefefefefefefefef",
+            'userId': "aaaaaaaaaaaabbaaaaaaaaaa",
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_id.assert_called()
         mock_add_user_to_group.assert_called()
+        mock_get_event_by_id.assert_called()
+        mock_add_schedule.assert_called()
         assert response.status_code == 200
 
-    def test_already_member(self, client, mock_get_group_by_id, mock_add_user_to_group):
+    def test_already_member(self, client, mock_get_group_by_id, mock_add_user_to_group, mock_get_event_by_id, mock_add_schedule):
         data = {
-            'groupId': 5,
-            'userId': 7,
+            'groupId': "efefefefefefefefefefefef",
+            'userId': "888888888888888888888888",
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_id.assert_called()
         mock_add_user_to_group.assert_not_called()
-        assert response.json['already_member'] == 'User is already a member of this group'
+        mock_get_event_by_id.assert_not_called()
+        mock_add_schedule.assert_not_called()
+        assert b'"errorMessage": "User is already a member of this group"' in response.data
         assert response.status_code == 400
 
-class TestJoinGroup_NoSuchGroup(object):
+class TestJoinGroup_NoSuchGroup:
     url = '/groups/join'
 
     def test_no_such_group(self, client, mock_get_group_by_id, mock_add_user_to_group):
@@ -219,26 +261,27 @@ class TestJoinGroup_NoSuchGroup(object):
 
         mock_get_group_by_id.assert_called()
         mock_add_user_to_group.assert_not_called()
-        assert response.json['group_not_found'] == 'Requested group could not be found'
+        assert b'"errorMessage": "Requested group could not be found"' in response.data
         assert response.status_code == 400
 
-class TestLeaveGroup_GroupExists(object):
+class TestLeaveGroup_GroupExists:
     url = '/groups/leave'
 
     @pytest.fixture
     def mock_get_group_by_id(self, mocker):
-        group = Group({'id': 9, 'members': [3, 11]})
+        group = Group({'id': "156156156156156156156156", 'members': ["adcadcadcadcadcadcadcadc", "151515151515151515151515"]})
         return mocker.patch("Repository.get_group_by_id", return_value=group)
 
-    def test_success(self, client, mock_get_group_by_id, mock_remove_user_from_group):
+    def test_success(self, client, mock_get_group_by_id, mock_remove_user_from_group, mock_remove_schedule_of_user_in_group):
         data = {
-            'groupId': 9,
-            'userId': 3,
+            'groupId': "156156156156156156156156",
+            'userId': "adcadcadcadcadcadcadcadc",
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_id.assert_called()
         mock_remove_user_from_group.assert_called()
+        mock_remove_schedule_of_user_in_group.assert_called()
         assert response.status_code == 200
 
     def test_no_group_id(self, client, mock_get_group_by_id, mock_remove_user_from_group):
@@ -250,34 +293,34 @@ class TestLeaveGroup_GroupExists(object):
         
         mock_get_group_by_id.assert_not_called()
         mock_remove_user_from_group.assert_not_called()
-        assert response.json['no_group_id'] == 'Group id missing from request'
+        assert b'"errorMessage": "Group id missing from request"' in response.data
         assert response.status_code == 400
 
     def test_no_user_id(self, client, mock_get_group_by_id, mock_remove_user_from_group):
         data = {
-            'groupId': 9,
+            'groupId': "dededededededededededede",
             'vsauce': 'michael here',
         }
         response = client.post(self.url, json=data)
 
         mock_get_group_by_id.assert_not_called()
         mock_remove_user_from_group.assert_not_called()
-        assert response.json['no_user_id'] == 'Leaving user id missing from request'
+        assert b'"errorMessage": "Leaving user id missing from request"' in response.data
         assert response.status_code == 400
 
     def test_not_in_group(self, client, mock_get_group_by_id, mock_remove_user_from_group):
         data = {
-            'groupId': 9,
-            'userId': 6,
+            'groupId': "234234234234234234234234",
+            'userId': "567567567567567567567567",
         }
         response = client.post(self.url, json=data)
 
-        assert response.json['user_not_in_group'] == 'User does not belong to specified group'
+        assert b'"errorMessage": "User does not belong to specified group"' in response.data
         assert response.status_code == 400
         mock_get_group_by_id.assert_called()
         mock_remove_user_from_group.assert_not_called()
 
-class TestLeaveGroup_NoSuchGroup(object):
+class TestLeaveGroup_NoSuchGroup:
     url = '/groups/leave'
 
     def test_no_such_group(self, client, mock_get_group_by_id, mock_remove_user_from_group):
@@ -289,30 +332,117 @@ class TestLeaveGroup_NoSuchGroup(object):
 
         mock_get_group_by_id.assert_called()
         mock_remove_user_from_group.assert_not_called()
-        assert response.json['group_not_found'] == 'Requested group could not be found'
+        assert b'"errorMessage": "Requested group could not be found"' in response.data
         assert response.status_code == 400
 
-class TestGetAllGroups(object):
+class TestDeleteGroup_GroupExists:
+    url = '/groups/nukem'
+
+    @pytest.fixture
+    def mock_get_group_by_id(self, mocker):
+        group = Group({'owner_id': "898989898989898989898989"})
+        return mocker.patch("Repository.get_group_by_id", return_value=group)
+
+    def test_no_group_id(self, client, mock_get_group_by_id, mock_remove_group):
+        data = {
+            'id_of_group': 7,
+            'ownerId': "33333333333333333333333",
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_get_group_by_id.assert_not_called()
+        mock_remove_group.assert_not_called()
+        assert b'"errorMessage": "Group id is missing from request"' in response.data
+        assert response.status_code == 400
+
+    def test_no_owner_id(self, client, mock_get_group_by_id, mock_remove_group):
+        data = {
+            'groupId': "454545454545454545454545",
+            'id_of_owner': 'yes',
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_get_group_by_id.assert_not_called()
+        mock_remove_group.assert_not_called()
+        assert b'"errorMessage": "Owner id is missing from request"' in response.data
+        assert response.status_code == 400
+
+    def test_user_not_owner(self, client, mock_get_group_by_id, mock_remove_group):
+        data = {
+            'groupId': "454545454545454545454545",
+            'ownerId': "393939393939393939393939",
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_get_group_by_id.assert_called()
+        mock_remove_group.assert_not_called()
+        assert b'"errorMessage": "Given owner is not the owner of the given group"' in response.data
+        assert response.status_code == 400
+
+    def test_success(self, client, mock_get_group_by_id, mock_remove_group):
+        data = {
+            'groupId': "454545454545454545454545",
+            'ownerId': "898989898989898989898989",
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_get_group_by_id.assert_called()
+        mock_remove_group.assert_called()
+        assert response.status_code == 200
+
+class TestDeleteGroup_NoSuchGroup:
+    url = '/groups/nukem'
+
+    def test_no_group_found(self, client, mock_get_group_by_id, mock_remove_group):
+        data = {
+            'groupId': "234234234234234234234234",
+            'ownerId': "adcadcadcadcadcadcadcadc",
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_get_group_by_id.assert_called()
+        mock_remove_group.assert_not_called()
+        assert b'"errorMessage": "Given group could not be found"' in response.data
+        assert response.status_code == 400
+
+class TestGetAllGroups:
     url = '/groups/list'
 
     @pytest.fixture
     def mock_get_all_groups(self, mocker):
-        groups = [Group({'id': 4}), Group({'id': 16})]
+        groups = [Group({'event_id': "bebebebebebebebebebebebe", 'owner_id': "123123123123123123123123"}), Group({'event_id': "f6f6f6f6f6f6f6f6f6f6f6f6", 'owner_id': "eeeeeeeeeeeeeeeeeeeeeeee"})]
         return mocker.patch("Repository.get_all_groups", return_value=groups)
 
-    def test_success(self, client, mock_get_all_groups):
+    @pytest.fixture
+    def mock_get_event_by_id(self, mocker):
+        event = Event({'event_name': "3 am"})
+        return mocker.patch("Repository.get_event_by_id", side_effect=[event, None])
+
+    @pytest.fixture
+    def mock_get_user_by_id(self, mocker):
+        user = User({'name': "Steve"})
+        return mocker.patch("Repository.get_user_by_id", side_effect=[user, user])
+
+    def test_success(self, client, mock_get_all_groups, mock_get_event_by_id, mock_get_user_by_id):
         response = client.get(self.url)
 
         mock_get_all_groups.assert_called()
-        assert b'"groups": [{"id": 4}, {"id": 16}]' in response.data
+        mock_get_event_by_id.assert_called()
+        mock_get_user_by_id.assert_called()
+        assert mock_get_event_by_id.call_count == 2
+        assert mock_get_user_by_id.call_count == 2
+        print(response.data)
+        assert b'"groups": [' in response.data
+        assert b'{"eventId": "bebebebebebebebebebebebe", "ownerId": "123123123123123123123123", "eventName": "3 am", "ownerName": "Steve"}' in response.data
+        assert b'{"eventId": "f6f6f6f6f6f6f6f6f6f6f6f6", "ownerId": "eeeeeeeeeeeeeeeeeeeeeeee", "eventName": "UNKNOWN EVENT", "ownerName": "Steve"}' in response.data
         assert response.status_code == 200
 
-class TestGetUserGroups(object):
+class TestGetUserGroups:
     url = '/groups/mine?userId=23'
 
     @pytest.fixture
     def mock_get_groups_with_user(self, mocker):
-        groups = [Group({'id': 18}), Group({'id': 51})]
+        groups = [Group({'id': '121212121212121212121212'}), Group({'id': '232323232323232323232323'})]
         return mocker.patch("Repository.get_groups_with_user", return_value=groups)
 
     def test_no_user_id(self, client, mock_get_groups_with_user):
@@ -320,11 +450,11 @@ class TestGetUserGroups(object):
         response = client.get(url)
 
         mock_get_groups_with_user.assert_not_called()
-        assert response.json['no_user'] == 'User id missing from request'
+        assert b'"errorMessage": "User id missing from request"' in response.data
         assert response.status_code == 400
 
     def test_success(self, client, mock_get_groups_with_user):
         response = client.get(self.url)
 
         mock_get_groups_with_user.assert_called()
-        assert b'"groups": [{"id": 18}, {"id": 51}]' in response.data
+        assert b'"groups": [{"id": "121212121212121212121212"}, {"id": "232323232323232323232323"}]' in response.data
