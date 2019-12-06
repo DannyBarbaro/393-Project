@@ -189,6 +189,15 @@ class ShowGroup extends Component {
                                         }
                                 </Paper>
                             </Grid>
+                            {
+                                this.state.allSchedules.map(schedule => {
+                                    if (schedule.owner === this.cookies.get('userId')) {
+                                        return <ScheduleEditor enabled blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                                    } else {
+                                        return <ScheduleEditor blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
+                                    }
+                                })
+                            }   
                         </Grid>
                     </Grid>
                     
@@ -211,16 +220,7 @@ class ShowGroup extends Component {
                             onClick={this.openMessages}>Open Messages</Button> */}
                     </Grid>
                 </Grid>    
-                
-                {
-                    this.state.allSchedules.map(schedule => {
-                        if (schedule.owner === this.cookies.get('userId')) {
-                            return <ScheduleEditor enabled blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
-                        } else {
-                            return <ScheduleEditor blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
-                        }
-                    })
-                }       
+                    
             </div>
         )
     }

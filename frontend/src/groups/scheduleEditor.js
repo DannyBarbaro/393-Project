@@ -11,8 +11,8 @@ import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
     formControl: {
-        margin: theme.spacing(1),
-        minWidth: 150,
+        marginLeft: 5,
+        minWidth: 173,
         maxWidth: '25%'
     },
     generalPadding: {

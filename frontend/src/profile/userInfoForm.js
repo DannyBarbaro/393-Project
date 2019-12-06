@@ -5,9 +5,9 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-// import Chip from '@material-ui/core/Chip';
+import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
-// import {allTeams} from '../Logos/teams';
+import {allTeams} from '../Logos/teams';
 import {withCookies} from 'react-cookie';
 
 const styles = theme => ({
@@ -210,7 +210,7 @@ class UserInfoForm extends Component {
                     <br/>
                     <Avatar src={`${this.state.profilePic}`} alt="" className={classes.profilePic}/>
                     <br/>
-                    {/* <Typography variant="h6" className={classes.generalPadding}>
+                    <Typography variant="h6" className={classes.generalPadding}>
                         Choose Your Favorite Teams!
                     </Typography>
                     <br/>
@@ -234,7 +234,7 @@ class UserInfoForm extends Component {
                         </div>)
                     })
                         
-                    } */}
+                    }
                 </Box>
                 <Box className={classes.containerBox}>
                     <Typography variant="h4">Payment Information</Typography>
