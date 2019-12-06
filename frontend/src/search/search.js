@@ -183,7 +183,7 @@ class Search extends Component {
                                 <TableCell align="right">{group.ownerName}</TableCell>
                                 <TableCell align="right">
                                     <Button variant="contained" color="primary" id={group.id} onClick={this.onJoin}>
-                                        <Typography id={group.id} onClick={this.onJoin}>Join</Typography>
+                                        <Typography id={group.id}>Join</Typography>
                                     </Button>
                                 </TableCell>
                             </TableRow>
