@@ -50,8 +50,17 @@ def mock_remove_group(mocker):
 def mock_get_all_groups(mocker):
     return mocker.patch("Repository.get_all_groups", return_value=None)
 
+@pytest.fixture
 def mock_get_user_by_id(mocker):
     return mocker.patch("Repository.get_user_by_id", return_value=None)
+
+@pytest.fixture
+def mock_add_approval_for_group(mocker):
+    return mocker.patch("Repository.add_approval_for_group", return_value=None)
+
+@pytest.fixture
+def mock_remove_approvals_for_group(mocker):
+    return mocker.patch("Repository.remove_approvals_for_group", return_value=None)
 
 class TestCreateGroup_NewGroup:
     url = '/createGroup'
@@ -458,3 +467,58 @@ class TestGetUserGroups:
 
         mock_get_groups_with_user.assert_called()
         assert b'"groups": [{"id": "121212121212121212121212"}, {"id": "232323232323232323232323"}]' in response.data
+
+class TestAddScheduleApproval:
+    url = '/groups/approve'
+
+    def test_all_good(self, client, mock_add_approval_for_group):
+        data = {
+            'groupId': 4,
+            'userId': 8
+        }
+        response = client.post(self.url, json=data)
+
+        mock_add_approval_for_group.assert_called()
+        assert response.status_code == 200
+
+    def test_missing_group(self, client, mock_add_approval_for_group):
+        data = {
+            'userId': 8
+        }
+        response = client.post(self.url, json=data)
+
+        mock_add_approval_for_group.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "Group id missing from request"' in response.data
+
+    def test_missing_user(self, client, mock_add_approval_for_group):
+        data = {
+            'groupId': 8
+        }
+        response = client.post(self.url, json=data)
+
+        mock_add_approval_for_group.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "User id missing from request"' in response.data
+
+class TestClearApprovals:
+    url = '/groups/approvals'
+
+    def test_all_good(self, client, mock_remove_approvals_for_group):
+        data = {
+            'groupId': 7
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_remove_approvals_for_group.assert_called()
+        assert response.status_code == 200
+
+    def test_missing_group(self, client, mock_remove_approvals_for_group):
+        data = {
+            'gorupId': 7
+        }
+        response = client.delete(self.url, json=data)
+
+        mock_remove_approvals_for_group.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "Group id missing from request"' in response.data

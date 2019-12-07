@@ -168,7 +168,7 @@ def add_schedule_approval():
 @group.route('/groups/approvals', methods=['DELETE'])
 def clear_approvals():
     """
-    Params: "gorupId" = <id>
+    Params: "groupId" = <id>
 
     Response: ""
     """

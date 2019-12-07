@@ -32,6 +32,10 @@ def mock_update_user(mocker):
 def mock_update_user_profile_pic(mocker):
     return mocker.patch("Repository.update_user_profile_pic", return_value=None)
 
+@pytest.fixture
+def mock_update_ratings(mocker):
+    return mocker.patch("Repository.update_user_ratings", return_value=None)
+
 
 class TestGetProfile_UserExists:
     url = '/profile?userId=13'
@@ -335,4 +339,85 @@ class TestGetManyUsers:
         response = client.get(url)
 
         assert mock_get_user_by_id.call_count == 2
+        assert response.status_code == 200
         assert b'"usernames": ["Bob"]' in response.data
+
+class TestUpdateRating:
+
+    users = {
+        '1': User({'name': 'Alice', 'rating_history': []}),
+        '2': User({'name': 'Bob', 'rating_history': [1, 2, 3]}),
+        '3': User({'name': 'Charlie', 'rating_history': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]})
+    }
+    url = '/user/rating'
+
+    @pytest.fixture
+    def mock_get_user_by_id(self, mocker):
+        return mocker.patch("Repository.get_user_by_id", side_effect=lambda x: self.users.get(x, None))
+
+    def test_update_rating_empty(self, client, mock_get_user_by_id, mock_update_ratings):
+        data = {
+            'userId': '1',
+            'rating': 7
+        }
+        response = client.post(self.url, json=data)
+
+        mock_get_user_by_id.assert_called()
+        mock_update_ratings.assert_called_once_with('1', [7])
+        assert response.status_code == 200
+
+    def test_update_rating_unfilled(self, client, mock_get_user_by_id, mock_update_ratings):
+        data = {
+            'userId': '2',
+            'rating': 50
+        }
+        response = client.post(self.url, json=data)
+
+        mock_get_user_by_id.assert_called()
+        mock_update_ratings.assert_called_once_with('2', [1, 2, 3, 50])
+        assert response.status_code == 200
+
+    def test_update_rating_full(self, client, mock_get_user_by_id, mock_update_ratings):
+        data = {
+            'userId': '3',
+            'rating': 50
+        }
+        response = client.post(self.url, json=data)
+
+        mock_get_user_by_id.assert_called()
+        mock_update_ratings.assert_called_once_with('3', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 50])
+        assert response.status_code == 200
+
+    def test_update_rating_no_id(self, client, mock_get_user_by_id, mock_update_ratings):
+        data = {
+            'rating': 50
+        }
+        response = client.post(self.url, json=data)
+
+        mock_get_user_by_id.assert_not_called()
+        mock_update_ratings.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "No user given"' in response.data
+
+    def test_update_rating_no_rating(self, client, mock_get_user_by_id, mock_update_ratings):
+        data = {
+            'userId': 7
+        }
+        response = client.post(self.url, json=data)
+
+        mock_get_user_by_id.assert_not_called()
+        mock_update_ratings.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "No rating provided"' in response.data
+
+    def test_update_rating_user_not_found(self, client, mock_get_user_by_id, mock_update_ratings):
+        data = {
+            'userId': 7,
+            'rating': 12
+        }
+        response = client.post(self.url, json=data)
+
+        mock_get_user_by_id.assert_called()
+        mock_update_ratings.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "No user found with that id"' in response.data
