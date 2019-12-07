@@ -62,6 +62,10 @@ def mock_add_approval_for_group(mocker):
 def mock_remove_approvals_for_group(mocker):
     return mocker.patch("Repository.remove_approvals_for_group", return_value=None)
 
+@pytest.fixture
+def mock_add_rated_for_group(mocker):
+    return mocker.patch("Repository.add_rated_for_group", return_value=None)
+
 class TestCreateGroup_NewGroup:
     url = '/createGroup'
 
@@ -522,3 +526,36 @@ class TestClearApprovals:
         mock_remove_approvals_for_group.assert_not_called()
         assert response.status_code == 400
         assert b'"errorMessage": "Group id missing from request"' in response.data
+
+class TestAddGroupRating:
+    url = '/groups/rated'
+
+    def test_all_good(self, client, mock_add_rated_for_group):
+        data = {
+            'groupId': 7,
+            'userId': 8
+        }
+        response = client.post(self.url, json=data)
+
+        mock_add_rated_for_group.assert_called()
+        assert response.status_code == 200
+
+    def test_missing_group(self, client, mock_add_rated_for_group):
+        data = {
+            'userId': 8
+        }
+        response = client.post(self.url, json=data)
+
+        mock_add_rated_for_group.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "Group id missing from request"' in response.data
+
+    def test_missing_user(self, client, mock_add_rated_for_group):
+        data = {
+            'groupId': 8
+        }
+        response = client.post(self.url, json=data)
+
+        mock_add_rated_for_group.assert_not_called()
+        assert response.status_code == 400
+        assert b'"errorMessage": "User id missing from request"' in response.data
