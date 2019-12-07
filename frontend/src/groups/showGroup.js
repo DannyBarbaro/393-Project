@@ -114,10 +114,7 @@ class ShowGroup extends Component {
             url.search = new URLSearchParams({eventId: resp.group.eventId}).toString()
             fetch(url)
             .then(resp => resp.json())
-            .then(resp => {
-                console.log(resp.event.startTime)
-                this.setState({event: resp.event})
-            })
+            .then(resp => this.setState({event: resp.event}))
 
             this.setState({
                 groupName: resp.group.name,
