@@ -8,6 +8,8 @@ class ViewEncoder(json.JSONEncoder):
     def default(self, view):
         if hasattr(view, "__dict__"):
             return view.__dict__
+        elif hasattr(view, 'isoformat'):
+            return view.isoformat()
         elif isinstance(view, ObjectId):
             return str(view)
         else:

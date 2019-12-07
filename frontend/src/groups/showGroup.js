@@ -115,8 +115,8 @@ class ShowGroup extends Component {
             fetch(url)
             .then(resp => resp.json())
             .then(resp => {
+                console.log(resp.event.startTime)
                 this.setState({event: resp.event})
-                console.log(resp.event)
             })
 
             this.setState({
@@ -299,8 +299,8 @@ class ShowGroup extends Component {
                                         return <ScheduleEditor key={index} blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
                                     }
                                 })
-                            }  
-                            { !this.state.rated.includes(this.cookies.get('userId')) && this.state.event.time &&
+                            } 
+                            { Date.parse(this.state.event.startTime) < Date.now() && !this.state.rated.includes(this.cookies.get('userId')) && 
                                 <RatingComponent groupId={this.groupId}/>
                             }
                         </Grid>
