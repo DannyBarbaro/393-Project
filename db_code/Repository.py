@@ -27,6 +27,10 @@ def update_user_profile_pic(id, pic):
     users = db.users
     users.update_one({'_id': ObjectId(id)}, {'$set' : {'profilePic': pic}})
 
+def update_user_ratings(id, ratings):
+    users = db.users
+    users.update_one({'_id': ObjectId(id)}, {'$set': {'rating_history': ratings}})
+
 def update_user(new_user):
     users = db.users
     new_user = new_user.__dict__

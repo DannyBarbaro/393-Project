@@ -120,4 +120,29 @@ def get_many_users():
     usernames = [UserView(user).name for user in users if user is not None]
     user_ids = [UserView(user).id for user in users if user is not None]
     return jsonify({'usernames': usernames, 'userIds': user_ids})
+
+profile.route('user/rating', methods=['POST'])
+def update_rating():
+    """
+    Request: {"userId" : <id>, "rating": <val>}
+
+    Response: empty
+    """
+    if 'userId' not in request.json:
+        return jsonify({'errorMessage': 'No user given'}), status.HTTP_400_BAD_REQUEST
+    if 'rating' not in request.json:
+        return jsonify({'errorMessage': 'No rating provided'}), status.HTTP_400_BAD_REQUEST
+
+    user = db.get_user_by_id(request.json['userId'])
+    if not user:
+        return jsonify({'errorMessage': 'No user found with that id'}), status.HTTP_400_BAD_REQUEST
+
+    if not hasattr(user, 'rating_history') or not user.rating_history:
+        new_history = [request.json['rating']]
+    elif len(user.rating_history) >= 20:
+        new_history = user.rating_history[1:] + [request.json['rating']]
+    else:
+        new_history = user.rating_history + [request.json['rating']]
+    db.update_user_ratings(request.json['userId'], new_history)
+    return '', status.HTTP_200_OK
     
