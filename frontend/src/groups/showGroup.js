@@ -62,7 +62,7 @@ class ShowGroup extends Component {
             groupName: '',
             memberNames: [],
             ownerName: '',
-            eventName: '',
+            event: {},
             visibility: '',
             groupSize: 0,
             isMember: true,
@@ -109,6 +109,15 @@ class ShowGroup extends Component {
             fetch(url)
             .then(resp => resp.json())
             .then(resp => this.setState({isMember: resp.groups.map(x => x.id).includes(this.groupId)}))
+
+            url = new URL('/event', apiBaseURL)
+            url.search = new URLSearchParams({eventId: resp.group.eventId}).toString()
+            fetch(url)
+            .then(resp => resp.json())
+            .then(resp => {
+                this.setState({event: resp.event})
+                console.log(resp.event)
+            })
 
             this.setState({
                 groupName: resp.group.name,
@@ -243,7 +252,7 @@ class ShowGroup extends Component {
                             <CloseIcon/>
                         </IconButton>
                         <Typography variant="h5" className={classes.headerTitle}>
-                            Group Information
+                            {this.state.groupName}
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -252,8 +261,8 @@ class ShowGroup extends Component {
                         <Grid container spacing={0}>
                             <Grid item xs={12} md={4}>
                                 <Paper className={classes.groupPaper}>
-                                    <Typography variant="h6" className={classes.title}>Group Name:</Typography>
-                                    <Typography variant="body1" className={classes.value}>{this.state.groupName}</Typography>
+                                    <Typography variant="h6" className={classes.title}>Event Name:</Typography>
+                                    <Typography variant="body1" className={classes.value}>{this.state.event.eventName}</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -291,7 +300,7 @@ class ShowGroup extends Component {
                                     }
                                 })
                             }  
-                            { this.state.approvals.length === this.state.groupSize && !this.state.rated.includes(this.cookies.get('userId')) &&
+                            { !this.state.rated.includes(this.cookies.get('userId')) && this.state.event.time &&
                                 <RatingComponent groupId={this.groupId}/>
                             }
                         </Grid>

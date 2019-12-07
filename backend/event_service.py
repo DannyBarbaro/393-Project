@@ -17,8 +17,8 @@ def get_future_events():
     """
     return jsonify({'events': db.get_all_future_events()})
 
-@event.route('/events')
-def get_future_events():
+@event.route('/event')
+def get_event():
     """
     Parameters: eventId
 
