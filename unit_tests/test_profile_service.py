@@ -302,9 +302,9 @@ class TestUpdateUser_NoSuchUser:
 class TestGetManyUsers:
 
     users = {
-        '1': {'name': 'Alice'},
-        '2': {'name': 'Bob'},
-        '3': {'name': 'Charlie'}
+        '1': {'name': 'Alice', '_id': '1'},
+        '2': {'name': 'Bob', '_id': '2'},
+        '3': {'name': 'Charlie', '_id': '3'}
     }
     
     @pytest.fixture
