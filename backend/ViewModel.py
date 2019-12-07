@@ -13,18 +13,6 @@ class ViewEncoder(json.JSONEncoder):
         else:
             return dict(view)
 
-class BlockView:
-
-    def __init__(self, source_obj):
-        if source_obj:
-            if hasattr(source_obj, "__dict__"):
-                source_obj = source_obj.__dict__
-
-            if 'time' in source_obj:
-                self.time = source_obj['time']
-            if 'seat' in source_obj:
-                self.seat = source_obj['seat']
-
 class EventView:
 
     def __init__(self, source_obj):

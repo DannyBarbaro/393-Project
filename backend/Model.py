@@ -1,13 +1,5 @@
 from bson import ObjectId
 
-class Block:
-
-    def __init__(self, source_obj):
-        if 'time' in source_obj:
-            self.time = source_obj['time']
-        if 'seat' in source_obj:
-            self.seat = source_obj['seat']
-
 class Event:
 
     def __init__(self, source_obj):
