@@ -27,3 +27,8 @@ yesterday = Model.Event({'time': datetime(2019, 12, 3, 0, 0, 0), 'team1': "today
 repo.add_event(suberbowl)
 repo.add_event(my_393_presentation)
 repo.add_event(yesterday)
+
+#print current events and ID's for convenince
+print('Events currently in database:')
+for event in repo.get_all_events():
+    print(f'Event name: {event.event_name}, ID: {event._id}')

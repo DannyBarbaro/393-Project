@@ -143,3 +143,8 @@ def get_event_by_id(event_id):
     events = db.events
     result = events.find_one({'_id': ObjectId(event_id)})
     return Model.Event(result) if result else None
+
+#This function is only ever called by warp_time.py
+def warp_time(event_id):
+    events = db.events
+    events.update_one({'_id': ObjectId(event_id)}, {'$set': {'start_time': datetime.now()}})
