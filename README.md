@@ -11,7 +11,7 @@ The data for this project will be stored in the users local MongoDB instance. To
 
 The project is currently supporting MongoDB Community edition 4.2
 
-If you wish to change the address of the Mongo instance, the file ```Repository.py``` must be updated to connect to this instance instead of localhost.
+If you wish to change the address of the Mongo instance, the file ```backend/Repository.py``` must be updated to connect to this instance instead of localhost.
 
 Note that the ```mongod``` service must be running in order for connections to mongo to work. This service tends to shut down when your computer shuts down, and must be manually restarted.
 
