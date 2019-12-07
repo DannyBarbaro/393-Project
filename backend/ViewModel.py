@@ -25,7 +25,11 @@ class EventView:
             if 'id' in source_obj:
                 self.id = source_obj['id']
             if 'time' in source_obj:
-                self.start_time = source_obj['time']
+                self.startTime = source_obj['time']
+            if 'start_time' in source_obj:
+                self.startTime = source_obj['start_time']
+            if 'startTime' in source_obj:
+                self.startTime = source_obj['startTime']
             if 'team1' in source_obj and 'team2' in source_obj:
                 self.participants = [source_obj['team1'], source_obj['team2']]
             if 'location' in source_obj:

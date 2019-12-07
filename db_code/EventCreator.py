@@ -18,11 +18,11 @@ sb_seats = make_seats(100, 401, 1, 5, 1, 8, secI=100)
 pres_seats = make_seats(1, 2, 1, 30, 1, 6)
 yesterday_seats = make_seats(1, 2, 1, 2, 1, 2)
 
-suberbowl = Model.Event({'time': datetime(2020, 2, 2, 19, 0, 0), 'team1': "Jets", 'team2': "Bengals", 'location': "Miami, FL", 'event_type': "NFL", 'period_count': 4, 'seats': sb_seats, 'event_name': "Suberb Owl"})
+suberbowl = Model.Event({'start_time': datetime(2020, 2, 2, 19, 0, 0), 'team1': "Jets", 'team2': "Bengals", 'location': "Miami, FL", 'event_type': "NFL", 'period_count': 4, 'seats': sb_seats, 'event_name': "Suberb Owl"})
 
-my_393_presentation = Model.Event({'time': datetime(2019, 12, 6, 11, 40, 0), 'team1': "us", 'team2': "Rohan & Anthony", 'location': "Bingham", 'event_type': "Presentation", 'period_count': 4, 'seats': pres_seats, 'event_name': "My 393 Presentation"})
+my_393_presentation = Model.Event({'start_time': datetime(2019, 12, 6, 11, 40, 0), 'team1': "us", 'team2': "Rohan & Anthony", 'location': "Bingham", 'event_type': "Presentation", 'period_count': 4, 'seats': pres_seats, 'event_name': "My 393 Presentation"})
 
-yesterday = Model.Event({'time': datetime(2019, 12, 3, 0, 0, 0), 'team1': "today", 'team2': "tomorrow", 'location': "Yes", 'event_type': "Life", 'period_count': 1, 'seats': yesterday_seats, 'event_name': "Yesterday"})
+yesterday = Model.Event({'start_time': datetime(2019, 12, 3, 0, 0, 0), 'team1': "today", 'team2': "tomorrow", 'location': "Yes", 'event_type': "Life", 'period_count': 1, 'seats': yesterday_seats, 'event_name': "Yesterday"})
 
 repo.add_event(suberbowl)
 repo.add_event(my_393_presentation)
