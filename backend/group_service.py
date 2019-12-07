@@ -178,3 +178,17 @@ def clear_approvals():
     db.remove_approvals_for_group(request.json['groupId'])
     return "", status.HTTP_200_OK
 
+@group.route('/groups/rated', methods=['POST'])
+def add_group_rating():
+    """
+    Params: {"groupId" = <id>, "userId" = <id>}
+
+    Response: ""
+    """
+    if 'groupId' not in request.json:
+        return jsonify({'errorMessage': 'Group id missing from request'}), status.HTTP_400_BAD_REQUEST
+    if 'userId' not in request.json:
+        return jsonify({'errorMessage': 'User id missing from request'}), status.HTTP_400_BAD_REQUEST
+    
+    db.add_rated_for_group(request.json['userId'], request.json['groupId'])
+    return "", status.HTTP_200_OK

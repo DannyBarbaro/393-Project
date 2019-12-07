@@ -65,7 +65,8 @@ class Group:
             self.seats = source_obj['seats']
         if 'approvals' in source_obj:
             self.approvals = source_obj['approvals']
-            
+        if 'rated' in source_obj:
+            self.rated = source_obj['rated']
 class UserSchedule:
     
     def __init__(self, source_obj):

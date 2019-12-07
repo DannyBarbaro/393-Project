@@ -103,6 +103,10 @@ def remove_approvals_for_group(group_id):
     groups = db.groups
     groups.update_one({'_id': ObjectId(group_id)}, {'$set': {'approvals': []}})
 
+def add_rated_for_group(user_id, group_id):
+    groups = db.groups
+    groups.update_one({'_id': ObjectId(group_id)}, {'$push': {'rated': ObjectId(user_id)}})
+
 def get_schedules_for_group(group_id):
     schedules = db.schedules
     group_schedules = schedules.find({'group_num': ObjectId(group_id)})

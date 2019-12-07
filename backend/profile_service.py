@@ -121,7 +121,7 @@ def get_many_users():
     user_ids = [UserView(user).id for user in users if user is not None]
     return jsonify({'usernames': usernames, 'userIds': user_ids})
 
-profile.route('user/rating', methods=['POST'])
+@profile.route('/user/rating', methods=['POST'])
 def update_rating():
     """
     Request: {"userId" : <id>, "rating": <val>}

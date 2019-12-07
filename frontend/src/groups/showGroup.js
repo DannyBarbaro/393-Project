@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import ScheduleEditor from './scheduleEditor'
+import RatingComponent from './ratingComponent'
 import Snackbar from '@material-ui/core/Snackbar';
 
 const styles = theme => ({
@@ -68,6 +69,7 @@ class ShowGroup extends Component {
             userSchedule: {},
             allSchedules: [],
             approvals: [],
+            rated: [],
             snackOpen: false,
         }
         this.cookies = this.props.cookies;
@@ -108,8 +110,12 @@ class ShowGroup extends Component {
             .then(resp => resp.json())
             .then(resp => this.setState({isMember: resp.groups.map(x => x.id).includes(this.groupId)}))
 
-            //TODO get name of event
-            this.setState({groupName: resp.group.name, visibility: resp.group.visibility, groupSize: resp.group.group_size, approvals: resp.group.approvals})
+            this.setState({
+                groupName: resp.group.name,
+                visibility: resp.group.visibility,
+                groupSize: resp.group.group_size,
+                approvals: resp.group.approvals,
+                rated: resp.group.rated})
         });
 
         url = new URL('/profile', apiBaseURL)
@@ -284,7 +290,10 @@ class ShowGroup extends Component {
                                         return <ScheduleEditor key={index} blocks={schedule.timeBlocks} groupId={this.groupId} callback={sched => this.setState({userSchedule: sched})}/>
                                     }
                                 })
-                            }   
+                            }  
+                            { this.state.approvals.length === this.state.groupSize && !this.state.rated.includes(this.cookies.get('userId')) &&
+                                <RatingComponent groupId={this.groupId}/>
+                            }
                         </Grid>
                     </Grid>
                     
@@ -292,8 +301,8 @@ class ShowGroup extends Component {
                         <Paper className={classes.groupPaper}>
                             <Typography variant="h6" className={classes.title}>Group Members:</Typography>
                             {this.state.memberNames.map((name, index) => (
-                                <Box mb={2} className={classes.memberBox}>
-                                    <Typography variant="body1" key={index} className={classes.value}>{name}</Typography>
+                                <Box key={index} mb={2} className={classes.memberBox}>
+                                    <Typography variant="body1"className={classes.value}>{name}</Typography>
                                     {this.ownerId === this.cookies.get('userId') &&
                                         <Button color="secondary" onClick={() => this.onKick(index)}>Kick</Button>
                                     }
