@@ -107,16 +107,17 @@ def update_user():
 
 
 @profile.route('/users')
-def get_many_usernames():
+def get_many_users():
     """
     Params: id = <val> & id = <val> & ...
 
-    Response: {"usernames" : [<str>]}
+    Response: {"usernames" : [<str>], "userIds" : [<str>]}
     """
     if 'id' not in request.args:
         return jsonify({'usernames': []})
     ids = request.args.getlist('id')
     users = [db.get_user_by_id(x) for x in ids]
     usernames = [UserView(user).name for user in users if user is not None]
-    return jsonify({'usernames': usernames})
+    user_ids = [UserView(user).id for user in users if user is not None]
+    return jsonify({'usernames': usernames, 'userIds': user_ids})
     

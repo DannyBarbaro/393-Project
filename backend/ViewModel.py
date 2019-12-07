@@ -57,26 +57,6 @@ class EventView:
             if 'eventName' in source_obj:
                 self.eventName = source_obj['eventName']
 
-# class GroupScheduleView:
-
-#     def __init__(self, source_obj):
-#         if source_obj:
-#             if hasattr(source_obj, "__dict__"):
-#                 source_obj = source_obj.__dict__
-
-#             if '_id' in source_obj:
-#                 self.id = source_obj['_id']
-#             if 'id' in source_obj:
-#                 self.id = source_obj['id']
-#             if 'user_schedules' in source_obj:
-#                 self.userSchedules = source_obj['user_schedules']
-#             if 'userSchedules' in source_obj:
-#                 self.userSchedules = source_obj['userSchedules']
-#             if 'group_num' in source_obj:
-#                 self.groupNum = source_obj['group_num']
-#             if 'groupNum' in source_obj:
-#                 self.groupNum = source_obj['groupNum']
-
 class GroupView:
 
     def __init__(self, source_obj):

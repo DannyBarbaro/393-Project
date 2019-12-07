@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { apiBaseURL } from '../App';
 import { Link } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Box } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import ScheduleEditor from './scheduleEditor'
+import Snackbar from '@material-ui/core/Snackbar';
 
 const styles = theme => ({
     closeButton: {
@@ -47,6 +48,9 @@ const styles = theme => ({
         position: 'absolute',
         bottom: 15,
         right: 15,
+    },
+    memberBox: {
+        textAlign: 'center',
     }
 });
 
@@ -64,15 +68,19 @@ class ShowGroup extends Component {
             userSchedule: {},
             allSchedules: [],
             approvals: [],
+            snackOpen: false,
         }
         this.cookies = this.props.cookies;
         this.groupId = this.props.groupId;
+        this.ownerId = '';
+
         this.onJoin = this.onJoin.bind(this);
         this.openMessages = this.openMessages.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.showVoting = this.showVoting.bind(this);
         this.onVeto = this.onVeto.bind(this);
         this.onApprove = this.onApprove.bind(this);
+        this.onKick = this.onKick.bind(this);
     }
 
     componentDidMount() {
@@ -81,11 +89,13 @@ class ShowGroup extends Component {
         fetch(url)
         .then(resp => resp.json())
         .then(resp => {
+            this.ownerId = resp.group.ownerId;
+
             let url = new URL('/users', apiBaseURL)
             url.search = 'id=' + resp.group.members.reduce((total, id) => total + '&id=' + id)
             fetch(url)
             .then(resp => resp.json())
-            .then(resp => this.setState({memberNames: resp.usernames}))
+            .then(resp => this.setState({memberNames: resp.usernames, memberIds: resp.userIds}))
 
             url.search = new URLSearchParams({id: resp.group.ownerId}).toString()
             fetch(url)
@@ -194,6 +204,24 @@ class ShowGroup extends Component {
             window.location.reload()
         )
     }
+
+    onKick(index) {
+        let id = this.state.memberIds[index];
+        if (id === this.cookies.get('userId')) {
+            this.setState({snackOpen: true})
+        } else {
+            let url = new URL('/groups/leave', apiBaseURL)
+            let options = {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({groupId: this.groupId, userId: id})
+            }
+            fetch(url, options)
+            .then(() => this.componentDidMount())
+        }
+    }
     
     render() {
         const { classes } = this.props;
@@ -264,7 +292,12 @@ class ShowGroup extends Component {
                         <Paper className={classes.groupPaper}>
                             <Typography variant="h6" className={classes.title}>Group Members:</Typography>
                             {this.state.memberNames.map((name, index) => (
-                                <Typography variant="body1" key={index} className={classes.value}>{name}</Typography>))
+                                <Box mb={2} className={classes.memberBox}>
+                                    <Typography variant="body1" key={index} className={classes.value}>{name}</Typography>
+                                    {this.ownerId === this.cookies.get('userId') &&
+                                        <Button color="secondary" onClick={() => this.onKick(index)}>Kick</Button>
+                                    }
+                                </Box>))
                             }
                         </Paper>
                         { !this.state.approvals.includes(this.cookies.get('userId')) &&
@@ -292,6 +325,17 @@ class ShowGroup extends Component {
                         
                     </Grid>
                 </Grid>    
+
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                    onClose={() => this.setState({snackOpen: false})}
+                    open={this.state.snackOpen}
+                    autoHideDuration={5000}
+                    message="Please don't do that"
+                />
                     
             </div>
         )

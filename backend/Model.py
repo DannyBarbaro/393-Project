@@ -35,23 +35,6 @@ class Event:
             self.event_name = source_obj['event_name']
         if 'eventName' in source_obj:
             self.event_name = source_obj['eventName']
-        
-
-# class GroupSchedule:
-
-#     def __init__(self, source_obj):
-#         if '_id' in source_obj:
-#             self._id = source_obj['id']
-#         if 'id' in source_obj:
-#             self._id = source_obj['id']
-#         if 'user_schedules' in source_obj:
-#             self.user_schedules = source_obj['user_schedules']
-#         if 'userSchedules' in source_obj:
-#             self.user_schedules = source_obj['userSchedules']
-        # if 'group_num' in source_obj:
-        #     self.group_num = source_obj['group_num']
-        # if 'groupNum' in source_obj:
-        #     self.group_num = source_obj['groupNum']
 
 class Group:
 
